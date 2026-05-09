@@ -1,0 +1,69 @@
+<svg width="960" height="720" viewBox="0 0 960 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Sample ADC red-flag brief preview</title>
+  <desc id="desc">A visual mockup of a weekly owner red-flag brief with summary cards and red flag issue cards.</desc>
+  <rect width="960" height="720" fill="#FDFAF6"/>
+  <path d="M0 78H960" stroke="#DED4C9" stroke-width="2"/>
+  <rect x="58" y="52" width="156" height="18" rx="9" fill="#342A23" opacity=".86"/>
+  <rect x="230" y="54" width="64" height="12" rx="6" fill="#A89E96"/>
+  <rect x="314" y="54" width="74" height="12" rx="6" fill="#A89E96"/>
+  <rect x="408" y="54" width="78" height="12" rx="6" fill="#A8523D" opacity=".78"/>
+  <rect x="58" y="126" width="844" height="142" rx="18" fill="#F0EAE0" stroke="#DED4C9"/>
+  <text x="88" y="160" fill="#A8523D" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2">WEEKLY OWNER BRIEF</text>
+  <text x="88" y="205" fill="#342A23" font-family="Georgia, serif" font-size="42" font-weight="700">This Week's Red Flags</text>
+  <text x="88" y="238" fill="#7A6E65" font-family="Arial, sans-serif" font-size="18">A short brief showing what changed, what looks wrong, and where to look next.</text>
+  <rect x="708" y="146" width="148" height="34" rx="8" fill="#FDFAF6" stroke="#CDBFAF"/>
+  <text x="742" y="168" fill="#342A23" font-family="Arial, sans-serif" font-size="12" font-weight="700">DATA SOURCES</text>
+  <g>
+    <rect x="58" y="294" width="198" height="96" rx="14" fill="#FDFAF6" stroke="#DED4C9"/>
+    <text x="82" y="324" fill="#A89E96" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2">DETECTED</text>
+    <text x="82" y="362" fill="#A8523D" font-family="Georgia, serif" font-size="42" font-weight="700">5</text>
+    <text x="126" y="358" fill="#7A6E65" font-family="Arial, sans-serif" font-size="15">red flags</text>
+  </g>
+  <g>
+    <rect x="278" y="294" width="198" height="96" rx="14" fill="#FDFAF6" stroke="#DED4C9"/>
+    <text x="302" y="324" fill="#A89E96" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2">COVERAGE</text>
+    <text x="302" y="362" fill="#7A957A" font-family="Georgia, serif" font-size="42" font-weight="700">3</text>
+    <text x="346" y="358" fill="#7A6E65" font-family="Arial, sans-serif" font-size="15">locations</text>
+  </g>
+  <g>
+    <rect x="498" y="294" width="198" height="96" rx="14" fill="#FDFAF6" stroke="#DED4C9"/>
+    <text x="522" y="324" fill="#A89E96" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2">3PO RISK</text>
+    <text x="522" y="362" fill="#A8523D" font-family="Georgia, serif" font-size="38" font-weight="700">$436</text>
+  </g>
+  <g>
+    <rect x="718" y="294" width="184" height="96" rx="14" fill="#FDFAF6" stroke="#DED4C9"/>
+    <text x="742" y="324" fill="#A89E96" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2">PRIORITY</text>
+    <text x="742" y="362" fill="#342A23" font-family="Georgia, serif" font-size="38" font-weight="700">Store B</text>
+  </g>
+  <text x="58" y="440" fill="#342A23" font-family="Georgia, serif" font-size="28" font-weight="700">Top Owner Red Flags</text>
+  <g>
+    <rect x="58" y="466" width="260" height="166" rx="16" fill="#FDFAF6" stroke="#A8523D" stroke-width="1.5"/>
+    <rect x="82" y="492" width="56" height="24" rx="12" fill="#A8523D"/>
+    <text x="99" y="509" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="11" font-weight="700">HIGH</text>
+    <text x="82" y="546" fill="#342A23" font-family="Georgia, serif" font-size="24" font-weight="700">Discount Spike</text>
+    <text x="82" y="572" fill="#A8523D" font-family="Arial, sans-serif" font-size="14" font-weight="700">Store B</text>
+    <text x="82" y="602" fill="#7A6E65" font-family="Arial, sans-serif" font-size="14">Discount rate hit 7.8%.</text>
+    <text x="82" y="624" fill="#A89E96" font-family="Arial, sans-serif" font-size="12">Source: POS discount report</text>
+  </g>
+  <g>
+    <rect x="350" y="466" width="260" height="166" rx="16" fill="#FDFAF6" stroke="#A8523D" stroke-width="1.5"/>
+    <rect x="374" y="492" width="56" height="24" rx="12" fill="#A8523D"/>
+    <text x="391" y="509" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="11" font-weight="700">HIGH</text>
+    <text x="374" y="546" fill="#342A23" font-family="Georgia, serif" font-size="24" font-weight="700">Refund Pattern</text>
+    <text x="374" y="572" fill="#A8523D" font-family="Arial, sans-serif" font-size="14" font-weight="700">Store C</text>
+    <text x="374" y="602" fill="#7A6E65" font-family="Arial, sans-serif" font-size="14">Refunds increased 41%.</text>
+    <text x="374" y="624" fill="#A89E96" font-family="Arial, sans-serif" font-size="12">Source: POS refund report</text>
+  </g>
+  <g>
+    <rect x="642" y="466" width="260" height="166" rx="16" fill="#FDFAF6" stroke="#DED4C9"/>
+    <rect x="666" y="492" width="76" height="24" rx="12" fill="#7A957A"/>
+    <text x="681" y="509" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="11" font-weight="700">MEDIUM</text>
+    <text x="666" y="546" fill="#342A23" font-family="Georgia, serif" font-size="24" font-weight="700">Labor Drag</text>
+    <text x="666" y="572" fill="#A8523D" font-family="Arial, sans-serif" font-size="14" font-weight="700">Store A</text>
+    <text x="666" y="602" fill="#7A6E65" font-family="Arial, sans-serif" font-size="14">Labor reached 38%.</text>
+    <text x="666" y="624" fill="#A89E96" font-family="Arial, sans-serif" font-size="12">Source: Labor summary</text>
+  </g>
+  <rect x="58" y="658" width="290" height="14" rx="7" fill="#DED4C9"/>
+  <rect x="370" y="658" width="180" height="14" rx="7" fill="#DED4C9"/>
+  <rect x="572" y="658" width="112" height="14" rx="7" fill="#DED4C9"/>
+</svg>

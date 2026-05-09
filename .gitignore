@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Editor and tooling
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups
+*.bak
+
+# Local outputs and generated artifacts
+outputs/
+outreach-run/*-crm-import.json
+outreach-run/*-summary.json
+outreach-run/*-draft-preview.json
+outreach-run/*-batch-review.json
+
+# Logs
+*.log

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADC Consulting - Free Report for F&amp;B Operators</title>
+  <meta name="description" content="Get a free one-time report from ADC Consulting. Built for independent multi-location F&amp;B owners using Toast, Clover, or Square." />
+
+  <!-- Google Fonts: Playfair Display (headlines) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="adc-new-logo-header-optimized.jpg" as="image" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
+
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAV
+  ============================================================ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="ADC Consulting home">
+        <img src="adc-new-logo-header-optimized.jpg" width="480" height="189" alt="ADC Consulting" decoding="async" fetchpriority="high" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="#problem">What Gets Missed</a></li>
+        <li><a href="#growing-pains">Growing Pains</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="https://adc-platform.netlify.app/red-flags.html" target="_blank" rel="noopener noreferrer">Sample Report</a></li>
+        <li><a href="#cta" data-choice-open>Request Report</a></li>
+      </ul>
+      <!-- CTA LINK: Replace href="#cta" with your Calendly or booking URL -->
+      <button class="btn btn-primary nav-cta" type="button" data-choice-open>Get Report</button>
+    </div>
+  </nav>
+
+
+  <!-- ============================================================
+       1. HERO
+  ============================================================ -->
+  <section id="hero">
+    <div class="hero-inner">
+
+      <div class="hero-content">
+        <span class="label">For busy multi-location F&amp;B owners with too many reports to check</span>
+        <h1 aria-label="Where F&B businesses go to grow, scale, and standardize">
+          Where F&amp;B businesses go
+          <span class="hero-action-line">
+            <span>to</span>
+            <span class="rotating-word" aria-hidden="true">
+              <span class="rotating-word-track">
+                <span>grow</span>
+                <span>scale</span>
+                <span>standardize</span>
+                <span>grow</span>
+              </span>
+            </span>
+          </span>
+        </h1>
+        <p class="lead">ADC unites sales, inventory, and labor reports into one place. Know where your business is leaking in minutes.</p>
+
+        <div class="btn-group">
+          <!-- CTA LINK: Replace href below with your Calendly or booking URL -->
+          <button class="btn btn-primary" type="button" data-choice-open>Get a Free Report</button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       EXPERIENCE LOGO MARQUEE
+  ============================================================ -->
+  <section id="experience" aria-label="Brands ADC experience is built from">
+    <div class="experience-inner">
+      <div class="experience-label">Built from experience with:</div>
+      <div class="logo-marquee" aria-hidden="true">
+        <div class="logo-marquee-track">
+          <div class="brand-logo-card brand-logo-card--chopsticks"><img src="chopsticks_logo_300x300px-1.jpg" width="300" height="300" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card"><img src="curate%20logo.jpeg" width="1200" height="314" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card"><img src="davien%20logo.avif" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card brand-logo-card--mahaaya"><img src="mahaaya_logo.jpeg" width="200" height="200" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card brand-logo-card--ninemax"><img src="ninemax-media.jpg" width="320" height="320" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card brand-logo-card--chopsticks"><img src="chopsticks_logo_300x300px-1.jpg" width="300" height="300" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card"><img src="curate%20logo.jpeg" width="1200" height="314" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card"><img src="davien%20logo.avif" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card brand-logo-card--mahaaya"><img src="mahaaya_logo.jpeg" width="200" height="200" alt="" loading="lazy" decoding="async" /></div>
+          <div class="brand-logo-card brand-logo-card--ninemax"><img src="ninemax-media.jpg" width="320" height="320" alt="" loading="lazy" decoding="async" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       2. COSTLY ISSUES
+  ============================================================ -->
+  <section id="problem">
+    <div class="section-inner">
+      <div class="problem-slider reveal" data-problem-slider>
+        <div class="problem-slider-viewport">
+          <div class="problem-slider-track" data-problem-slider-track>
+            <article class="problem-slide">
+              <div class="problem-slide-copy">
+                <span class="label">Complimentary Reports</span>
+                <h2>Currently providing complimentary reports.</h2>
+                <p class="lead">Keeping track of all the data across your POS, 3PO's, inventory, and labor platforms is messy. ADC will do it for you.</p>
+                <div class="btn-group" style="margin-top:18px;">
+                  <button class="btn btn-slider" type="button" data-choice-open>Get a Free Report</button>
+                </div>
+              </div>
+              <div class="problem-slide-visual">
+                <div class="puzzle-report-animation" aria-label="POS, Labor, Inventory, 3PO, and Invoices puzzle pieces combine into an ADC Report">
+                  <div class="puzzle-report-stage" aria-hidden="true">
+                    <div class="puzzle-report-board">
+                      <svg class="puzzle-report-svg" viewBox="28 33 184 244" role="img">
+                        <g class="puzzle-svg-piece puzzle-piece--pos">
+                          <path d="M30 35H105V58C119 58 119 82 105 82V105H75C75 119 55 119 55 105H30Z"/>
+                          <text x="67" y="70">POS</text>
+                        </g>
+                        <g class="puzzle-svg-piece puzzle-piece--labor">
+                          <path d="M105 35H210V105H170C170 119 150 119 150 105H105V82C119 82 119 58 105 58Z"/>
+                          <text x="160" y="70">Labor</text>
+                        </g>
+                        <g class="puzzle-svg-piece puzzle-piece--inventory">
+                          <path d="M30 105H55C55 119 75 119 75 105H150C150 119 170 119 170 105H210V175H170C170 189 150 189 150 175H75C75 189 55 189 55 175H30Z"/>
+                          <text x="120" y="140">Inventory</text>
+                        </g>
+                        <g class="puzzle-svg-piece puzzle-piece--threepo">
+                          <path d="M30 175H55C55 189 75 189 75 175H105V218C119 218 119 242 105 242V275H30Z"/>
+                          <text x="67" y="225">3PO</text>
+                        </g>
+                        <g class="puzzle-svg-piece puzzle-piece--invoices">
+                          <path d="M105 175H150C150 189 170 189 170 175H210V275H105V242C119 242 119 218 105 218Z"/>
+                          <text x="160" y="225">Invoices</text>
+                        </g>
+                      </svg>
+                    </div>
+                    <div class="puzzle-final-report">
+                      <strong><span>ADC</span><span>Report</span></strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="problem-slide">
+              <div class="problem-slide-copy">
+                <span class="label">What Gets Missed &amp; What You Get</span>
+                <h2>The costly problems usually start small.</h2>
+                <p class="lead">Unapproved overtime hours, 1-5% vendor price increases every month, untracked waste. ADC tells you exactly where costs are stacking.</p>
+                <div class="btn-group" style="margin-top:18px;">
+                  <a href="https://adc-platform.netlify.app/red-flags.html" class="btn btn-slider" target="_blank" rel="noopener noreferrer">View Full Sample Report</a>
+                </div>
+              </div>
+              <div class="problem-slide-visual">
+                <div class="cost-stack-animation" aria-label="Unauthorized over-time, vendor prices, refunds, waste, and void stack into a pile as cost rises">
+                  <div class="cost-stack-stage" aria-hidden="true">
+                    <div class="cost-stack-pile">
+                      <div class="cost-stack-word cost-stack-word--vendor"><span>Vendor</span><span>Prices</span></div>
+                      <div class="cost-stack-word cost-stack-word--refunds">Refunds</div>
+                      <div class="cost-stack-word cost-stack-word--waste">Waste</div>
+                      <div class="cost-stack-word cost-stack-word--void">Void</div>
+                      <div class="cost-stack-word cost-stack-word--ot"><span>Unauthorized</span><span>Over-Time</span></div>
+                    </div>
+                  </div>
+                  <div class="cost-progress" aria-hidden="true">
+                    <span>Cost</span>
+                    <span class="cost-progress-track">
+                      <span class="cost-progress-fill"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="problem-slide">
+              <div class="problem-slide-copy">
+                <span class="label">From Report To Results</span>
+                <h2>Turn the report into results.</h2>
+                <p class="lead">Know where your business could be saving and if it's labor law compliant, deal with the problems, and continue growing.</p>
+                <div class="btn-group" style="margin-top:18px;">
+                  <button class="btn btn-slider" type="button" data-choice-open>Get a Free Report</button>
+                </div>
+              </div>
+              <div class="problem-slide-visual">
+                <div class="growth-reveal-animation" aria-label="Horizontal slices align to reveal the vertical word Growth">
+                  <div class="growth-reveal-stage" aria-hidden="true">
+                    <div class="growth-slice-field" data-growth-slices="100">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="problem-slider-controls" aria-label="Problem slider controls">
+          <button class="problem-slider-arrow" type="button" data-problem-slider-prev aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M15 5L8 12L15 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="problem-slider-dots" data-problem-slider-dots></div>
+          <button class="problem-slider-arrow" type="button" data-problem-slider-next aria-label="Next slide">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M9 5L16 12L9 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       GROWING PAINS
+  ============================================================ -->
+  <section id="growing-pains">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="label">Growing pains</span>
+        <h2>Built for busy.</h2>
+      </div>
+
+      <div class="growth-feature-shell reveal">
+        <div class="growth-feature-main">
+          <div class="growth-feature-copy">
+            <h3>Automate the tedious. Prioritize the menu.</h3>
+            <p>ADC helps turn routine number crunching into an operating rhythm, so owners can spend more time on their next concept, next location, and teams.</p>
+          </div>
+
+          <div class="growth-mockup growth-mockup--main" aria-label="Animated POS ticket printer visual">
+            <div class="pos-paper-visual" aria-hidden="true">
+              <div class="pos-printer">
+                <div class="pos-printer-body"></div>
+                <div class="pos-printer-slot"></div>
+                <div class="pos-ticket-window">
+                  <div class="pos-ticket-stream">
+                    <div class="pos-ticket">
+                      <div class="pos-ticket-kicker">
+                        <span>POS</span>
+                        <span>10:42 PM</span>
+                      </div>
+                      <div class="pos-ticket-title">
+                        <span>TABLE 4</span>
+                        <span>#1287</span>
+                      </div>
+                      <div class="pos-ticket-lines">
+                        <div class="pos-ticket-line"><span>2x Rice Bowl</span><span></span><span>Fire</span></div>
+                        <div class="pos-ticket-line"><span>1x Green Tea</span><span></span><span>Bar</span></div>
+                        <div class="pos-ticket-line"><span>No Cilantro</span><span></span><span>Mod</span></div>
+                        <div class="pos-ticket-line"><span>Sesame Allergy</span><span></span><span>Expo</span></div>
+                      </div>
+                      <div class="pos-ticket-status">
+                        <span class="pos-ticket-tag pos-ticket-tag--matched">Fired</span>
+                      </div>
+                    </div>
+                    <div class="pos-ticket">
+                      <div class="pos-ticket-kicker">
+                        <span>POS</span>
+                        <span>10:47 PM</span>
+                      </div>
+                      <div class="pos-ticket-title">
+                        <span>TABLE 9</span>
+                        <span>#1288</span>
+                      </div>
+                      <div class="pos-ticket-lines">
+                        <div class="pos-ticket-line"><span>1x Noodles</span><span></span><span>Wok</span></div>
+                        <div class="pos-ticket-line"><span>3x Iced Tea</span><span></span><span>Bar</span></div>
+                        <div class="pos-ticket-line"><span>Extra Chili</span><span></span><span>Mod</span></div>
+                        <div class="pos-ticket-line"><span>Seat 2 First</span><span></span><span>Expo</span></div>
+                      </div>
+                      <div class="pos-ticket-status">
+                        <span class="pos-ticket-tag pos-ticket-tag--matched">Matched</span>
+                      </div>
+                    </div>
+                    <div class="pos-ticket">
+                      <div class="pos-ticket-kicker">
+                        <span>POS</span>
+                        <span>10:51 PM</span>
+                      </div>
+                      <div class="pos-ticket-title">
+                        <span>BAR 2</span>
+                        <span>#1289</span>
+                      </div>
+                      <div class="pos-ticket-lines">
+                        <div class="pos-ticket-line"><span>2x Tea</span><span></span><span>Bar</span></div>
+                        <div class="pos-ticket-line"><span>1x Dessert</span><span></span><span>Pastry</span></div>
+                        <div class="pos-ticket-line"><span>Hold Until Called</span><span></span><span>Expo</span></div>
+                      </div>
+                      <div class="pos-ticket-status">
+                      </div>
+                    </div>
+                    <div class="pos-ticket">
+                      <div class="pos-ticket-kicker">
+                        <span>POS</span>
+                        <span>10:42 PM</span>
+                      </div>
+                      <div class="pos-ticket-title">
+                        <span>TABLE 4</span>
+                        <span>#1287</span>
+                      </div>
+                      <div class="pos-ticket-lines">
+                        <div class="pos-ticket-line"><span>2x Rice Bowl</span><span></span><span>Fire</span></div>
+                        <div class="pos-ticket-line"><span>1x Green Tea</span><span></span><span>Bar</span></div>
+                        <div class="pos-ticket-line"><span>No Cilantro</span><span></span><span>Mod</span></div>
+                        <div class="pos-ticket-line"><span>Sesame Allergy</span><span></span><span>Expo</span></div>
+                      </div>
+                      <div class="pos-ticket-status">
+                        <span class="pos-ticket-tag pos-ticket-tag--matched">Fired</span>
+                      </div>
+                    </div>
+                    <div class="pos-ticket">
+                      <div class="pos-ticket-kicker">
+                        <span>POS</span>
+                        <span>10:47 PM</span>
+                      </div>
+                      <div class="pos-ticket-title">
+                        <span>TABLE 9</span>
+                        <span>#1288</span>
+                      </div>
+                      <div class="pos-ticket-lines">
+                        <div class="pos-ticket-line"><span>1x Noodles</span><span></span><span>Wok</span></div>
+                        <div class="pos-ticket-line"><span>3x Iced Tea</span><span></span><span>Bar</span></div>
+                        <div class="pos-ticket-line"><span>Extra Chili</span><span></span><span>Mod</span></div>
+                        <div class="pos-ticket-line"><span>Seat 2 First</span><span></span><span>Expo</span></div>
+                      </div>
+                      <div class="pos-ticket-status">
+                        <span class="pos-ticket-tag pos-ticket-tag--matched">Matched</span>
+                      </div>
+                    </div>
+                    <div class="pos-ticket">
+                      <div class="pos-ticket-kicker">
+                        <span>POS</span>
+                        <span>10:51 PM</span>
+                      </div>
+                      <div class="pos-ticket-title">
+                        <span>BAR 2</span>
+                        <span>#1289</span>
+                      </div>
+                      <div class="pos-ticket-lines">
+                        <div class="pos-ticket-line"><span>2x Tea</span><span></span><span>Bar</span></div>
+                        <div class="pos-ticket-line"><span>1x Dessert</span><span></span><span>Pastry</span></div>
+                        <div class="pos-ticket-line"><span>Hold Until Called</span><span></span><span>Expo</span></div>
+                      </div>
+                      <div class="pos-ticket-status">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="growth-feature-cards">
+          <article class="growth-card">
+            <div class="growth-mockup growth-mockup--season" aria-label="Busy season scheduling and inventory planning mockup">
+              <div class="season-toolbar" aria-hidden="true">
+                <span class="season-tool">Today</span>
+                <span class="season-range">December 24 - 31, 2026</span>
+                <span class="season-tool">Christmas/NYE Forecast</span>
+              </div>
+              <div class="season-calendar" aria-hidden="true">
+                <div class="season-day"><strong>Thu 24</strong><span class="season-shift">Keona<span>Prep 9 AM</span><em>Stock</em></span><span class="season-shift">An<span>Floor 5 PM</span><em>Rush</em></span></div>
+                <div class="season-day is-active"><strong>Fri 25</strong><span class="season-shift">William<span>Kitchen 10 AM</span><em>Prime</em></span><span class="season-shift">Dinh<span>Bar 4 PM</span><em>Cover</em></span></div>
+                <div class="season-day"><strong>Wed 30</strong><span class="season-shift">Shou<span>Prep 8 AM</span><em>Order</em></span><span class="season-shift">Kobe<span>Line 6 PM</span><em>Double</em></span></div>
+                <div class="season-day"><strong>Thu 31</strong><span class="season-shift">Jonathan<span>Close 7 PM</span><em>NYE</em></span><span class="season-shift">Keona<span>Expo 8 PM</span><em>Rush</em></span></div>
+              </div>
+            </div>
+            <h3>Stay ahead of busy seasons.</h3>
+            <p>Plan staffing and inventory around holidays, events, school seasons, and demand spikes before overstocking perishables or 86'ing items.</p>
+          </article>
+
+          <article class="growth-card">
+            <div class="growth-mockup growth-mockup--incident" aria-label="Incident tracking and preventive action mockup">
+              <div class="incident-toolbar" aria-hidden="true">
+                <span class="incident-chip">Back</span>
+                <span class="incident-chip">SE-0001</span>
+                <span class="incident-chip incident-chip--status">Open</span>
+                <span class="incident-chip incident-chip--severity">Minor</span>
+                <span class="incident-chip incident-chip--type">Physical</span>
+                <span class="incident-chip incident-chip--category">Incident</span>
+              </div>
+              <div class="incident-ticket" aria-hidden="true">
+                <div class="incident-title">Minor Finger Cut</div>
+                <div class="incident-meta">May 4, 2026 at 8:06 AM</div>
+                <div class="incident-panel">
+                  Incident of <strong>minor severity</strong> was reported at on May 4, 2026 at 8:06 AM.
+                  <span class="incident-osha">No OSHA reporting required for this incident.</span>
+                </div>
+              </div>
+            </div>
+            <h3>Turn incidents into preventive actions.</h3>
+            <p>Track injuries from any device, just scan a QR code, no downloads or logins needed and know the next step to avoid escalation.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       4. HOW IT WORKS
+  ============================================================ -->
+  <section id="how">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="label">How It Works</span>
+        <h2>A simple 4-step process.</h2>
+      </div>
+
+      <div class="process-steps reveal" aria-label="iPhone Messages-style four step process">
+        <div class="imessage-phone">
+          <div class="imessage-status" aria-hidden="true">
+            <span>9:41</span>
+            <span class="imessage-status-icons">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M3 18h2V9H3v9Zm4 0h2V6H7v12Zm4 0h2V11h-2v7Zm4 0h2V4h-2v14Z" fill="currentColor"/></svg>
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M12 17.5 15.5 14a5 5 0 0 0-7 0L12 17.5Zm-6.5-6.5 1.8 1.8a6.7 6.7 0 0 1 9.4 0l1.8-1.8a9.2 9.2 0 0 0-13 0Zm-3.2-3.2 1.8 1.8a11.2 11.2 0 0 1 15.8 0l1.8-1.8a13.8 13.8 0 0 0-19.4 0Z" fill="currentColor"/></svg>
+              <svg viewBox="0 0 28 16" focusable="false"><rect x="1" y="2.5" width="22" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="3.5" y="5" width="17" height="6" rx="2" fill="currentColor"/><path d="M25 6v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+          </div>
+          <div class="imessage-contact">
+            <span class="imessage-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="imessage-contact-card">
+              <img class="imessage-avatar" src="adc-new-logo-header-optimized.jpg" width="96" height="96" alt="ADC Consulting" loading="lazy" />
+              <span class="imessage-contact-name">ADC</span>
+            </div>
+            <span class="imessage-nav-icon imessage-video" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M4 7.8C4 6.8 4.8 6 5.8 6h8.4c1 0 1.8.8 1.8 1.8v8.4c0 1-.8 1.8-1.8 1.8H5.8c-1 0-1.8-.8-1.8-1.8V7.8Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 10 4-2.7v9.4L16 14v-4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+          <div class="imessage-time"><span>iMessage</span><span>Today 9:41 AM</span></div>
+          <div class="imessage-thread">
+            <div class="imessage-row is-you" style="--message-delay: .25s;">
+              <div class="imessage-bubble">
+                <span class="imessage-step">01 Send recent reports</span>
+                <p>Start with POS. If you have more, send them.</p>
+              </div>
+            </div>
+            <div class="imessage-row is-you" style="--message-delay: 1.55s;">
+              <div class="imessage-attachment" aria-label="Attached file F&B.csv">
+                <span class="imessage-file-icon" aria-hidden="true">CSV</span>
+                <span class="imessage-file-copy">
+                  <span class="imessage-file-name">F&amp;B.csv</span>
+                  <span class="imessage-file-meta">Spreadsheet</span>
+                </span>
+              </div>
+            </div>
+            <div class="imessage-row imessage-receipt" style="--message-delay: 2.05s;">Delivered</div>
+            <div class="imessage-row is-adc is-typing" aria-hidden="true" style="--message-delay: 2.85s;">
+              <div class="imessage-bubble imessage-typing">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="imessage-row is-adc" style="--message-delay: 5.05s;">
+              <div class="imessage-bubble">
+                <span class="imessage-step">02 ADC reviews the files</span>
+                <p>We look for costly patterns, repeated issues, invoice mismatches.</p>
+              </div>
+            </div>
+            <div class="imessage-row is-adc is-typing" aria-hidden="true" style="--message-delay: 6.35s;">
+              <div class="imessage-bubble imessage-typing">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="imessage-row is-adc" style="--message-delay: 8.55s;">
+              <div class="imessage-bubble">
+                <span class="imessage-step">03 You receive ADC's report</span>
+                <p>A short, no-nonsense report showing what deserves immediate attention.</p>
+              </div>
+            </div>
+            <div class="imessage-row is-adc" style="--message-delay: 9.75s;">
+              <div class="imessage-attachment" aria-label="Attached file ADC Report.pdf">
+                <span class="imessage-file-icon" aria-hidden="true">PDF</span>
+                <span class="imessage-file-copy">
+                  <span class="imessage-file-name">ADC Report.pdf</span>
+                  <span class="imessage-file-meta">Document</span>
+                </span>
+              </div>
+            </div>
+            <div class="imessage-row is-you" style="--message-delay: 11.35s;">
+              <div class="imessage-bubble">
+                <span class="imessage-step">04 You follow up where needed</span>
+                <p>Ask the right questions, check the right location, or move on if nothing looks important.</p>
+              </div>
+            </div>
+            <div class="imessage-row imessage-receipt" style="--message-delay: 11.85s;">Delivered</div>
+          </div>
+          <div class="imessage-composer" aria-hidden="true">
+            <span class="imessage-compose-btn">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </span>
+            <div class="imessage-input">
+              <span>iMessage</span>
+              <span class="imessage-mic">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M18 11a6 6 0 0 1-12 0M12 17v3M9 20h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       6. WHAT TO SEND
+  ============================================================ -->
+  <section id="needs">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="label">What To Send</span>
+        <h2>2 things to get started.</h2>
+        <p class="lead">Start simple. A recent POS export is enough for the free pilot. More reports help, but they are not required.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="cred-card reveal reveal-delay-1">
+          <div class="cred-tag">Required</div>
+          <h3>The basics</h3>
+          <ul class="pilot-list">
+            <li><span class="check">✓</span> Recent POS sales export</li>
+            <li><span class="check">✓</span> Location name or store list</li>
+          </ul>
+        </div>
+        <div class="cred-card reveal reveal-delay-2">
+          <div class="cred-tag">Optional</div>
+          <h3>Helpful but optional</h3>
+          <ul class="pilot-list">
+            <li><span class="check">✓</span> Refund, void, or discount report</li>
+            <li><span class="check">✓</span> Labor summary</li>
+            <li><span class="check">✓</span> Delivery app report</li>
+            <li><span class="check">✓</span> Inventory count</li>
+            <li><span class="check">✓</span> Supplier invoice</li>
+            <li><span class="check">✓</span> Waste/spoilage log</li>
+            <li><span class="check">✓</span> Recent reviews or screenshots</li>
+            <li><span class="check">✓</span> Manager notes or closing report</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       8. FINAL CTA
+  ============================================================ -->
+  <section id="cta">
+    <div class="section-inner">
+      <span class="label reveal" style="display:block; text-align:center; margin-bottom:16px;">Free Pilot Report</span>
+      <h2 class="reveal">Send your reports. Get a clear list of what is worth checking.</h2>
+      <p class="lead reveal">No long setup. No software to learn. Just a short weekly actionable report built from the reports you already have.</p>
+      <div class="btn-group reveal">
+        <button class="btn btn-primary" type="button" data-choice-open>Get a Free Report</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="choice-modal" id="cta-choice-modal" aria-hidden="true">
+    <div class="choice-panel" role="dialog" aria-modal="true" aria-labelledby="choice-title">
+      <div class="choice-panel-header">
+        <div>
+          <h3 id="choice-title">How would you like to start?</h3>
+          <p>Choose the option that feels easiest. You can either send a request now or book a short intro call first.</p>
+        </div>
+        <button class="choice-close" type="button" aria-label="Close choice panel" data-choice-close>&times;</button>
+      </div>
+      <div class="choice-options">
+        <a class="choice-option choice-option--primary" href="https://docs.google.com/forms/d/e/1FAIpQLScCk5VbfvuB6KUFfL942nQvkBRkKwdA0lGnppqUD-J_cibEnQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">
+          <strong>Submit request form</strong>
+          <p>Share your business details and we'll follow up with instructions for securely sharing your reports.</p>
+        </a>
+        <a class="choice-option" href="https://cal.com/an-pham-ktqlcd/adc-intro-call" target="_blank" rel="noopener noreferrer">
+          <strong>Book 15-minute intro call</strong>
+          <p>Talk through your locations, POS system, and whether the free report is a fit.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">ADC Consulting</div>
+      <div>Weekly reports for busy F&amp;B owners.</div>
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+       SCROLL REVEAL SCRIPT
+  ============================================================ -->
+  <script src="index.js"></script>
+
+</body>
+</html>

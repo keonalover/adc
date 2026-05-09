@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADC Outreach CRM</title>
+  <meta name="description" content="Local MVP CRM for ADC Consulting outreach." />
+  <link rel="preload" href="adc-new-logo-white-bg-header.png" as="image" />
+  <link rel="stylesheet" href="crm.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="adc-new-logo-white-bg-header.png" alt="ADC Consulting" />
+        <div>
+          <strong>CRM</strong>
+          <span>Outreach workspace</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="CRM views">
+        <button class="active" data-view="pipeline" type="button">Pipeline</button>
+        <button data-view="leads" type="button">Leads</button>
+        <button data-view="tasks" type="button">Tasks</button>
+        <button data-view="automation" type="button">Automation</button>
+      </nav>
+      <button class="btn settings-btn" id="openSettingsBtn" type="button">Settings</button>
+      <div class="sidebar-foot">
+        <p style="margin:0 0 10px;color:rgba(255,248,239,.72);font-size:12px;">Data saves in this browser. Export JSON to back up.</p>
+        <div id="gmailBar" class="gmail-bar">
+          <p id="gmailStatus">Gmail not connected</p>
+          <button class="btn" id="gmailConnectBtn" type="button">Connect Gmail</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>ADC Outreach CRM</h1>
+          <p class="subhead">Track restaurant and F&B operators, next actions, red-flag opportunities, and follow-up emails in one lightweight workspace.</p>
+        </div>
+        <div class="actions">
+          <button class="btn" id="exportBtn" type="button">Export JSON</button>
+          <label class="btn" for="importFile">Import Leads</label>
+          <input id="importFile" type="file" accept=".json,.csv,application/json,text/csv" hidden />
+          <button class="btn primary" id="addLeadBtn" type="button">Add Lead</button>
+        </div>
+      </div>
+
+      <section class="stats" aria-label="CRM metrics">
+        <div class="metric"><span>Total leads</span><b id="metricTotal">0</b></div>
+        <div class="metric"><span>Due today</span><b id="metricDue">0</b></div>
+        <div class="metric"><span>Hot/warm</span><b id="metricWarm">0</b></div>
+        <div class="metric"><span>Estimated value</span><b id="metricValue">$0</b></div>
+      </section>
+
+      <div class="toolbar" aria-label="Filters">
+        <div class="field">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" type="search" placeholder="Restaurant, owner, city, POS, notes..." />
+        </div>
+        <div class="field">
+          <label for="stageFilter">Stage</label>
+          <select id="stageFilter"></select>
+        </div>
+        <div class="field">
+          <label for="tempFilter">Temperature</label>
+          <select id="tempFilter">
+            <option value="">All temps</option>
+            <option>Hot</option>
+            <option>Warm</option>
+            <option>Cold</option>
+            <option>Client</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="sortSelect">Sort</label>
+          <select id="sortSelect">
+            <option value="nextAction">Next action</option>
+            <option value="updated">Recently updated</option>
+            <option value="value">Estimated value</option>
+            <option value="name">Company name</option>
+          </select>
+        </div>
+      </div>
+
+      <section id="pipeline" class="view active">
+        <div class="board" id="board"></div>
+      </section>
+
+      <section id="leads" class="view">
+        <div class="panel table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Contact</th>
+                <th>Stage</th>
+                <th>Opportunity</th>
+                <th>Next action</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="leadRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tasks" class="view">
+        <div class="panel table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Due</th>
+                <th>Account</th>
+                <th>Task</th>
+                <th>Stage</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="taskRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="automation" class="view">
+        <div class="automation-grid">
+          <div class="panel section-pad">
+            <div class="section-title">
+              <h2>Due Outreach</h2>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn" id="genAllBtn" type="button">Generate AI Drafts</button>
+                <button class="btn primary" id="sendBatchBtn" type="button">Send Batch</button>
+                <button class="btn" id="scheduleAllBtn" type="button">Schedule Empty Leads</button>
+              </div>
+            </div>
+            <div class="queue" id="outreachQueue"></div>
+          </div>
+          <div class="stack">
+            <div class="template">
+              <h3>Automation Rules</h3>
+              <p>Due leads get a generated draft based on their sequence step. After you mark a touch sent, the CRM logs it, advances the stage when useful, and schedules the next follow-up.</p>
+            </div>
+            <div class="template">
+              <h3>4-touch ADC sequence</h3>
+              <div class="sequence-list" id="sequenceList"></div>
+            </div>
+            <div class="template">
+              <h3>Sending &amp; approval</h3>
+              <p>Connect Gmail in the sidebar, then use Send Batch to check for replies, review recipients, and send the approved batch. Follow-ups are scheduled automatically after each send.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal modal-narrow">
+      <header>
+        <h2 id="settingsModalTitle">Settings</h2>
+        <button class="mini-btn" type="button" id="closeSettingsModalBtn">Close</button>
+      </header>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="apiKeyInput">Anthropic API Key</label>
+            <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-…" autocomplete="off" />
+            <p class="api-key-hint" id="apiKeyHint"></p>
+          </div>
+          <div class="field wide">
+            <p style="font-size:12px;color:var(--muted);margin:0;">Stored in this browser only. Never share your API key. Used to generate personalized email drafts via Claude.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn danger" type="button" id="clearApiKeyBtn">Clear Key</button>
+        <div class="actions">
+          <button class="btn" type="button" id="cancelSettingsBtn">Cancel</button>
+          <button class="btn primary" type="button" id="saveApiKeyBtn">Save Key</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="batchModal" role="dialog" aria-modal="true" aria-labelledby="batchModalTitle">
+    <div class="modal modal-wide">
+      <header>
+        <h2 id="batchModalTitle">Send Batch</h2>
+        <button class="mini-btn" type="button" id="closeBatchModalBtn">Close</button>
+      </header>
+      <div class="modal-body" id="batchModalBody"></div>
+      <div class="modal-footer" id="batchModalFooter">
+        <span></span>
+        <div class="actions">
+          <button class="btn" type="button" id="cancelBatchBtn">Cancel</button>
+          <button class="btn primary" type="button" id="confirmSendBtn">Confirm &amp; Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <form class="modal" id="leadForm">
+      <header>
+        <h2 id="modalTitle">Add Lead</h2>
+        <button class="mini-btn" type="button" id="closeModalBtn">Close</button>
+      </header>
+      <div class="modal-body">
+        <input type="hidden" id="leadId" />
+        <div class="form-grid">
+          <div class="field">
+            <label for="company">Company</label>
+            <input id="company" required placeholder="Restaurant group" />
+          </div>
+          <div class="field">
+            <label for="contact">Primary contact</label>
+            <input id="contact" placeholder="Owner or operator" />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="owner@example.com" />
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" placeholder="(555) 123-4567" />
+          </div>
+          <div class="field">
+            <label for="city">Market</label>
+            <input id="city" placeholder="Houston, Dallas, Austin..." />
+          </div>
+          <div class="field">
+            <label for="pos">POS</label>
+            <select id="pos">
+              <option>Unknown</option>
+              <option>Toast</option>
+              <option>Clover</option>
+              <option>Square</option>
+              <option>Lightspeed</option>
+              <option>Revel</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="locations">Locations</label>
+            <input id="locations" type="number" min="1" step="1" value="1" />
+          </div>
+          <div class="field">
+            <label for="value">Estimated value</label>
+            <input id="value" type="number" min="0" step="250" value="1500" />
+          </div>
+          <div class="field">
+            <label for="stage">Stage</label>
+            <select id="stage"></select>
+          </div>
+          <div class="field">
+            <label for="temperature">Temperature</label>
+            <select id="temperature">
+              <option>Cold</option>
+              <option>Warm</option>
+              <option>Hot</option>
+              <option>Client</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="leadStatus">Automation status</label>
+            <select id="leadStatus">
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="replied">Replied</option>
+              <option value="bounced">Bounced</option>
+              <option value="doNotContact">Do Not Contact</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="nextAction">Next action</label>
+            <select id="nextAction">
+              <option>Research decision maker</option>
+              <option>Send intro email</option>
+              <option>Call owner</option>
+              <option>Send sample report</option>
+              <option>Book intro call</option>
+              <option>Follow up</option>
+              <option>Final follow up</option>
+              <option>Request exports</option>
+              <option>Prepare report</option>
+              <option>Wait for reply</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="nextDate">Next action date</label>
+            <input id="nextDate" type="date" />
+          </div>
+          <div class="field wide">
+            <label for="pain">Likely red flags</label>
+            <input id="pain" placeholder="Overtime, delivery fees, refunds, waste, invoice drift..." />
+          </div>
+          <div class="field wide">
+            <label for="notes">Notes</label>
+            <textarea id="notes" placeholder="Source, context, last touch, objections..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn danger" id="deleteLeadBtn" type="button">Delete</button>
+        <div class="actions">
+          <button class="btn" type="button" id="cancelBtn">Cancel</button>
+          <button class="btn primary" type="submit">Save Lead</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="crm.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async onload="initGmailAuth()"></script>
+  <script src="https://apis.google.com/js/api.js" async onload="loadGmailClient()"></script>
+</body>
+</html>

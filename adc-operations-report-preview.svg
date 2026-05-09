@@ -1,0 +1,145 @@
+<svg width="1100" height="1100" viewBox="0 0 1100 1100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ADC sample operations report</title>
+  <desc id="desc">A sample operations report showing quick summary metrics and red flags for labor, inventory counts, supplier invoices, waste, refunds, and vendor prices.</desc>
+
+  <rect width="1100" height="1100" rx="18" fill="#F8F2EA"/>
+  <rect x="1" y="1" width="1098" height="1098" rx="17" stroke="#CDBFAF" stroke-width="2"/>
+
+  <rect x="24" y="18" width="1052" height="88" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+  <text x="46" y="58" fill="#2B211B" font-family="Georgia, serif" font-size="25" font-weight="700">Operations Report</text>
+  <text x="46" y="80" fill="#7A6E65" font-family="Arial, sans-serif" font-size="13">Week of Apr 28 - May 4 · Cafe + food · 3 locations</text>
+  <rect x="946" y="36" width="112" height="24" rx="7" fill="#FCEBEB"/>
+  <text x="958" y="52" fill="#9E342D" font-family="Arial, sans-serif" font-size="12" font-weight="700">4 Action Needed</text>
+
+  <text x="24" y="142" fill="#A89E96" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.5">QUICK SUMMARY</text>
+
+  <g>
+    <rect x="24" y="160" width="252" height="98" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="42" y="188" fill="#A07162" font-family="Arial, sans-serif" font-size="11">Labor flags</text>
+    <text x="42" y="226" fill="#9E342D" font-family="Georgia, serif" font-size="34" font-weight="500">7</text>
+    <text x="42" y="244" fill="#7A6E65" font-family="Arial, sans-serif" font-size="12">vs 2 last week</text>
+  </g>
+  <g>
+    <rect x="288" y="160" width="252" height="98" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="306" y="188" fill="#A07162" font-family="Arial, sans-serif" font-size="11">Invoice gap</text>
+    <text x="306" y="226" fill="#8E5B16" font-family="Georgia, serif" font-size="30" font-weight="500">$1,840</text>
+    <text x="306" y="244" fill="#7A6E65" font-family="Arial, sans-serif" font-size="12">3 suppliers</text>
+  </g>
+  <g>
+    <rect x="552" y="160" width="252" height="98" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="570" y="188" fill="#A07162" font-family="Arial, sans-serif" font-size="11">Waste</text>
+    <text x="570" y="226" fill="#8E5B16" font-family="Georgia, serif" font-size="30" font-weight="500">8.4%</text>
+    <text x="570" y="244" fill="#7A6E65" font-family="Arial, sans-serif" font-size="12">target &lt;= 5%</text>
+  </g>
+  <g>
+    <rect x="816" y="160" width="260" height="98" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="834" y="188" fill="#A07162" font-family="Arial, sans-serif" font-size="11">Refunds</text>
+    <text x="834" y="226" fill="#9E342D" font-family="Georgia, serif" font-size="30" font-weight="500">$740</text>
+    <text x="834" y="244" fill="#7A6E65" font-family="Arial, sans-serif" font-size="12">up 41% WoW</text>
+  </g>
+
+  <g>
+    <rect x="24" y="276" width="1052" height="172" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="46" y="314" fill="#2B211B" font-family="Georgia, serif" font-size="20" font-weight="700">Labor</text>
+    <rect x="954" y="294" width="104" height="28" rx="7" fill="#FCEBEB"/>
+    <text x="970" y="312" fill="#9E342D" font-family="Arial, sans-serif" font-size="11" font-weight="700">Action Needed</text>
+    <path d="M24 332H1076" stroke="#E6DCD0"/>
+    <circle cx="48" cy="350" r="4" fill="#E24B4A"/>
+    <text x="60" y="354" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Unauthorized OT</text>
+    <text x="1044" y="354" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">5 instances · $920</text>
+    <path d="M24 372H1076" stroke="#E6DCD0"/>
+    <circle cx="48" cy="390" r="4" fill="#E24B4A"/>
+    <text x="60" y="394" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Missed breaks</text>
+    <text x="1044" y="394" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">2 employees · Store B</text>
+    <path d="M24 412H1076" stroke="#E6DCD0"/>
+    <circle cx="48" cy="430" r="4" fill="#EF9F27"/>
+    <text x="60" y="434" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Early clock-ins</text>
+    <text x="1044" y="434" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">11 before rush prep</text>
+  </g>
+
+  <g>
+    <rect x="24" y="462" width="516" height="174" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="46" y="502" fill="#2B211B" font-family="Georgia, serif" font-size="19" font-weight="700">Inventory Counts</text>
+    <rect x="412" y="482" width="104" height="28" rx="7" fill="#FCEBEB"/>
+    <text x="428" y="500" fill="#9E342D" font-family="Arial, sans-serif" font-size="11" font-weight="700">Action Needed</text>
+    <path d="M24 520H540" stroke="#E6DCD0"/>
+    <text x="46" y="544" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Missing counts</text>
+    <text x="508" y="544" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">Stores B + C</text>
+    <path d="M24 560H540" stroke="#E6DCD0"/>
+    <text x="46" y="584" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Below par</text>
+    <text x="508" y="584" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">2 core items</text>
+    <path d="M24 600H540" stroke="#E6DCD0"/>
+    <text x="46" y="624" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Next PO</text>
+    <text x="508" y="624" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">May 6</text>
+  </g>
+
+  <g>
+    <rect x="552" y="462" width="524" height="174" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="574" y="502" fill="#2B211B" font-family="Georgia, serif" font-size="19" font-weight="700">Supplier Invoices</text>
+    <rect x="972" y="482" width="74" height="28" rx="7" fill="#FAEEDA"/>
+    <text x="988" y="500" fill="#8E5B16" font-family="Arial, sans-serif" font-size="11" font-weight="700">Review</text>
+    <path d="M552 520H1076" stroke="#E6DCD0"/>
+    <text x="574" y="544" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Paid vs received</text>
+    <text x="1044" y="544" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">8 cases billed as 10</text>
+    <path d="M552 560H1076" stroke="#E6DCD0"/>
+    <text x="574" y="584" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Flagged suppliers</text>
+    <text x="1044" y="584" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">Dairy Direct, US Foods</text>
+    <path d="M552 600H1076" stroke="#E6DCD0"/>
+    <text x="574" y="624" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Total exposure</text>
+    <text x="1044" y="624" fill="#8E5B16" font-family="Arial, sans-serif" font-size="13" text-anchor="end">$1,840</text>
+  </g>
+
+  <g>
+    <rect x="24" y="650" width="516" height="174" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="46" y="690" fill="#2B211B" font-family="Georgia, serif" font-size="19" font-weight="700">Waste &amp; Spoilage</text>
+    <rect x="452" y="670" width="64" height="28" rx="7" fill="#FAEEDA"/>
+    <text x="466" y="688" fill="#8E5B16" font-family="Arial, sans-serif" font-size="11" font-weight="700">Review</text>
+    <path d="M24 708H540" stroke="#E6DCD0"/>
+    <text x="46" y="732" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Over-prep waste</text>
+    <text x="508" y="732" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">Store C · 5.2%</text>
+    <path d="M24 748H540" stroke="#E6DCD0"/>
+    <text x="46" y="772" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Expired product</text>
+    <text x="508" y="772" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">3 SKUs</text>
+    <path d="M24 788H540" stroke="#E6DCD0"/>
+    <text x="46" y="812" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Estimated cost</text>
+    <text x="508" y="812" fill="#9E342D" font-family="Arial, sans-serif" font-size="13" text-anchor="end">$340</text>
+  </g>
+
+  <g>
+    <rect x="552" y="650" width="524" height="174" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="574" y="690" fill="#2B211B" font-family="Georgia, serif" font-size="19" font-weight="700">Refunds &amp; Discounts</text>
+    <rect x="954" y="670" width="104" height="28" rx="7" fill="#FCEBEB"/>
+    <text x="970" y="688" fill="#9E342D" font-family="Arial, sans-serif" font-size="11" font-weight="700">Action Needed</text>
+    <path d="M552 708H1076" stroke="#E6DCD0"/>
+    <text x="574" y="732" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Total refunds</text>
+    <text x="1044" y="732" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">$740</text>
+    <path d="M552 748H1076" stroke="#E6DCD0"/>
+    <text x="574" y="772" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Repeat discounts</text>
+    <text x="1044" y="772" fill="#8E5B16" font-family="Arial, sans-serif" font-size="13" text-anchor="end">3x avg · Store B</text>
+    <path d="M552 788H1076" stroke="#E6DCD0"/>
+    <text x="574" y="812" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Unauthorized voids</text>
+    <text x="1044" y="812" fill="#3B6D11" font-family="Arial, sans-serif" font-size="13" text-anchor="end">0</text>
+  </g>
+
+  <g>
+    <rect x="24" y="838" width="1052" height="238" rx="8" fill="#FEFBF7" stroke="#CDBFAF"/>
+    <text x="46" y="878" fill="#2B211B" font-family="Georgia, serif" font-size="19" font-weight="700">Vendor Prices</text>
+    <rect x="982" y="858" width="74" height="28" rx="7" fill="#FAEEDA"/>
+    <text x="996" y="876" fill="#8E5B16" font-family="Arial, sans-serif" font-size="11" font-weight="700">Monitor</text>
+    <path d="M24 896H1076" stroke="#E6DCD0"/>
+    <circle cx="48" cy="916" r="4" fill="#E24B4A"/>
+    <text x="60" y="920" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Espresso beans</text>
+    <text x="1044" y="920" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">+4.8%</text>
+    <path d="M24 936H1076" stroke="#E6DCD0"/>
+    <circle cx="48" cy="956" r="4" fill="#EF9F27"/>
+    <text x="60" y="960" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Oat milk</text>
+    <text x="1044" y="960" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">+2.3%</text>
+    <path d="M24 976H1076" stroke="#E6DCD0"/>
+    <circle cx="48" cy="996" r="4" fill="#EF9F27"/>
+    <text x="60" y="1000" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">Chicken breast</text>
+    <text x="1044" y="1000" fill="#000" font-family="Arial, sans-serif" font-size="13" text-anchor="end">+1.6%</text>
+    <path d="M24 1016H1076" stroke="#E6DCD0"/>
+    <text x="46" y="1040" fill="#7A5E58" font-family="Arial, sans-serif" font-size="13">90-day price drift</text>
+    <text x="1044" y="1040" fill="#8E5B16" font-family="Arial, sans-serif" font-size="13" text-anchor="end">+$4,200 est.</text>
+  </g>
+</svg>
