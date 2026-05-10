@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADC Platform — Data Upload</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:          #F5EFE6;
+      --bg-deep:     #EDE4D6;
+      --surface:     #FBF7F2;
+      --border:      #D9CCBA;
+      --border-dark: #C4B49E;
+      --text:        #2C1810;
+      --subtle:      #7A6355;
+      --muted:       #A8917E;
+      --accent:      #B5624A;
+      --accent-warm: #D4784A;
+      --accent-pale: #F0D5C4;
+      --success:     #5A7A4A;
+      --danger:      #A83232;
+      --display:     'Playfair Display', Georgia, serif;
+      --sans:        'DM Sans', sans-serif;
+      --radius:      8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: auto; height: 40px; }
+    .logo-text { display: flex; flex-direction: column; line-height: 1; }
+    .logo-name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--accent); letter-spacing: 0.02em; }
+    .logo-tagline { font-size: 10px; color: var(--muted); font-weight: 300; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .header-nav a {
+      font-size: 11px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase;
+      text-decoration: none; font-weight: 500; margin-left: 18px;
+      transition: color 0.15s;
+    }
+    .header-nav a:hover { color: var(--accent); }
+    .header-nav a.active { color: var(--accent); border-bottom: 1.5px solid var(--accent); padding-bottom: 1px; }
+
+    /* Main */
+    main {
+      max-width: 660px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Page title */
+    .page-title { font-family: var(--display); font-size: 28px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
+    .page-title span { color: var(--accent); }
+    .page-subtitle { margin-top: 6px; font-size: 13px; color: var(--subtle); font-weight: 300; }
+
+    /* Context card */
+    .context-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .context-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+    .context-pill { display: flex; align-items: center; gap: 7px; }
+    .context-pill-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+    .context-pill-sep { width: 1px; height: 12px; background: var(--border); }
+    .context-pill-value { font-size: 13px; font-weight: 500; color: var(--text); }
+
+    /* Section */
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .section-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 1px solid var(--border-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 500; color: var(--subtle); flex-shrink: 0;
+    }
+    .section-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--subtle); }
+
+    /* POS grid */
+    .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .pos-btn {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 12px 14px;
+      color: var(--subtle);
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .pos-btn:hover { border-color: var(--accent-warm); background: var(--accent-pale); color: var(--accent); }
+    .pos-btn.active { border-color: var(--accent); background: var(--accent-pale); color: var(--accent); }
+    .pos-icon { width: 28px; height: 28px; }
+
+    /* Drop zone */
+    .drop-zone {
+      border: 1.5px dashed var(--border-dark);
+      border-radius: var(--radius);
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: var(--surface);
+      position: relative;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-pale); }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-arrow { width: 24px; height: 24px; margin: 0 auto 12px; color: var(--muted); display: block; }
+    .drop-primary { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .drop-secondary { font-size: 12px; color: var(--muted); }
+    .file-selected { display: none; font-size: 12px; font-weight: 500; color: var(--accent); margin-top: 10px; }
+    .file-selected.visible { display: block; }
+
+    /* Run button */
+    .run-btn {
+      background: var(--accent);
+      color: #FBF7F2;
+      border: none;
+      border-radius: var(--radius);
+      padding: 15px 24px;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.15s ease;
+      width: 100%;
+    }
+    .run-btn:hover:not(:disabled) { background: var(--accent-warm); }
+    .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Progress */
+    .progress-wrap { display: none; flex-direction: column; gap: 8px; }
+    .progress-wrap.visible { display: flex; }
+    .progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.35s ease; width: 0%; }
+    .progress-label { font-size: 11px; color: var(--muted); letter-spacing: 0.03em; }
+
+    /* Result card */
+    .result-card { display: none; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; flex-direction: column; gap: 16px; }
+    .result-card.visible { display: flex; }
+    .result-card.success { border-color: #8AAD75; background: #F4FAF0; }
+    .result-card.error   { border-color: #C47A7A; background: #FDF4F4; }
+    .result-header { display: flex; align-items: center; gap: 8px; }
+    .result-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .success .result-icon { background: var(--success); color: white; }
+    .error   .result-icon { background: var(--danger);  color: white; }
+    .result-title { font-family: var(--display); font-size: 16px; font-weight: 500; }
+
+    .result-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .stat { display: flex; flex-direction: column; gap: 4px; padding: 12px; background: rgba(255,255,255,0.6); border-radius: 6px; border: 1px solid rgba(196,155,126,0.2); }
+    .stat-value { font-family: var(--display); font-size: 24px; font-weight: 500; color: var(--accent); }
+    .stat-value.landed { color: var(--success); }
+    .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .batch-id { font-size: 10px; color: var(--muted); letter-spacing: 0.03em; font-family: monospace; }
+    .error-msg { font-size: 12px; color: var(--danger); background: rgba(168,50,50,0.06); border-radius: 4px; padding: 12px; white-space: pre-wrap; word-break: break-all; font-family: monospace; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--border); padding: 12px 36px; display: flex; justify-content: space-between; align-items: center; background: var(--surface); }
+    .footer-text { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    main > * { animation: fadeUp 0.4s ease both; }
+    main > *:nth-child(1) { animation-delay: 0.05s; }
+    main > *:nth-child(2) { animation-delay: 0.10s; }
+    main > *:nth-child(3) { animation-delay: 0.15s; }
+    main > *:nth-child(4) { animation-delay: 0.20s; }
+    main > *:nth-child(5) { animation-delay: 0.25s; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="ADC CONSULTING TRANSPARENT LOGO WIDE.png" alt="ADC" class="logo-mark" />
+
+    </div>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="upload.html" class="active">Upload</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="red-flags.html">Red Flags</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div>
+      <h1 class="page-title">Upload <span>Sales Data</span></h1>
+      <p class="page-subtitle">Upload your POS sales file to process and prepare your data for analysis.</p>
+    </div>
+
+    <div class="context-card">
+      <div class="context-dot"></div>
+      <div class="context-pill">
+        <span class="context-pill-label">Client</span>
+        <div class="context-pill-sep"></div>
+        <span class="context-pill-value" id="ctx-client">—</span>
+      </div>
+      <div class="context-pill">
+        <span class="context-pill-label">Location</span>
+        <div class="context-pill-sep"></div>
+        <span class="context-pill-value" id="ctx-location">—</span>
+      </div>
+      <div class="context-pill" style="margin-left:auto">
+        <span class="context-pill-label">ID</span>
+        <div class="context-pill-sep"></div>
+        <span class="context-pill-value" id="ctx-client-id" style="font-size:10px;color:var(--muted);font-family:monospace">—</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <span class="section-label">Select Report Type</span>
+      </div>
+      <div class="pos-grid">
+        <button class="pos-btn report-btn active" data-report-type="sales">POS Sales</button>
+        <button class="pos-btn report-btn" data-report-type="labor">Labor</button>
+        <button class="pos-btn report-btn" data-report-type="third_party">3PO</button>
+        <button class="pos-btn report-btn" data-report-type="reviews">Reviews</button>
+        <button class="pos-btn report-btn" data-report-type="chargebacks">Chargebacks</button>
+        <button class="pos-btn report-btn" data-report-type="inventory">Inventory</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <span class="section-label">Select Source System</span>
+      </div>
+      <div class="pos-grid">
+        <button class="pos-btn" data-pos="square">
+          <svg class="pos-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="20" height="20" rx="4" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="9" y="9" width="4" height="4" rx="1" fill="currentColor"/>
+            <rect x="15" y="9" width="4" height="4" rx="1" fill="currentColor"/>
+            <rect x="9" y="15" width="4" height="4" rx="1" fill="currentColor"/>
+            <rect x="15" y="15" width="4" height="4" rx="1" fill="currentColor"/>
+          </svg>
+          Square
+        </button>
+        <button class="pos-btn" data-pos="toast">
+          <svg class="pos-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 24C14 24 6 18 6 11a8 8 0 0 1 16 0c0 7-8 13-8 13z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M14 15c0 0-3-2.5-3-5a3 3 0 0 1 6 0c0 2.5-3 5-3 5z" fill="currentColor" opacity="0.45"/>
+          </svg>
+          Toast
+        </button>
+        <button class="pos-btn" data-pos="clover">
+          <svg class="pos-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="18" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="10" cy="18" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="18" cy="18" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="14" y1="14" x2="14" y2="24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Clover
+        </button>
+        <button class="pos-btn" data-pos="manual">
+          <svg class="pos-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 5h10l4 4v14H7V5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M17 5v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M10 15h8M10 19h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Other CSV
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <span class="section-label">Upload CSV Export</span>
+      </div>
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept=".csv" />
+        <svg class="drop-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v13M7 11l5 5 5-5"/><path d="M4 20h16"/>
+        </svg>
+        <div class="drop-primary">Drop CSV file here</div>
+        <div class="drop-secondary">or click to browse — .csv only</div>
+        <div class="file-selected" id="file-name"></div>
+      </div>
+    </div>
+
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-label" id="progress-label">Initializing…</div>
+    </div>
+
+    <div class="result-card" id="result-card">
+      <div class="result-header">
+        <div class="result-icon" id="result-icon"></div>
+        <span class="result-title" id="result-title"></span>
+      </div>
+      <div class="result-stats" id="result-stats"></div>
+      <div class="batch-id" id="result-batch"></div>
+      <div class="error-msg" id="result-error" style="display:none"></div>
+    </div>
+
+    <button class="run-btn" id="run-btn" disabled>Run Import</button>
+  </main>
+
+  <footer>
+    <span class="footer-text">adc-platform v0.1</span>
+    <span class="footer-text" id="footer-status">ready</span>
+  </footer>
+
+  <script type="module">
+
+    // =========================================================================
+    // CONFIG — replace these values
+    // =========================================================================
+    // =========================================================================
+
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/+esm';
+    import {
+      DEMO_CLIENT_ID,
+      DEMO_LOCATION_ID,
+      SUPABASE_ANON_KEY,
+      SUPABASE_URL,
+    } from './js/config.js';
+    import { runGenericReportPipeline } from './normalizer/genericReportPipeline.js';
+    import { runSalesPipeline } from './normalizer/pipeline.js';
+
+    const CLIENT_ID = DEMO_CLIENT_ID;
+    const LOCATION_ID = DEMO_LOCATION_ID;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let selectedReportType = 'sales';
+    let selectedPos = null, selectedFile = null;
+
+    async function loadContext() {
+      const { data: client }   = await supabase.schema('warehouse').from('clients').select('business_name').eq('client_id', CLIENT_ID).single();
+      const { data: location } = await supabase.schema('warehouse').from('dim_location').select('location_name').eq('location_id', LOCATION_ID).single();
+      document.getElementById('ctx-client').textContent   = client?.business_name   || '(not found)';
+      document.getElementById('ctx-location').textContent = location?.location_name || '(not found)';
+      document.getElementById('ctx-client-id').textContent = CLIENT_ID.slice(0,8) + '…';
+    }
+    loadContext();
+
+    document.querySelectorAll('.report-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.report-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedReportType = btn.dataset.reportType;
+        updateRunBtn();
+      });
+    });
+
+    document.querySelectorAll('.pos-btn[data-pos]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pos-btn[data-pos]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedPos = btn.dataset.pos;
+        updateRunBtn();
+      });
+    });
+
+    const fileInput  = document.getElementById('file-input');
+    const fileNameEl = document.getElementById('file-name');
+    const dropZone   = document.getElementById('drop-zone');
+    fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+    dropZone.addEventListener('dragover',  (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleFile(e.dataTransfer.files[0]); });
+
+    function handleFile(file) {
+      if (!file || !file.name.endsWith('.csv')) { alert('Please select a .csv file.'); return; }
+      selectedFile = file;
+      fileNameEl.textContent = `✓  ${file.name}  (${(file.size/1024).toFixed(1)} KB)`;
+      fileNameEl.classList.add('visible');
+      updateRunBtn();
+    }
+    function updateRunBtn() {
+      const hasRequiredSource = selectedReportType === 'sales' ? selectedPos && selectedPos !== 'manual' : true;
+      document.getElementById('run-btn').disabled = !(hasRequiredSource && selectedFile);
+    }
+
+    document.getElementById('run-btn').addEventListener('click', async () => {
+      if (!selectedFile || (selectedReportType === 'sales' && (!selectedPos || selectedPos === 'manual'))) return;
+      resetResult();
+      showProgress(0, 'Reading file…');
+      setFooter('running');
+      document.getElementById('run-btn').disabled = true;
+
+      try {
+        const csvText = await selectedFile.text();
+        if (selectedReportType === 'sales') {
+        const result = await runSalesPipeline({
+          csvText, posSource: selectedPos, locationId: LOCATION_ID,
+          clientId: CLIENT_ID, filename: selectedFile.name,
+          uploadedBy: 'admin', supabase,
+          onProgress: (pct) => {
+            const labels = { 5:'Parsing CSV…', 10:'Creating batch record…', 20:'Storing raw rows…', 40:'Mapping columns…', 55:'Upserting products…', 70:'Writing to warehouse…', 95:'Verifying landed rows…', 100:'Done.' };
+            showProgress(pct, labels[pct] || `${pct}%`);
+          },
+        });
+
+        // Query actual landed count — the source of truth
+        const { count: landedCount } = await supabase
+          .schema('warehouse').from('fact_sales')
+          .select('*', { count: 'exact', head: true })
+          .eq('batch_id', result.batchId);
+
+        showSuccess(result, landedCount ?? 0);
+        } else {
+          const result = await runGenericReportPipeline({
+            csvText,
+            reportType: selectedReportType,
+            sourceSystem: selectedPos || 'manual',
+            locationId: LOCATION_ID,
+            clientId: CLIENT_ID,
+            filename: selectedFile.name,
+            uploadedBy: 'admin',
+            supabase,
+            onProgress: (pct) => {
+              const labels = { 5:'Parsing CSV...', 15:'Creating batch record...', 45:'Staging raw rows...', 90:'Finalizing batch...', 100:'Done.' };
+              showProgress(pct, labels[pct] || `${pct}%`);
+            },
+          });
+          showStaged(result);
+        }
+        setFooter('ready');
+      } catch (err) {
+        showError(err.message);
+        setFooter('error');
+      } finally {
+        document.getElementById('run-btn').disabled = false;
+      }
+    });
+
+    function showProgress(pct, label) {
+      document.getElementById('progress-wrap').classList.add('visible');
+      document.getElementById('progress-bar').style.width   = `${pct}%`;
+      document.getElementById('progress-label').textContent = label;
+    }
+
+    function showSuccess(result, landedCount) {
+      const card = document.getElementById('result-card');
+      card.className = 'result-card visible success';
+      document.getElementById('result-icon').textContent  = '✓';
+      document.getElementById('result-title').textContent = 'Import complete';
+
+      const mismatch = landedCount !== result.factsInserted;
+      document.getElementById('result-stats').innerHTML = `
+        <div class="stat">
+          <div class="stat-value">${result.totalRows.toLocaleString()}</div>
+          <div class="stat-label">Rows in CSV</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">${result.factsInserted.toLocaleString()}</div>
+          <div class="stat-label">Facts prepared</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value landed">${landedCount.toLocaleString()}</div>
+          <div class="stat-label">Facts landed ✓</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">${result.voidedSkipped}</div>
+          <div class="stat-label">Voids skipped</div>
+        </div>
+      `;
+      document.getElementById('result-batch').textContent =
+        `batch_id: ${result.batchId}` + (mismatch ? '  ⚠ prepared/landed mismatch — check console' : '');
+    }
+
+    function showStaged(result) {
+      const card = document.getElementById('result-card');
+      card.className = 'result-card visible success';
+      document.getElementById('result-icon').textContent = '✓';
+      document.getElementById('result-title').textContent = 'Report staged';
+      document.getElementById('result-stats').innerHTML = `
+        <div class="stat">
+          <div class="stat-value">${result.totalRows.toLocaleString()}</div>
+          <div class="stat-label">Rows in CSV</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value landed">${result.stagedRows.toLocaleString()}</div>
+          <div class="stat-label">Rows staged</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">${result.reportType}</div>
+          <div class="stat-label">Report type</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Raw</div>
+          <div class="stat-label">Next: map schema</div>
+        </div>
+      `;
+      document.getElementById('result-batch').textContent = `batch_id: ${result.batchId}`;
+    }
+
+    function showError(message) {
+      const card = document.getElementById('result-card');
+      card.className = 'result-card visible error';
+      document.getElementById('result-icon').textContent  = '✕';
+      document.getElementById('result-title').textContent = 'Import failed';
+      document.getElementById('result-stats').innerHTML   = '';
+      document.getElementById('result-batch').textContent = '';
+      const errEl = document.getElementById('result-error');
+      errEl.style.display = 'block';
+      errEl.textContent   = message;
+    }
+
+    function resetResult() {
+      document.getElementById('result-card').className      = 'result-card';
+      document.getElementById('result-error').style.display = 'none';
+      document.getElementById('progress-wrap').classList.remove('visible');
+    }
+
+    function setFooter(state) {
+      const el = document.getElementById('footer-status');
+      el.textContent = state;
+      el.style.color = state === 'error' ? 'var(--danger)' : state === 'running' ? 'var(--accent)' : 'var(--muted)';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADC Platform - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="ADC CONSULTING TRANSPARENT LOGO WIDE.png" alt="ADC" class="logo-mark" />
+    </div>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="upload.html">Upload</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="red-flags.html">Red Flags</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page header and shared date filter controls -->
+    <div class="page-header">
+      <div class="page-title-block">
+        <h1 class="page-title">Sales <span>Overview</span></h1>
+        <p class="page-subtitle">Net revenue, orders, and top items at a glance</p>
+      </div>
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn" data-days="7">7d</button>
+        <button class="filter-btn active" data-days="30">30d</button>
+        <button class="filter-btn" data-days="90">90d</button>
+        <button class="filter-btn" data-days="0">All</button>
+      </div>
+    </div>
+
+    <!-- Client/location context filled by main.js -->
+    <div class="context-card">
+      <div class="context-dot"></div>
+      <div class="context-pill">
+        <span class="context-pill-label">Client</span>
+        <span class="context-pill-sep"></span>
+        <span class="context-pill-value" id="ctx-client">-</span>
+      </div>
+      <div class="context-pill">
+        <span class="context-pill-label">Location</span>
+        <span class="context-pill-sep"></span>
+        <span class="context-pill-value" id="ctx-location">-</span>
+      </div>
+      <div class="context-pill">
+        <span class="context-pill-label">Last updated</span>
+        <span class="context-pill-sep"></span>
+        <span class="context-pill-value" id="ctx-last-updated">-</span>
+      </div>
+    </div>
+
+    <!-- Sales feature -->
+    <section id="sales-feature">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Net Revenue</div>
+          <div class="kpi-value skeleton kpi-value-loading" id="kpi-revenue"></div>
+          <div class="kpi-sub" id="kpi-revenue-sub"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg Daily Net Revenue</div>
+          <div class="kpi-value skeleton kpi-value-loading" id="kpi-avg-daily"></div>
+          <div class="kpi-sub" id="kpi-avg-daily-sub"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Transactions</div>
+          <div class="kpi-value skeleton kpi-value-loading" id="kpi-txn"></div>
+          <div class="kpi-sub" id="kpi-txn-sub"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg Order Value</div>
+          <div class="kpi-value skeleton kpi-value-loading" id="kpi-aov"></div>
+          <div class="kpi-sub" id="kpi-aov-sub"></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Net Revenue by Day</div>
+            <div class="chart-meta" id="chart-date-range">-</div>
+          </div>
+          <div class="chart-area">
+            <canvas id="chart-daily"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">By Location</div>
+            <div class="chart-meta" id="chart-location-meta">-</div>
+          </div>
+          <div class="chart-area">
+            <canvas id="chart-location"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="items-card">
+        <div class="items-header">
+          <div class="items-title">Top Items</div>
+          <div class="items-tabs">
+            <button class="items-tab active" data-sort="revenue">Revenue</button>
+            <button class="items-tab" data-sort="quantity">Quantity</button>
+          </div>
+        </div>
+        <div id="items-body">
+          <div class="skeleton skeleton-row w-100"></div>
+          <div class="skeleton skeleton-row w-85"></div>
+          <div class="skeleton skeleton-row w-70"></div>
+          <div class="skeleton skeleton-row w-60"></div>
+          <div class="skeleton skeleton-row w-50"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Additional dashboard features are rendered by their modules. -->
+    <section class="feature-grid">
+      <div class="feature-card" id="labor-feature"></div>
+      <div class="feature-card" id="break-risk-feature"></div>
+      <div class="feature-card" id="inventory-feature"></div>
+      <div class="feature-card" id="weekly-actions-feature"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-text">adc-platform v0.1</span>
+    <span class="footer-text" id="footer-status">loading...</span>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

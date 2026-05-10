@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADC Red Flag Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="ADC CONSULTING TRANSPARENT LOGO WIDE.png" alt="ADC" class="logo-mark" />
+    </div>
+    <div class="header-right">
+      <nav class="header-nav" aria-label="Primary navigation">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="upload.html">Upload</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="red-flags.html" class="active">Red Flags</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="page-title-block">
+        <h1 class="page-title">ADC Red <span>Flag Brief</span></h1>
+        <p class="page-subtitle">Sample owner-facing operations brief for cafe and food operators</p>
+      </div>
+    </div>
+
+    <section class="hero-panel">
+      <div>
+        <div class="hero-kicker">Weekly owner brief</div>
+        <h2 class="hero-title">This Week's Red Flags</h2>
+        <p class="hero-copy">A sample owner brief showing the cafe, kitchen, labor, supplier, and service issues that need attention this week.</p>
+        <div class="cta-row">
+          <button class="action-link primary report-request-toggle" type="button" aria-expanded="false" aria-controls="report-request-panel">Request Free Red-Flag Report</button>
+          <button class="action-link data-source-toggle" type="button" id="data-source-toggle" aria-expanded="false" aria-controls="data-source-panel">View Data Sources</button>
+        </div>
+        <div class="data-source-panel" id="data-source-panel" hidden>
+          <div class="data-source-panel-header">
+            <h3>What this report is based on</h3>
+            <button class="panel-close" type="button" aria-label="Close data sources">Close</button>
+          </div>
+          <p>This week's red flags were generated from:</p>
+          <ul class="source-status-list">
+            <li><span>POS sales and refunds export</span><span class="source-status uploaded">Uploaded Apr 29</span></li>
+            <li><span>Labor schedule and time punches</span><span class="source-status uploaded">Uploaded Apr 29</span></li>
+            <li><span>Inventory count</span><span class="source-status missing">Missing this week</span></li>
+            <li><span>Supplier invoices</span><span class="source-status uploaded">Uploaded Apr 28</span></li>
+            <li><span>Waste log</span><span class="source-status uploaded">Uploaded Apr 27</span></li>
+            <li><span>Manager closeout notes</span><span class="source-status uploaded">Reviewed</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="hero-positioning">Your POS shows what happened. ADC shows what needs attention.</p>
+    </section>
+
+    <section class="ops-report" aria-label="Sample operations report">
+      <div class="ops-report-header">
+        <div>
+          <h2 class="ops-report-title">Operations Report</h2>
+          <p class="ops-report-sub">Week of Apr 28 - May 4 · Cafe + food · 3 locations</p>
+        </div>
+        <span class="ops-flag flag-red">4 Action Needed</span>
+      </div>
+
+      <p class="ops-label">Quick Summary</p>
+      <div class="ops-metric-grid">
+        <div class="ops-metric-card">
+          <p class="ops-metric-label">Labor flags</p>
+          <p class="ops-metric-value danger">7</p>
+          <p class="ops-metric-sub">vs 2 last week</p>
+        </div>
+        <div class="ops-metric-card">
+          <p class="ops-metric-label">Invoice gap</p>
+          <p class="ops-metric-value warn">$1,840</p>
+          <p class="ops-metric-sub">3 suppliers</p>
+        </div>
+        <div class="ops-metric-card">
+          <p class="ops-metric-label">Waste</p>
+          <p class="ops-metric-value warn">8.4%</p>
+          <p class="ops-metric-sub">target &lt;= 5%</p>
+        </div>
+        <div class="ops-metric-card">
+          <p class="ops-metric-label">Refunds</p>
+          <p class="ops-metric-value danger">$740</p>
+          <p class="ops-metric-sub">up 41% WoW</p>
+        </div>
+      </div>
+
+      <div class="ops-section-card">
+        <div class="ops-section-header">
+          <h3>Labor</h3>
+          <span class="ops-flag flag-red">Action Needed</span>
+        </div>
+        <div class="ops-row">
+          <span><span class="ops-dot dot-red"></span>Unauthorized OT</span>
+          <strong>5 instances · $920</strong>
+        </div>
+        <div class="ops-row">
+          <span><span class="ops-dot dot-red"></span>Missed breaks</span>
+          <strong>2 employees · Store B</strong>
+        </div>
+        <div class="ops-row">
+          <span><span class="ops-dot dot-amber"></span>Early clock-ins</span>
+          <strong>11 before rush prep</strong>
+        </div>
+      </div>
+
+      <div class="ops-report-grid">
+        <div class="ops-section-card">
+          <div class="ops-section-header">
+            <h3>Inventory Counts</h3>
+            <span class="ops-flag flag-red">Action Needed</span>
+          </div>
+          <div class="ops-row">
+            <span>Missing counts</span>
+            <strong>Stores B + C</strong>
+          </div>
+          <div class="ops-row">
+            <span>Below par</span>
+            <strong>2 core items</strong>
+          </div>
+          <div class="ops-row">
+            <span>Next PO</span>
+            <strong>May 6</strong>
+          </div>
+        </div>
+
+        <div class="ops-section-card">
+          <div class="ops-section-header">
+            <h3>Supplier Invoices</h3>
+            <span class="ops-flag flag-amber">Review</span>
+          </div>
+          <div class="ops-row">
+            <span>Paid vs received</span>
+            <strong>8 cases billed as 10</strong>
+          </div>
+          <div class="ops-row">
+            <span>Flagged suppliers</span>
+            <strong>Dairy Direct, US Foods</strong>
+          </div>
+          <div class="ops-row">
+            <span>Total exposure</span>
+            <strong class="warn">$1,840</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="ops-report-grid">
+        <div class="ops-section-card">
+          <div class="ops-section-header">
+            <h3>Waste &amp; Spoilage</h3>
+            <span class="ops-flag flag-amber">Review</span>
+          </div>
+          <div class="ops-row">
+            <span>Over-prep waste</span>
+            <strong>Store C · 5.2%</strong>
+          </div>
+          <div class="ops-row">
+            <span>Expired product</span>
+            <strong>3 SKUs</strong>
+          </div>
+          <div class="ops-row">
+            <span>Estimated cost</span>
+            <strong class="danger">$340</strong>
+          </div>
+        </div>
+
+        <div class="ops-section-card">
+          <div class="ops-section-header">
+            <h3>Refunds &amp; Discounts</h3>
+            <span class="ops-flag flag-red">Action Needed</span>
+          </div>
+          <div class="ops-row">
+            <span>Total refunds</span>
+            <strong>$740</strong>
+          </div>
+          <div class="ops-row">
+            <span>Repeat discounts</span>
+            <strong class="warn">3x avg · Store B</strong>
+          </div>
+          <div class="ops-row">
+            <span>Unauthorized voids</span>
+            <strong class="good">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="ops-section-card">
+        <div class="ops-section-header">
+          <h3>Vendor Prices</h3>
+          <span class="ops-flag flag-amber">Monitor</span>
+        </div>
+        <div class="ops-row">
+          <span><span class="ops-dot dot-red"></span>Espresso beans</span>
+          <strong>+4.8%</strong>
+        </div>
+        <div class="ops-row">
+          <span><span class="ops-dot dot-amber"></span>Oat milk</span>
+          <strong>+2.3%</strong>
+        </div>
+        <div class="ops-row">
+          <span><span class="ops-dot dot-amber"></span>Chicken breast</span>
+          <strong>+1.6%</strong>
+        </div>
+        <div class="ops-row">
+          <span>90-day price drift</span>
+          <strong class="warn">+$4,200 est.</strong>
+        </div>
+      </div>
+
+      <p class="ops-label">Action Needed This Week</p>
+      <div class="ops-action-list">
+        <div class="ops-action-row">
+          <span>1</span>
+          <strong>Fix Store B labor exceptions</strong>
+          <em>7 flags · due Friday</em>
+        </div>
+        <div class="ops-action-row">
+          <span>2</span>
+          <strong>Complete missing counts</strong>
+          <em>Stores B + C</em>
+        </div>
+        <div class="ops-action-row">
+          <span>3</span>
+          <strong>Request supplier credits</strong>
+          <em>$1,840 exposure</em>
+        </div>
+        <div class="ops-action-row">
+          <span>4</span>
+          <strong>Lower Store C prep pars</strong>
+          <em>8.4% waste</em>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <h2 class="section-title">Know which location needs attention this week.</h2>
+      <p class="section-copy">Start with a free red-flag report and see what your cafe and food reports are already trying to tell you.</p>
+      <div class="cta-row">
+        <button class="action-link primary report-request-toggle" type="button" aria-expanded="false" aria-controls="report-request-panel">Request Free Red-Flag Report</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-text">adc-platform v0.1</span>
+    <span class="footer-text" id="footer-status">static demo brief</span>
+  </footer>
+  <div class="coming-soon-toast" id="coming-soon-toast" role="status" aria-live="polite">Coming soon.</div>
+  <div class="choice-modal" id="report-request-modal" hidden>
+    <div class="choice-modal-backdrop" data-close-report-panel></div>
+    <div class="choice-panel" id="report-request-panel" role="dialog" aria-modal="true" aria-labelledby="report-request-title">
+      <div class="choice-panel-header">
+        <div>
+          <h3 id="report-request-title">How would you like to start?</h3>
+          <p>Choose the option that feels easiest. You can either send a request now or book a short intro call first.</p>
+        </div>
+        <button class="choice-close" type="button" data-close-report-panel aria-label="Close request options">&times;</button>
+      </div>
+      <div class="choice-options">
+        <a class="choice-option choice-option--primary" href="https://docs.google.com/forms/d/e/1FAIpQLScCk5VbfvuB6KUFfL942nQvkBRkKwdA0lGnppqUD-J_cibEnQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">
+          <strong>Submit request form</strong>
+          <p>Share your business details and we'll follow up with instructions for securely sharing your reports.</p>
+        </a>
+        <a class="choice-option" href="https://cal.com/an-pham-ktqlcd/adc-intro-call" target="_blank" rel="noopener noreferrer">
+          <strong>Book 15-minute intro call</strong>
+          <p>Talk through your locations, POS system, and whether the free report is a fit.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.querySelectorAll('.coming-soon-link').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const toast = document.getElementById('coming-soon-toast');
+        toast.classList.add('visible');
+        window.clearTimeout(window.comingSoonTimer);
+        window.comingSoonTimer = window.setTimeout(() => {
+          toast.classList.remove('visible');
+        }, 1600);
+      });
+    });
+
+    const sourceToggle = document.getElementById('data-source-toggle');
+    const sourcePanel = document.getElementById('data-source-panel');
+    const sourceClose = sourcePanel?.querySelector('.panel-close');
+
+    function setSourcePanel(open) {
+      sourcePanel.hidden = !open;
+      sourceToggle.setAttribute('aria-expanded', String(open));
+    }
+
+    sourceToggle?.addEventListener('click', () => {
+      setSourcePanel(sourcePanel.hidden);
+    });
+
+    sourceClose?.addEventListener('click', () => {
+      setSourcePanel(false);
+      sourceToggle.focus();
+    });
+
+    const reportModal = document.getElementById('report-request-modal');
+    const reportToggles = document.querySelectorAll('.report-request-toggle');
+    const reportClosers = document.querySelectorAll('[data-close-report-panel]');
+
+    function setReportPanel(open) {
+      reportModal.hidden = !open;
+      reportToggles.forEach((toggle) => {
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+    }
+
+    reportToggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => setReportPanel(true));
+    });
+
+    reportClosers.forEach((closer) => {
+      closer.addEventListener('click', () => setReportPanel(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setReportPanel(false);
+    });
+  </script>
+</body>
+</html>

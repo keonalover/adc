@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADC Cafe &amp; Food Operations Report</title>
+
+  <!--
+  =============================================================
+  ADC OPERATIONS REPORT — CODEX IMPLEMENTATION NOTES
+  =============================================================
+
+  PURPOSE:
+    Weekly F&B operations report covering 6 pain-point categories:
+    Labor, Inventory Counts, Supplier Invoices, Waste & Spoilage,
+    Refunds & Voids, and Vendor Prices.
+
+  HOW TO INTEGRATE:
+    1. Replace all static strings (names, numbers, dates) with
+       dynamic data from your API or database.
+    2. The flag status badges (Action needed / Review / Monitor / Normal)
+       should be driven by threshold logic in your backend.
+    3. Dot colors (red / amber / green) map to severity — wire these
+       to your data conditions.
+    4. Currency values use USD. Format all numbers with toLocaleString()
+       or equivalent.
+    5. "All locations" dropdown and date range are UI placeholders —
+       connect to your location/date filter logic.
+
+  STRUCTURE:
+    - .report-wrap           → outer container
+    - .summary-grid          → 3 top-level KPI metric cards
+    - .section-card          → one per category (6 total)
+    - .row-item              → individual data row within a section
+    - .flag                  → status badge (red / amber / green)
+    - .dot                   → severity indicator dot per row
+
+  THEMING:
+    Colors are hardcoded for light mode. If your app supports dark mode,
+    replace hardcoded hex values with CSS custom properties from your
+    design system (e.g. --color-danger, --color-warning, --color-success).
+
+  =============================================================
+  -->
+
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      background: #f5f4f0;
+      color: #1a1a18;
+      padding: 2rem 1rem;
+    }
+
+    /* ── Page wrapper ── */
+    .report-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* ── Report header ── */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .report-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1a1a18;
+      margin-bottom: 4px;
+    }
+    .report-sub {
+      font-size: 13px;
+      color: #6b6b66;
+    }
+
+    /* ── Section label (uppercase eyebrow) ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #6b6b66;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* ── Grids ── */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 560px) {
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Metric cards (summary KPIs) ── */
+    .metric-card {
+      background: #eeede8;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .metric-label {
+      font-size: 12px;
+      color: #6b6b66;
+      margin-bottom: 4px;
+    }
+    .metric-value {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .metric-sub {
+      font-size: 12px;
+      color: #6b6b66;
+    }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: #ffffff;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+    }
+    .section-card:last-child { margin-bottom: 0; }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a18;
+    }
+
+    /* ── Data rows ── */
+    .row-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-top: 0.5px solid rgba(0,0,0,0.08);
+      font-size: 13px;
+    }
+    .row-label {
+      color: #6b6b66;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .row-value {
+      font-weight: 500;
+      color: #1a1a18;
+    }
+
+    /* ── Status flags / badges ── */
+    .badge, .flag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    /* Statuses — swap class per section based on backend threshold */
+    .flag-red    { background: #FCEBEB; color: #A32D2D; }
+    .flag-amber  { background: #FAEEDA; color: #854F0B; }
+    .flag-green  { background: #EAF3DE; color: #3B6D11; }
+
+    /* ── Severity dot ── */
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .dot-red    { background: #E24B4A; }
+    .dot-amber  { background: #EF9F27; }
+    .dot-green  { background: #639922; }
+
+    /* ── Text color utilities ── */
+    .c-danger { color: #A32D2D; }
+    .c-warn   { color: #854F0B; }
+    .c-ok     { color: #3B6D11; }
+  </style>
+</head>
+<body>
+
+<div class="report-wrap">
+
+  <!-- ══════════════════════════════════════
+       HEADER
+       Replace: date range, location name,
+       and attention count dynamically.
+  ══════════════════════════════════════ -->
+  <div class="report-header">
+    <div>
+      <p class="report-title">Cafe &amp; food operations report</p>
+      <!-- DATA: date range + location filter -->
+      <p class="report-sub">Week of Apr 28 - May 4 · Cafe and kitchen locations</p>
+    </div>
+    <!-- DATA: count of flagged sections with status "Action needed" or "Review" -->
+    <span class="badge flag-amber">4 items need attention</span>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       SUMMARY — 3 TOP-LINE KPIs
+       Wire each value to your API.
+       Swap color class based on threshold:
+         c-danger = above critical threshold
+         c-warn   = above warning threshold
+         (no class) = within normal range
+  ══════════════════════════════════════ -->
+  <p class="section-label">Summary</p>
+  <div class="grid-3">
+
+    <div class="metric-card">
+      <p class="metric-label">Cafe + kitchen labor flags</p>
+      <!-- DATA: count of labor violations this week -->
+      <p class="metric-value c-danger">7</p>
+      <!-- DATA: vs prior week count -->
+      <p class="metric-sub">barista and line shifts</p>
+    </div>
+
+    <div class="metric-card">
+      <p class="metric-label">Supplier invoice gaps</p>
+      <!-- DATA: total dollar value of invoice mismatches -->
+      <p class="metric-value c-warn">$1,840</p>
+      <!-- DATA: number of flagged suppliers -->
+      <p class="metric-sub">dairy, produce, broadline</p>
+    </div>
+
+    <div class="metric-card">
+      <p class="metric-label">Cafe + food waste</p>
+      <!-- DATA: waste % this week -->
+      <p class="metric-value c-warn">8.4%</p>
+      <p class="metric-sub">pastry, prep, cold brew</p>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 1 — LABOR
+       Flags: unauthorized OT, missed meal breaks,
+       early clock-ins. Ties to labor law compliance.
+       Flag status = "Action needed" if any violations exist.
+  ══════════════════════════════════════ -->
+  <div class="section-card">
+    <div class="section-header">
+      <p class="section-title">Labor</p>
+      <!-- DATA: derive from violation count -->
+      <span class="flag flag-red">Action needed</span>
+    </div>
+
+    <div class="row-item">
+      <!-- DATA: OT instance count + estimated dollar exposure -->
+      <span class="row-label"><span class="dot dot-red"></span>Unauthorized overtime</span>
+      <span class="row-value">3 barista / 2 kitchen instances · $920 total</span>
+    </div>
+    <div class="row-item">
+      <!-- DATA: employee count + location name -->
+      <span class="row-label"><span class="dot dot-red"></span>Missed meal breaks</span>
+      <span class="row-value">2 employees · Store B cafe + kitchen</span>
+    </div>
+    <div class="row-item">
+      <!-- DATA: count of early clock-in events -->
+      <span class="row-label"><span class="dot dot-amber"></span>Early clock-ins</span>
+      <span class="row-value">11 occurrences before rush prep</span>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       SECTIONS 2 & 3 — INVENTORY + INVOICES
+       Side by side on desktop, stacked on mobile.
+  ══════════════════════════════════════ -->
+  <div class="grid-2">
+
+    <!-- INVENTORY COUNTS -->
+    <div class="section-card" style="margin-bottom: 0;">
+      <div class="section-header">
+        <p class="section-title">Inventory counts</p>
+        <!-- DATA: flag-amber if missing/inconsistent counts exist -->
+        <span class="flag flag-amber">Review</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: number of locations with missing counts -->
+        <span class="row-label">Missing counts</span>
+        <span class="row-value">Stores B and C</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: count of SKUs that have dropped below their set minimum stock level -->
+        <span class="row-label">Items below par</span>
+        <span class="row-value">espresso beans, chicken prep</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: next purchase order date -->
+        <span class="row-label">Next PO scheduled</span>
+        <span class="row-value">May 6 dairy + dry goods</span>
+      </div>
+    </div>
+
+    <!-- SUPPLIER INVOICES -->
+    <div class="section-card" style="margin-bottom: 0;">
+      <div class="section-header">
+        <p class="section-title">Supplier invoices</p>
+        <span class="flag flag-amber">Review</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: units paid vs units received -->
+        <span class="row-label">Paid vs received gap</span>
+        <span class="row-value">8 dairy cases billed as 10</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: supplier names with discrepancies -->
+        <span class="row-label">Flagged suppliers</span>
+        <span class="row-value">Dairy Direct, US Foods</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: total dollar value of discrepancies -->
+        <span class="row-label">Total exposure</span>
+        <span class="row-value c-warn">$1,840</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       SECTIONS 4 & 5 — WASTE + REFUNDS
+  ══════════════════════════════════════ -->
+  <div class="grid-2">
+
+    <!-- WASTE & SPOILAGE -->
+    <div class="section-card" style="margin-bottom: 0;">
+      <div class="section-header">
+        <p class="section-title">Waste & spoilage</p>
+        <span class="flag flag-amber">Monitor</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: location name + waste % -->
+        <span class="row-label">Over-prep waste</span>
+        <span class="row-value">Store C · pastry and sandwich station 5.2%</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: count of expired SKUs logged -->
+        <span class="row-label">Expired product</span>
+        <span class="row-value">croissants, cut fruit, prepped chicken</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: estimated dollar value of waste entries logged with no reason attached -->
+        <span class="row-label">Estimated cost</span>
+        <span class="row-value c-danger">$340</span>
+      </div>
+    </div>
+
+    <!-- REFUNDS & VOIDS -->
+    <div class="section-card" style="margin-bottom: 0;">
+      <div class="section-header">
+        <p class="section-title">Refunds & voids</p>
+        <!-- DATA: flag-green if within normal range -->
+        <span class="flag flag-green">Normal</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: total refund dollar amount -->
+        <span class="row-label">Total refunds</span>
+        <span class="row-value">$740 from remakes and order issues</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: location with anomalous discount frequency + multiplier vs avg -->
+        <span class="row-label">Repeat discounts · Store B evening rush</span>
+        <span class="row-value c-warn">up 3x avg</span>
+      </div>
+      <div class="row-item">
+        <!-- DATA: count of voids without manager authorization -->
+        <span class="row-label">Unauthorized voids</span>
+        <span class="row-value c-ok">0</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 6 — VENDOR PRICES
+       Tracks month-over-month price drift per supplier.
+       Dot color: red = >3%, amber = 1–3%, green = stable.
+       Cumulative drift = sum of price increases over 90 days
+       applied to your order volume.
+  ══════════════════════════════════════ -->
+  <div class="section-card">
+    <div class="section-header">
+      <p class="section-title">Vendor prices</p>
+      <span class="flag flag-amber">Monitor</span>
+    </div>
+
+    <div class="row-item">
+      <!-- DATA: item name + supplier + MoM % change -->
+      <span class="row-label"><span class="dot dot-red"></span>Espresso beans · roaster</span>
+      <span class="row-value">+4.8% vs last month</span>
+    </div>
+    <div class="row-item">
+      <span class="row-label"><span class="dot dot-amber"></span>Oat milk · dairy supplier</span>
+      <span class="row-value">+2.3% vs last month</span>
+    </div>
+    <div class="row-item">
+      <span class="row-label"><span class="dot dot-amber"></span>Chicken breast · US Foods</span>
+      <span class="row-value">+1.6% vs last month</span>
+    </div>
+    <div class="row-item">
+      <span class="row-label"><span class="dot dot-green"></span>Pastry flour and produce · Gordon Food Service</span>
+      <span class="row-value">Stable</span>
+    </div>
+    <div class="row-item">
+      <!-- DATA: estimated total dollar impact of price creep over 90 days -->
+      <span class="row-label">Cumulative drift (90 days)</span>
+      <span class="row-value c-warn">+$4,200 est.</span>
+    </div>
+
+  </div>
+
+</div><!-- /.report-wrap -->
+
+</body>
+</html>

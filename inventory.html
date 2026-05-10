@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADC Platform - Inventory Count</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <style>
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .summary-grid .kpi-value {
+      font-size: 24px;
+      overflow-wrap: anywhere;
+    }
+
+    .inventory-form,
+    .inventory-table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: #fffaf5;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 13px;
+      padding: 10px 11px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.12);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 38px;
+      resize: vertical;
+    }
+
+    .table-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .top-action-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .inventory-table {
+      min-width: 980px;
+    }
+
+    .inventory-table th,
+    .inventory-table td {
+      padding-right: 12px;
+    }
+
+    .inventory-table input,
+    .inventory-table select,
+    .inventory-table textarea {
+      min-width: 96px;
+    }
+
+    .inventory-table .item-name-input {
+      min-width: 180px;
+    }
+
+    .inventory-table .category-input {
+      min-width: 150px;
+    }
+
+    .inventory-table .notes-input {
+      min-width: 190px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 80px;
+    }
+
+    .delete-select-col {
+      display: none;
+      padding-right: 4px;
+      width: 24px;
+    }
+
+    .delete-mode .delete-select-col {
+      display: table-cell;
+    }
+
+    .delete-mode .inventory-row.selected-for-delete {
+      background: #FDF4F4;
+    }
+
+    .delete-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      align-items: center;
+      background: var(--surface);
+      border: 1.5px solid #C47A7A;
+      border-radius: 4px;
+      color: var(--danger);
+      cursor: pointer;
+      display: inline-flex;
+      font-family: var(--sans);
+      font-size: 9px;
+      font-weight: 700;
+      justify-content: center;
+      min-width: 12px;
+      width: 12px;
+      height: 12px;
+    }
+
+    .inventory-table .delete-checkbox {
+      min-width: 12px;
+      width: 12px;
+    }
+
+    .delete-checkbox:checked {
+      background: #FDF4F4;
+      border-color: var(--danger);
+    }
+
+    .delete-checkbox:checked::after {
+      content: "X";
+      line-height: 1;
+    }
+
+    .action-btn.danger {
+      border-color: #C47A7A;
+      color: var(--danger);
+    }
+
+    .action-btn.danger:hover {
+      background: #FDF4F4;
+      border-color: var(--danger);
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .action-btn {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--subtle);
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 11px 16px;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      border-color: var(--accent-warm);
+      color: var(--accent);
+    }
+
+    .action-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .action-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--surface);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--accent-warm);
+      color: var(--surface);
+    }
+
+    .success-message {
+      display: none;
+      border: 1px solid #9CB889;
+      border-radius: var(--radius);
+      background: #EEF6EA;
+      color: var(--success);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 14px;
+    }
+
+    .success-message.visible {
+      display: block;
+    }
+
+    .submit-warning {
+      display: none;
+      border: 1px solid #D8A25D;
+      border-radius: var(--radius);
+      background: #FAEBD7;
+      color: #8A5A17;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 16px;
+      padding: 12px 14px;
+    }
+
+    .submit-warning.visible {
+      display: block;
+    }
+
+    @media (max-width: 920px) {
+      .summary-grid,
+      .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 620px) {
+      header {
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px 20px;
+      }
+
+      .header-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .header-nav a {
+        margin-left: 0;
+      }
+
+      main {
+        padding: 28px 16px 48px;
+      }
+
+      .summary-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table-actions,
+      .button-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .top-action-row {
+        justify-content: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="ADC CONSULTING TRANSPARENT LOGO WIDE.png" alt="ADC" class="logo-mark" />
+    </div>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="upload.html">Upload</a>
+        <a href="inventory.html" class="active">Inventory</a>
+        <a href="red-flags.html">Red Flags</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="page-title-block">
+        <h1 class="page-title">Inventory <span>Count</span></h1>
+        <p class="page-subtitle">Track counts, par levels, and accountability for restaurant operations.</p>
+      </div>
+    </div>
+
+    <section class="summary-grid" aria-label="Inventory count summary">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Items</div>
+        <div class="kpi-value" id="summary-total">0</div>
+        <div class="kpi-sub">Items on this count</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Items Below Par</div>
+        <div class="kpi-value" id="summary-below">0</div>
+        <div class="kpi-sub">Need review or order</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Count Date</div>
+        <div class="kpi-value" id="summary-date">-</div>
+        <div class="kpi-sub">Selected count date</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Location</div>
+        <div class="kpi-value" id="summary-location">Westminster</div>
+        <div class="kpi-sub">Restaurant location</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Counted By</div>
+        <div class="kpi-value" id="summary-counted-by">-</div>
+        <div class="kpi-sub">Audit trail owner</div>
+      </div>
+    </section>
+
+    <section class="inventory-form" aria-labelledby="count-form-title">
+      <div class="chart-header">
+        <h2 class="chart-title" id="count-form-title">Count Details</h2>
+        <div class="chart-meta">MVP local entry</div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="location">Location</label>
+          <select id="location">
+            <option value="Westminster">Westminster</option>
+            <option value="Garden Grove">Garden Grove</option>
+            <option value="Fountain Valley">Fountain Valley</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="count-date">Count Date</label>
+          <input type="date" id="count-date" />
+        </div>
+        <div class="field">
+          <label for="count-type">Count Type</label>
+          <select id="count-type">
+            <option>Daily Count</option>
+            <option>Weekly Count</option>
+            <option>Monthly Count</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="counted-by">Counted By / Employee Name</label>
+          <input type="text" id="counted-by" placeholder="Employee name" />
+        </div>
+      </div>
+    </section>
+
+    <section class="inventory-table-card" id="inventory-card" aria-labelledby="items-title">
+      <div class="table-actions">
+        <div>
+          <h2 class="items-title" id="items-title">Inventory Items</h2>
+          <p class="page-subtitle" id="items-helper">Edit current counts directly in the table.</p>
+        </div>
+        <div class="top-action-row">
+          <button class="action-btn" id="add-item-btn" type="button">Add Item</button>
+          <button class="action-btn danger" id="delete-mode-btn" type="button">Delete Item</button>
+        </div>
+      </div>
+
+      <div class="success-message" id="success-message">Inventory count saved locally.</div>
+
+      <div class="table-wrap">
+        <table class="simple-table inventory-table">
+          <thead>
+            <tr>
+              <th class="delete-select-col">Delete</th>
+              <th>Item Name</th>
+              <th>Category</th>
+              <th>Count Unit</th>
+              <th class="right">Par Level</th>
+              <th class="right">Current Count</th>
+              <th>Notes</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-body"></tbody>
+        </table>
+      </div>
+
+      <div class="submit-warning" id="submit-warning">
+        Counts can only be submitted for today's date. Please select today's date to submit.
+      </div>
+
+      <div class="button-row">
+        <button class="action-btn" id="clear-form-btn" type="button">Clear Form</button>
+        <button class="action-btn primary" id="save-count-btn" type="button">Submit Count</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-text">adc-platform v0.1</span>
+    <span class="footer-text" id="footer-status">ready</span>
+  </footer>
+
+  <script>
+    const countUnits = [
+      'can', 'jug', 'carton', 'box', 'bag', 'bottle', 'case', 'sleeve',
+      'pack', 'each', 'lb', 'kg', 'gallon', 'liter', 'tray', 'roll'
+    ];
+
+    const dailyInventoryItems = [
+      { item_name: 'Condensed Milk', category: 'Dairy / Dry Goods', count_unit: 'can', par_level: 24, current_count: '', notes: '' },
+      { item_name: 'Vietnamese Coffee Beans', category: 'Dry Goods', count_unit: 'bag', par_level: 8, current_count: '', notes: '' },
+      { item_name: '24oz Cups', category: 'Packaging', count_unit: 'sleeve', par_level: 20, current_count: '', notes: '' },
+      { item_name: 'Lids', category: 'Packaging', count_unit: 'sleeve', par_level: 20, current_count: '', notes: '' },
+      { item_name: 'Whole Milk', category: 'Dairy', count_unit: 'carton', par_level: 12, current_count: '', notes: '' },
+      { item_name: 'Matcha Powder', category: 'Dry Goods', count_unit: 'bag', par_level: 5, current_count: '', notes: '' },
+      { item_name: 'Straws', category: 'Packaging', count_unit: 'box', par_level: 6, current_count: '', notes: '' },
+      { item_name: 'Ice Cream Base', category: 'Dairy', count_unit: 'jug', par_level: 10, current_count: '', notes: '' }
+    ];
+
+    const weeklyInventoryItems = [
+      { item_name: '24oz Cups', category: 'Packaging', count_unit: 'sleeve', par_level: 20, current_count: '', notes: '' },
+      { item_name: 'Lids', category: 'Packaging', count_unit: 'sleeve', par_level: 20, current_count: '', notes: '' },
+      { item_name: 'Straws', category: 'Packaging', count_unit: 'box', par_level: 6, current_count: '', notes: '' },
+      { item_name: 'Napkins', category: 'Packaging', count_unit: 'case', par_level: 3, current_count: '', notes: '' },
+      { item_name: 'Receipt Paper', category: 'Supplies', count_unit: 'roll', par_level: 12, current_count: '', notes: '' }
+    ];
+
+    const monthlyInventoryItems = [
+      { item_name: 'Vietnamese Coffee Beans', category: 'Dry Goods', count_unit: 'bag', par_level: 20, current_count: '', notes: '' },
+      { item_name: 'Matcha Powder', category: 'Dry Goods', count_unit: 'bag', par_level: 12, current_count: '', notes: '' },
+      { item_name: 'Condensed Milk', category: 'Dairy / Dry Goods', count_unit: 'case', par_level: 5, current_count: '', notes: '' },
+      { item_name: 'Cleaning Towels', category: 'Supplies', count_unit: 'pack', par_level: 4, current_count: '', notes: '' },
+      { item_name: 'Sanitizer', category: 'Supplies', count_unit: 'gallon', par_level: 3, current_count: '', notes: '' }
+    ];
+
+    const inventoryItemsByCountType = {
+      'Daily Count': dailyInventoryItems,
+      'Weekly Count': weeklyInventoryItems,
+      'Monthly Count': monthlyInventoryItems
+    };
+
+    const bodyEl = document.getElementById('inventory-body');
+    const inventoryCardEl = document.getElementById('inventory-card');
+    const locationEl = document.getElementById('location');
+    const countDateEl = document.getElementById('count-date');
+    const countTypeEl = document.getElementById('count-type');
+    const countedByEl = document.getElementById('counted-by');
+    const successEl = document.getElementById('success-message');
+    const itemsHelperEl = document.getElementById('items-helper');
+    const addItemBtn = document.getElementById('add-item-btn');
+    const deleteModeBtn = document.getElementById('delete-mode-btn');
+    const clearFormBtn = document.getElementById('clear-form-btn');
+    const saveCountBtn = document.getElementById('save-count-btn');
+    const submitWarningEl = document.getElementById('submit-warning');
+
+    let isDeleteMode = false;
+    let activeCountType = 'Daily Count';
+
+    function localTodayDateString() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function isSelectedDateToday() {
+      return countDateEl.value === localTodayDateString();
+    }
+
+    function updateSubmitDateState() {
+      if (isDeleteMode) {
+        submitWarningEl.classList.remove('visible');
+        return;
+      }
+
+      const canSubmit = isSelectedDateToday();
+      saveCountBtn.disabled = !canSubmit;
+      submitWarningEl.classList.toggle('visible', !canSubmit);
+    }
+
+    function unitOptions(selectedUnit) {
+      return countUnits.map((unit) => {
+        const selected = unit === selectedUnit ? 'selected' : '';
+        return `<option value="${unit}" ${selected}>${unit}</option>`;
+      }).join('');
+    }
+
+    function getStatus(parLevel, currentCount) {
+      const par = Number(parLevel) || 0;
+      const current = Number(currentCount) || 0;
+      return current < par ? 'Below Par' : 'OK';
+    }
+
+    function renderRow(item = {}) {
+      const tr = document.createElement('tr');
+      tr.className = 'inventory-row';
+      const status = getStatus(item.par_level, item.current_count);
+
+      tr.innerHTML = `
+        <td class="delete-select-col"><input class="delete-checkbox" type="checkbox" aria-label="Select item to delete" /></td>
+        <td><input class="item-name-input" data-field="item_name" type="text" value="${item.item_name || ''}" /></td>
+        <td><input class="category-input" data-field="category" type="text" value="${item.category || ''}" /></td>
+        <td><select data-field="count_unit">${unitOptions(item.count_unit || 'each')}</select></td>
+        <td><input data-field="par_level" type="number" min="0" step="0.01" value="${item.par_level ?? 0}" /></td>
+        <td><input data-field="current_count" type="number" min="0" step="1" value="${item.current_count ?? ''}" /></td>
+        <td><textarea class="notes-input" data-field="notes">${item.notes || ''}</textarea></td>
+        <td><span class="status-pill ${status === 'Below Par' ? 'warn' : 'good'}" data-field="status">${status}</span></td>
+      `;
+
+      tr.addEventListener('input', () => {
+        updateRowStatus(tr);
+        updateSummary();
+        hideSuccess();
+      });
+      tr.addEventListener('change', () => {
+        updateRowStatus(tr);
+        updateSummary();
+        hideSuccess();
+      });
+      tr.querySelector('.delete-checkbox').addEventListener('change', (event) => {
+        tr.classList.toggle('selected-for-delete', event.target.checked);
+        updateDeleteControls();
+      });
+      bodyEl.appendChild(tr);
+    }
+
+    function renderTable(items) {
+      bodyEl.innerHTML = '';
+      items.forEach(renderRow);
+      updateSummary();
+    }
+
+    function syncActiveItems() {
+      inventoryItemsByCountType[activeCountType] = readItems();
+    }
+
+    function switchCountType(nextCountType) {
+      if (isDeleteMode) {
+        exitDeleteMode();
+      }
+      syncActiveItems();
+      activeCountType = nextCountType;
+      renderTable(inventoryItemsByCountType[activeCountType] || []);
+      hideSuccess();
+    }
+
+    function updateRowStatus(row) {
+      const par = row.querySelector('[data-field="par_level"]').value;
+      const current = row.querySelector('[data-field="current_count"]').value;
+      const status = getStatus(par, current);
+      const statusEl = row.querySelector('[data-field="status"]');
+      statusEl.textContent = status;
+      statusEl.className = `status-pill ${status === 'Below Par' ? 'warn' : 'good'}`;
+    }
+
+    function readItems() {
+      return [...bodyEl.querySelectorAll('tr')].map((row) => {
+        const item = {};
+        row.querySelectorAll('[data-field]').forEach((field) => {
+          const key = field.dataset.field;
+          if (key === 'status') {
+            item[key] = field.textContent.trim();
+          } else if (key === 'par_level' || key === 'current_count') {
+            item[key] = Number(field.value) || 0;
+          } else {
+            item[key] = field.value.trim();
+          }
+        });
+        return item;
+      });
+    }
+
+    function updateSummary() {
+      const items = readItems();
+      const belowPar = items.filter((item) => item.status === 'Below Par').length;
+
+      document.getElementById('summary-total').textContent = items.length;
+      document.getElementById('summary-below').textContent = belowPar;
+      document.getElementById('summary-date').textContent = countDateEl.value || '-';
+      document.getElementById('summary-location').textContent = locationEl.value || '-';
+      document.getElementById('summary-counted-by').textContent = countedByEl.value.trim() || '-';
+    }
+
+    function hideSuccess() {
+      successEl.classList.remove('visible');
+      document.getElementById('footer-status').textContent = 'ready';
+    }
+
+    function clearForm() {
+      bodyEl.querySelectorAll('[data-field="current_count"], [data-field="notes"]').forEach((field) => {
+        field.value = '';
+      });
+      bodyEl.querySelectorAll('tr').forEach(updateRowStatus);
+      syncActiveItems();
+      updateSummary();
+      hideSuccess();
+    }
+
+    function enterDeleteMode() {
+      isDeleteMode = true;
+      inventoryCardEl.classList.add('delete-mode');
+      addItemBtn.disabled = true;
+      deleteModeBtn.disabled = true;
+      clearFormBtn.textContent = 'Cancel';
+      saveCountBtn.textContent = 'Save';
+      saveCountBtn.disabled = true;
+      itemsHelperEl.textContent = 'Select items to delete, then save or cancel.';
+      hideSuccess();
+    }
+
+    function exitDeleteMode() {
+      isDeleteMode = false;
+      inventoryCardEl.classList.remove('delete-mode');
+      addItemBtn.disabled = false;
+      deleteModeBtn.disabled = false;
+      clearFormBtn.textContent = 'Clear Form';
+      saveCountBtn.textContent = 'Submit Count';
+      saveCountBtn.disabled = false;
+      itemsHelperEl.textContent = 'Edit current counts directly in the table.';
+      bodyEl.querySelectorAll('.delete-checkbox').forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+      bodyEl.querySelectorAll('.inventory-row').forEach((row) => {
+        row.classList.remove('selected-for-delete');
+      });
+      updateSubmitDateState();
+    }
+
+    function updateDeleteControls() {
+      const selectedRows = bodyEl.querySelectorAll('.delete-checkbox:checked');
+      saveCountBtn.disabled = selectedRows.length === 0;
+    }
+
+    function saveDeleteItems() {
+      bodyEl.querySelectorAll('.delete-checkbox:checked').forEach((checkbox) => {
+        checkbox.closest('tr').remove();
+      });
+      exitDeleteMode();
+      syncActiveItems();
+      updateSummary();
+      hideSuccess();
+    }
+
+    function saveCount() {
+      if (!isSelectedDateToday()) {
+        updateSubmitDateState();
+        return;
+      }
+
+      const inventoryCount = {
+        location: locationEl.value,
+        count_date: countDateEl.value,
+        count_type: countTypeEl.value,
+        counted_by: countedByEl.value.trim(),
+        items: readItems()
+      };
+
+      const savedCounts = JSON.parse(localStorage.getItem('adc_inventory_counts') || '[]');
+      savedCounts.push(inventoryCount);
+      localStorage.setItem('adc_inventory_counts', JSON.stringify(savedCounts));
+
+      successEl.classList.add('visible');
+      document.getElementById('footer-status').textContent = 'saved locally';
+      updateSummary();
+      updateSubmitDateState();
+    }
+
+    addItemBtn.addEventListener('click', () => {
+      renderRow({ count_unit: 'each', par_level: 0, current_count: '', notes: '' });
+      syncActiveItems();
+      updateSummary();
+      hideSuccess();
+    });
+    deleteModeBtn.addEventListener('click', enterDeleteMode);
+
+    clearFormBtn.addEventListener('click', () => {
+      if (isDeleteMode) {
+        exitDeleteMode();
+      } else {
+        clearForm();
+      }
+    });
+    saveCountBtn.addEventListener('click', () => {
+      if (isDeleteMode) {
+        saveDeleteItems();
+      } else {
+        saveCount();
+      }
+    });
+    [locationEl, countDateEl, countedByEl].forEach((field) => {
+      field.addEventListener('input', () => {
+        updateSummary();
+        updateSubmitDateState();
+        hideSuccess();
+      });
+      field.addEventListener('change', () => {
+        updateSummary();
+        updateSubmitDateState();
+        hideSuccess();
+      });
+    });
+    countTypeEl.addEventListener('change', () => {
+      switchCountType(countTypeEl.value);
+    });
+
+    document.addEventListener('submit', (event) => {
+      if (!isSelectedDateToday()) {
+        event.preventDefault();
+        updateSubmitDateState();
+      }
+    });
+
+    countDateEl.value = localTodayDateString();
+    countTypeEl.value = activeCountType;
+    renderTable(inventoryItemsByCountType[activeCountType]);
+    updateSubmitDateState();
+  </script>
+</body>
+</html>
