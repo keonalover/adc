@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ADC Consulting outreach toolkit for independent multi-location F&B operators. Deployed on Netlify at `https://adc-consulting.netlify.app/` as a static site — no `netlify.toml`, `_redirects`, `package.json`, or build command. Netlify deploy settings are configured in the Netlify dashboard.
 
+**Deployment:** Netlify auto-deploys from the main branch of https://github.com/keonalover/adc. Push to main = live.
+
 Five areas:
 - **`index.html`** — Public marketing/landing page
 - **`index-packages.html`** — Alternate landing page variant (slightly different color tokens, synchronous font loading)
