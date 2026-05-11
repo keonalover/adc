@@ -53,6 +53,7 @@
     ];
 
     let leads = [];
+    let loadInFlight = null;
     let leadsChannel = null;
     let aiDraftsChannel = null;
     let activeView = "pipeline";
@@ -368,24 +369,38 @@
     }
 
     async function loadFromCloud(skipMigration = false) {
+      if (loadInFlight) return loadInFlight;
+      loadInFlight = (async () => {
+        try {
+          return await loadFromCloudBody(skipMigration);
+        } finally {
+          loadInFlight = null;
+        }
+      })();
+      return loadInFlight;
+    }
+
+    async function loadFromCloudBody(skipMigration = false) {
       if (!currentUser) {
         leads = [];
         aiDrafts.clear();
         render();
         return;
       }
-      const { data: leadRowsData, error: leadError } = await sbCrm
-        .from("leads")
-        .select("id,data,updated_at")
-        .eq("user_id", currentUser.id);
+      const { data: leadRowsData, error: leadError } = await withTimeout(
+        sbCrm.from("leads").select("id,data,updated_at").eq("user_id", currentUser.id),
+        10000,
+        "leads query"
+      );
       if (leadError) throw leadError;
       leads = (leadRowsData || []).map((row) => normalizeLead({ id: row.id, ...(row.data || {}) }));
       dedupeLeadIds(leads);
 
-      const { data: draftRows, error: draftError } = await sbCrm
-        .from("ai_drafts")
-        .select("lead_id,text,is_template,generated_at")
-        .eq("user_id", currentUser.id);
+      const { data: draftRows, error: draftError } = await withTimeout(
+        sbCrm.from("ai_drafts").select("lead_id,text,is_template,generated_at").eq("user_id", currentUser.id),
+        10000,
+        "ai_drafts query"
+      );
       if (draftError) throw draftError;
       aiDrafts.clear();
       (draftRows || []).forEach((row) => {
@@ -427,7 +442,7 @@
           localStorage.setItem("adc-cloud-migrated-drafts", JSON.stringify([...migratedDraftIds]));
         }
         localStorage.setItem("adc-cloud-migrated", "1");
-        await loadFromCloud(true);
+        await loadFromCloudBody(true);
         render();
       } catch {
         // Leave migration flags incomplete so the next signed-in boot can retry.
@@ -1294,6 +1309,13 @@
 
     function wait(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
+    function withTimeout(promise, ms, label) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms))
+      ]);
+    }
+
     async function checkRepliesAndBounces() {
       const active = leads.filter((l) => !isStopped(l) && isValidEmail(l.email) && l.lastSentAt);
       if (!active.length) return 0;
@@ -1593,30 +1615,47 @@
       fillStageSelects();
       restoreCachedAuthUI();
       sbCrm.auth.onAuthStateChange(async (event, session) => {
+        console.log('[auth]', event, session?.user?.email || '(no session)');
         const wasSignedIn = Boolean(currentUser);
-        applyAuthSession(session, event);
-        console.log("[auth]", event, currentUser?.email || "(no user)");
-        updateAuthUI();
-        if (currentUser) {
-          try {
-            await loadFromCloud();
-            subscribeRealtime();
-            closeSignInModal();
-            if (event === "SIGNED_IN" && !wasSignedIn) {
-              showToast(`Signed in as ${currentUser.email}`);
-            }
-          } catch (error) {
-            console.error("[auth] load error", error);
-            showToast(error.message || "Could not load cloud CRM");
-          }
-        } else {
+
+        // Only treat an explicit SIGNED_OUT as actually signed out.
+        // TOKEN_REFRESHED / INITIAL_SESSION / USER_UPDATED with a null session
+        // can be transient and should NOT wipe local data.
+        if (event === 'SIGNED_OUT') {
+          currentUser = null;
           unsubscribeRealtime();
           leads = [];
           aiDrafts.clear();
-          if (event === "SIGNED_OUT" && wasSignedIn) showToast("Signed out");
+          if (wasSignedIn) showToast('Signed out');
+          updateAuthUI();
+          render();
+          return;
         }
-        updateAuthUI();
-        render();
+
+        // If we get a session, hydrate. Otherwise leave existing state intact.
+        if (session?.user) {
+          const userChanged = currentUser?.id !== session.user.id;
+          currentUser = session.user;
+          if (userChanged || (!leads.length && !loadInFlight)) {
+            try {
+              await loadFromCloud();
+              subscribeRealtime();
+              closeSignInModal();
+              if (event === 'SIGNED_IN' && !wasSignedIn) {
+                showToast(`Signed in as ${currentUser.email}`);
+              }
+            } catch (error) {
+              console.error('[auth] load error', error);
+              showToast(error.message || 'Could not load cloud CRM');
+            }
+          }
+          updateAuthUI();
+          render();
+          return;
+        }
+
+        // Event with no session but NOT SIGNED_OUT - log and leave state alone.
+        console.warn('[auth] non-SIGNED_OUT event with null session, ignoring:', event);
       });
       if (typeof window !== 'undefined' && window.location.hash.includes('error_code=')) {
         const params = new URLSearchParams(window.location.hash.slice(1));
@@ -1633,11 +1672,13 @@
       applyAuthSession(bootSession, "BOOT_SESSION");
       console.log('[boot] resolved user:', currentUser?.email || currentUser?.id || 'none');
       updateAuthUI();
+      render();
       if (currentUser) {
         try {
           await loadFromCloud();
           subscribeRealtime();
         } catch (error) {
+          console.error("[boot] load failed", error);
           showToast(error.message || "Could not load cloud CRM");
         }
       }
