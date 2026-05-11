@@ -18,6 +18,13 @@
           <span>Outreach workspace</span>
         </div>
       </div>
+      <div class="auth-panel">
+        <button class="btn settings-btn" id="signInBtn" type="button">Sign In</button>
+        <div id="authedBlock" style="display:none;text-align:center;margin-top:6px;">
+          <p id="helloLabel" style="margin:0 0 8px;color:rgba(255,248,239,.9);font-size:13px;font-weight:600;word-break:break-all;"></p>
+          <button class="btn settings-btn" id="signOutBtn" type="button">Sign Out</button>
+        </div>
+      </div>
       <nav class="nav" aria-label="CRM views">
         <button class="active" data-view="pipeline" type="button">Pipeline</button>
         <button data-view="leads" type="button">Leads</button>
@@ -26,7 +33,7 @@
       </nav>
       <button class="btn settings-btn" id="openSettingsBtn" type="button">Settings</button>
       <div class="sidebar-foot">
-        <p style="margin:0 0 10px;color:rgba(255,248,239,.72);font-size:12px;">Data saves in this browser. Export JSON to back up.</p>
+        <p style="margin:0 0 10px;color:rgba(255,248,239,.72);font-size:12px;">Synced to your account. Export JSON for backup.</p>
         <div id="gmailBar" class="gmail-bar">
           <p id="gmailStatus">Gmail not connected</p>
           <button class="btn" id="gmailConnectBtn" type="button">Connect Gmail</button>
@@ -35,6 +42,7 @@
     </aside>
 
     <main class="main">
+      <div id="authBanner" style="display:none;background:#647F68;color:#FFF8EF;padding:8px 16px;text-align:center;font-size:13px;font-weight:600;">Signed in</div>
       <div class="topbar">
         <div>
           <h1>ADC Outreach CRM</h1>
@@ -155,6 +163,30 @@
       </section>
 
     </main>
+  </div>
+
+  <div class="modal-backdrop" id="signInModal" role="dialog" aria-modal="true" aria-labelledby="signInModalTitle">
+    <div class="modal modal-narrow">
+      <header>
+        <h2 id="signInModalTitle">Sign In</h2>
+        <button class="mini-btn" type="button" id="closeSignInBtn">Close</button>
+      </header>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="signInEmail">Email</label>
+            <input id="signInEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span></span>
+        <div class="actions">
+          <button class="btn" type="button" id="cancelSignInBtn">Cancel</button>
+          <button class="btn primary" type="button" id="sendMagicLinkBtn">Send Magic Link</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
@@ -315,7 +347,8 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="crm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4"></script>
+  <script src="crm.js?v=auth-signout-1"></script>
   <script src="https://accounts.google.com/gsi/client" async onload="initGmailAuth()"></script>
   <script src="https://apis.google.com/js/api.js" async onload="loadGmailClient()"></script>
 </body>

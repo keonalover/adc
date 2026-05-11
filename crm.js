@@ -1,9 +1,23 @@
+    const SUPABASE_URL_CRM = "https://czuyemwqfdunedfufqso.supabase.co";
+    const SUPABASE_ANON_KEY_CRM = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dXllbXdxZmR1bmVkZnVmcXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMDA3MjYsImV4cCI6MjA5MjU3NjcyNn0.RmD13Vp0qAHyKFeONfjnJ4ewVDhYfMSQwy-gi-Aeads";
+    const sbCrm = window.supabase.createClient(SUPABASE_URL_CRM, SUPABASE_ANON_KEY_CRM, {
+      auth: {
+        storage: window.localStorage,
+        storageKey: "sb-crm-auth",
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+    let currentUser = null;
+
     const stages = ["Research", "Contacted", "Engaged", "Report Sent", "Won"];
     const storageKey = "adc-crm-leads-v1";
     const aiDraftStorageKey = "adc-ai-drafts-v1";
     const GMAIL_CLIENT_ID = "384687062869-i82k1653igr34c81v2f8frhkrm7skcg6.apps.googleusercontent.com";
     const GMAIL_SCOPES = "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/userinfo.email";
     const claudeKeyStorageKey = "adc-claude-api-key";
+    const cachedCrmUserKey = "adc-crm-user-v1";
     const todayIso = localDate();
     const sequence = [
       { key: "intro", action: "Send intro email", stage: "Contacted", label: "Touch 0 intro", subject: "Quick red-flag review", due: "now" },
@@ -38,7 +52,9 @@
       }
     ];
 
-    let leads = loadLeads();
+    let leads = [];
+    let leadsChannel = null;
+    let aiDraftsChannel = null;
     let activeView = "pipeline";
     let gmailToken = null;
     let gmailEmail = null;
@@ -64,18 +80,16 @@
     }
 
     function loadAiDrafts() {
-      try {
-        const raw = JSON.parse(localStorage.getItem(aiDraftStorageKey) || "{}");
-        aiDrafts.clear();
-        for (const [k, v] of Object.entries(raw)) aiDrafts.set(k, v);
-      } catch {
-        aiDrafts.clear();
-      }
+      aiDrafts.clear();
     }
 
-    function clearAiDraft(leadId) {
+    async function clearAiDraft(leadId) {
       aiDrafts.delete(leadId);
       saveAiDrafts();
+      if (currentUser) {
+        const { error } = await sbCrm.from("ai_drafts").delete().eq("lead_id", leadId).eq("user_id", currentUser.id);
+        if (error) throw error;
+      }
     }
 
     function uid() {
@@ -97,17 +111,7 @@
     }
 
     function loadLeads() {
-      const saved = localStorage.getItem(storageKey);
-      if (!saved) return starterLeads;
-      try {
-        const parsed = JSON.parse(saved);
-        if (!Array.isArray(parsed)) return starterLeads;
-        const normalized = parsed.map(normalizeLead);
-        if (dedupeLeadIds(normalized)) localStorage.setItem(storageKey, JSON.stringify(normalized));
-        return normalized;
-      } catch {
-        return starterLeads;
-      }
+      return [];
     }
 
     function normalizeLead(raw = {}) {
@@ -180,6 +184,302 @@
 
     function saveLeads() {
       localStorage.setItem(storageKey, JSON.stringify(leads));
+    }
+
+    async function upsertLeadToCloud(lead) {
+      if (!currentUser) return;
+      const updatedAt = new Date().toISOString();
+      const { error } = await sbCrm.from("leads").upsert({
+        id: lead.id,
+        user_id: currentUser.id,
+        data: lead,
+        updated_at: updatedAt
+      });
+      if (error) throw error;
+    }
+
+    async function upsertLeadsToCloud(changedLeads) {
+      if (!currentUser || !changedLeads.length) return;
+      const updatedAt = new Date().toISOString();
+      const rows = changedLeads.map((lead) => ({
+        id: lead.id,
+        user_id: currentUser.id,
+        data: lead,
+        updated_at: updatedAt
+      }));
+      const { error } = await sbCrm.from("leads").upsert(rows);
+      if (error) throw error;
+    }
+
+    async function setAndSaveAiDraft(leadId, value) {
+      const draft = { ...value, generatedAt: value.generatedAt || Date.now() };
+      aiDrafts.set(leadId, draft);
+      saveAiDrafts();
+      if (!currentUser) return;
+      const { error } = await sbCrm.from("ai_drafts").upsert({
+        lead_id: leadId,
+        user_id: currentUser.id,
+        text: draft.text,
+        is_template: Boolean(draft.isTemplate),
+        generated_at: new Date(draft.generatedAt).toISOString()
+      });
+      if (error) throw error;
+    }
+
+    function openSignInModal() {
+      $("signInModal").classList.add("open");
+      $("signInEmail").focus();
+    }
+
+    function closeSignInModal() {
+      $("signInModal").classList.remove("open");
+      $("signInEmail").value = "";
+    }
+
+    async function sendMagicLink() {
+      const email = $("signInEmail").value.trim();
+      if (!isValidEmail(email)) { showToast("Enter a valid email"); return; }
+      const btn = $("sendMagicLinkBtn");
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+      try {
+        const { error } = await sbCrm.auth.signInWithOtp({
+          email,
+          options: { emailRedirectTo: `${window.location.origin}/crm.html` }
+        });
+        if (error) throw error;
+        closeSignInModal();
+        showToast("Magic link sent. Check your email.");
+      } catch (error) {
+        showToast(error.message || "Could not send magic link");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+
+    function getAuthStorageKeys() {
+      const storageKeys = ["sb-crm-auth"];
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("sb-") && key.includes("auth")) storageKeys.push(key);
+      }
+      return [...new Set(storageKeys)];
+    }
+
+    function clearLocalAuthState() {
+      currentUser = null;
+      localStorage.removeItem(cachedCrmUserKey);
+      getAuthStorageKeys().forEach((key) => localStorage.removeItem(key));
+      unsubscribeRealtime();
+      leads = [];
+      aiDrafts.clear();
+      updateAuthUI();
+      render();
+    }
+
+    async function signOut() {
+      clearLocalAuthState();
+      try {
+        const { error } = await sbCrm.auth.signOut();
+        if (error) throw error;
+      } catch (error) {
+        console.warn("[auth] sign out error", error.message || error);
+      }
+      showToast("Signed out");
+    }
+
+    function applyAuthSession(session, event = "") {
+      const user = session?.user || null;
+      if (user) {
+        currentUser = user;
+        localStorage.setItem(cachedCrmUserKey, JSON.stringify({ id: user.id, email: user.email || "" }));
+      } else if (event === "SIGNED_OUT") {
+        clearLocalAuthState();
+      }
+    }
+
+    async function recoverStoredSession() {
+      const storageKeys = getAuthStorageKeys();
+      for (const key of [...new Set(storageKeys)]) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          const parsed = JSON.parse(raw);
+          const session = parsed?.currentSession || parsed;
+          if (!session?.access_token || !session?.refresh_token) continue;
+          const { data, error } = await sbCrm.auth.setSession({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token
+          });
+          if (error) {
+            console.warn("[boot] stored session rejected", key, error.message);
+            continue;
+          }
+          if (data.session?.user) {
+            console.log("[boot] recovered stored session", key, data.session.user.email || data.session.user.id);
+            return data.session;
+          }
+        } catch (error) {
+          console.warn("[boot] could not inspect stored session", key, error.message);
+        }
+      }
+      return null;
+    }
+
+    function restoreCachedAuthUI() {
+      try {
+        const cachedUser = JSON.parse(localStorage.getItem(cachedCrmUserKey) || "null");
+        if (cachedUser?.id && !currentUser) {
+          currentUser = cachedUser;
+          updateAuthUI();
+        }
+      } catch {
+        localStorage.removeItem(cachedCrmUserKey);
+      }
+    }
+
+    function updateAuthUI() {
+      const signedIn = Boolean(currentUser);
+      const signInBtn = $("signInBtn");
+      const authedBlock = $("authedBlock");
+      const helloLabel = $("helloLabel");
+      const banner = $("authBanner");
+      if (signInBtn) signInBtn.style.setProperty("display", signedIn ? "none" : "block", "important");
+      if (authedBlock) authedBlock.style.setProperty("display", signedIn ? "block" : "none", "important");
+      if (helloLabel && signedIn) helloLabel.textContent = `Hello, ${currentUser.email || currentUser.id}`;
+      if (helloLabel && !signedIn) helloLabel.textContent = "";
+      if (banner) {
+        banner.style.setProperty("display", signedIn ? "block" : "none", "important");
+        banner.textContent = signedIn ? `Signed in as ${currentUser.email || currentUser.id}` : "";
+      }
+      ["addLeadBtn", "importFile", "sendBatchBtn", "genAllBtn", "scheduleAllBtn"].forEach((id) => {
+        const el = $(id);
+        if (el) el.disabled = !signedIn;
+      });
+    }
+
+    function requireAuth() {
+      if (currentUser) return true;
+      showToast("Sign in to sync CRM changes");
+      openSignInModal();
+      return false;
+    }
+
+    async function loadFromCloud(skipMigration = false) {
+      if (!currentUser) {
+        leads = [];
+        aiDrafts.clear();
+        render();
+        return;
+      }
+      const { data: leadRowsData, error: leadError } = await sbCrm
+        .from("leads")
+        .select("id,data,updated_at")
+        .eq("user_id", currentUser.id);
+      if (leadError) throw leadError;
+      leads = (leadRowsData || []).map((row) => normalizeLead({ id: row.id, ...(row.data || {}) }));
+      dedupeLeadIds(leads);
+
+      const { data: draftRows, error: draftError } = await sbCrm
+        .from("ai_drafts")
+        .select("lead_id,text,is_template,generated_at")
+        .eq("user_id", currentUser.id);
+      if (draftError) throw draftError;
+      aiDrafts.clear();
+      (draftRows || []).forEach((row) => {
+        aiDrafts.set(row.lead_id, {
+          text: row.text || "",
+          isTemplate: Boolean(row.is_template),
+          generatedAt: row.generated_at ? Date.parse(row.generated_at) : Date.now()
+        });
+      });
+      if (!skipMigration) await migrateLocalToCloud();
+      saveLeads();
+      saveAiDrafts();
+    }
+
+    async function migrateLocalToCloud() {
+      if (!currentUser || localStorage.getItem("adc-cloud-migrated") === "1") return;
+      try {
+        const migratedLeadIds = new Set(JSON.parse(localStorage.getItem("adc-cloud-migrated-leads") || "[]"));
+        const migratedDraftIds = new Set(JSON.parse(localStorage.getItem("adc-cloud-migrated-drafts") || "[]"));
+        const savedLeads = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        if (Array.isArray(savedLeads)) {
+          for (const raw of savedLeads) {
+            const lead = normalizeLead(raw);
+            if (!lead.id || migratedLeadIds.has(lead.id)) continue;
+            await upsertLeadToCloud(lead);
+            migratedLeadIds.add(lead.id);
+            localStorage.setItem("adc-cloud-migrated-leads", JSON.stringify([...migratedLeadIds]));
+          }
+        }
+        const savedDrafts = JSON.parse(localStorage.getItem(aiDraftStorageKey) || "{}");
+        for (const [leadId, draft] of Object.entries(savedDrafts || {})) {
+          if (migratedDraftIds.has(leadId)) continue;
+          await setAndSaveAiDraft(leadId, {
+            text: draft?.text || "",
+            isTemplate: Boolean(draft?.isTemplate),
+            generatedAt: draft?.generatedAt || Date.now()
+          });
+          migratedDraftIds.add(leadId);
+          localStorage.setItem("adc-cloud-migrated-drafts", JSON.stringify([...migratedDraftIds]));
+        }
+        localStorage.setItem("adc-cloud-migrated", "1");
+        await loadFromCloud(true);
+        render();
+      } catch {
+        // Leave migration flags incomplete so the next signed-in boot can retry.
+      }
+    }
+
+    function subscribeRealtime() {
+      unsubscribeRealtime();
+      if (!currentUser) return;
+      leadsChannel = sbCrm
+        .channel(`crm-leads-${currentUser.id}`)
+        .on("postgres_changes", { event: "*", schema: "public", table: "leads", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+          const row = payload.new || payload.old;
+          if (!row?.id) return;
+          if (payload.eventType === "DELETE") {
+            leads = leads.filter((lead) => lead.id !== row.id);
+          } else {
+            const lead = normalizeLead({ id: row.id, ...(payload.new.data || {}) });
+            const index = leads.findIndex((item) => item.id === lead.id);
+            if (index >= 0) leads[index] = lead;
+            else leads.unshift(lead);
+          }
+          saveLeads();
+          render();
+        })
+        .subscribe();
+
+      aiDraftsChannel = sbCrm
+        .channel(`crm-ai-drafts-${currentUser.id}`)
+        .on("postgres_changes", { event: "*", schema: "public", table: "ai_drafts", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+          const row = payload.new || payload.old;
+          if (!row?.lead_id) return;
+          if (payload.eventType === "DELETE") {
+            aiDrafts.delete(row.lead_id);
+          } else {
+            aiDrafts.set(row.lead_id, {
+              text: payload.new.text || "",
+              isTemplate: Boolean(payload.new.is_template),
+              generatedAt: payload.new.generated_at ? Date.parse(payload.new.generated_at) : Date.now()
+            });
+          }
+          saveAiDrafts();
+          render();
+        })
+        .subscribe();
+    }
+
+    function unsubscribeRealtime() {
+      if (leadsChannel) sbCrm.removeChannel(leadsChannel);
+      if (aiDraftsChannel) sbCrm.removeChannel(aiDraftsChannel);
+      leadsChannel = null;
+      aiDraftsChannel = null;
     }
 
     function localDate(date = new Date()) {
@@ -470,8 +770,9 @@
       $("leadForm").reset();
     }
 
-    function saveLead(event) {
+    async function saveLead(event) {
       event.preventDefault();
+      if (!requireAuth()) return;
       const id = $("leadId").value || uid();
       const existing = leads.find((item) => item.id === id);
       const flags = statusFlags($("leadStatus").value);
@@ -514,20 +815,34 @@
       const index = leads.findIndex((item) => item.id === id);
       if (index >= 0) leads[index] = lead;
       else leads.unshift(lead);
-      clearAiDraft(id);
       saveLeads();
+      try {
+        await upsertLeadToCloud(lead);
+        await clearAiDraft(id);
+      } catch (error) {
+        showToast(error.message || "Cloud save failed");
+        return;
+      }
       closeModal();
       render();
       showToast("Lead saved");
     }
 
-    function deleteLead() {
+    async function deleteLead() {
+      if (!requireAuth()) return;
       const id = $("leadId").value;
       if (!id) return;
-      if (!confirm("Delete this lead from the local CRM?")) return;
+      if (!confirm("Delete this lead from the CRM?")) return;
       leads = leads.filter((lead) => lead.id !== id);
-      clearAiDraft(id);
       saveLeads();
+      try {
+        const { error } = await sbCrm.from("leads").delete().eq("id", id).eq("user_id", currentUser.id);
+        if (error) throw error;
+        await clearAiDraft(id);
+      } catch (error) {
+        showToast(error.message || "Cloud delete failed");
+        return;
+      }
       closeModal();
       render();
       showToast("Lead deleted");
@@ -545,13 +860,14 @@
     }
 
     function importData(event) {
+      if (!requireAuth()) { event.target.value = ""; return; }
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         try {
           const imported = parseLeadFile(String(reader.result || ""), file.name);
-          const result = mergeImportedLeads(imported);
+          const result = await mergeImportedLeads(imported);
           saveLeads();
           render();
           showToast(`Imported ${result.added} new, updated ${result.updated}, skipped ${result.skipped}`);
@@ -611,9 +927,11 @@
       }, {}));
     }
 
-    function mergeImportedLeads(imported) {
+    async function mergeImportedLeads(imported) {
+      if (!requireAuth()) return { added: 0, updated: 0, skipped: imported.length };
       const result = { added: 0, updated: 0, skipped: 0 };
       const seen = new Set();
+      const changed = [];
       for (const lead of imported) {
         const key = lead.email ? `email:${lead.email.toLowerCase()}` : `company:${lead.company.toLowerCase()}`;
         if (!lead.company || lead.doNotContact || seen.has(key)) {
@@ -627,12 +945,16 @@
         });
         if (existingIndex >= 0) {
           leads[existingIndex] = { ...leads[existingIndex], ...lead, id: leads[existingIndex].id, updatedAt: Date.now() };
+          changed.push(leads[existingIndex]);
           result.updated += 1;
         } else {
-          leads.unshift({ ...lead, id: uid(), updatedAt: Date.now() });
+          const next = { ...lead, id: uid(), updatedAt: Date.now() };
+          leads.unshift(next);
+          changed.push(next);
           result.added += 1;
         }
       }
+      await upsertLeadsToCloud(changed);
       return result;
     }
 
@@ -646,41 +968,59 @@
       showToast("Outreach draft copied");
     }
 
-    function markSent(id, { silent = false } = {}) {
-      const index = leads.findIndex((lead) => lead.id === id);
-      if (index < 0) return;
-      const lead = leads[index];
-      if (!isValidEmail(lead.email)) {
-        if (!silent) { showToast("Add a valid email before marking sent"); openModal(id); }
-        return;
-      }
+    function applyMarkSentInMemory(lead) {
+      if (!isValidEmail(lead.email)) return null;
       const currentStep = Math.min(Number(lead.sequenceStep || 0), sequence.length - 1);
       const current = sequence[currentStep];
       const nextStep = current.repeat ? currentStep : Math.min(currentStep + 1, sequence.length - 1);
       const next = sequence[nextStep];
-      leads[index] = {
+      const dueDate = nextSequenceDate(next);
+      return {
         ...lead,
         active: true,
         stage: current.stage,
         nextAction: next.action,
-        nextDate: nextSequenceDate(next),
-        nextDueAt: nextSequenceDate(next),
+        nextDate: dueDate,
+        nextDueAt: dueDate,
         sequenceStep: nextStep,
         touches: Number(lead.touches || lead.touchCount || 0) + 1,
         touchCount: Number(lead.touchCount || lead.touches || 0) + 1,
         lastTouch: todayIso,
         lastSentAt: todayIso,
-        notes: `${lead.notes || ""}${lead.notes ? "\n" : ""}${todayIso}: ${current.action} marked sent. Next due ${nextSequenceDate(next)}.`.trim(),
+        notes: `${lead.notes || ""}${lead.notes ? "\n" : ""}${todayIso}: ${current.action} marked sent. Next due ${dueDate}.`.trim(),
         updatedAt: Date.now()
       };
-      clearAiDraft(id);
-      if (!silent) { saveLeads(); render(); showToast("Touch logged and next follow-up scheduled"); }
     }
 
-    function scheduleEmptyLeads() {
+    async function markSent(id, { silent = false } = {}) {
+      if (!requireAuth()) return;
+      const index = leads.findIndex((lead) => lead.id === id);
+      if (index < 0) return;
+      const lead = leads[index];
+      const nextLead = applyMarkSentInMemory(lead);
+      if (!nextLead) {
+        if (!silent) { showToast("Add a valid email before marking sent"); openModal(id); }
+        return;
+      }
+      leads[index] = nextLead;
+      saveLeads();
+      try {
+        await upsertLeadToCloud(nextLead);
+        await clearAiDraft(id);
+      } catch (error) {
+        showToast(error.message || "Cloud update failed");
+        return;
+      }
+      render();
+      if (!silent) showToast("Touch logged and next follow-up scheduled");
+    }
+
+    async function scheduleEmptyLeads() {
+      if (!requireAuth()) return;
+      const changed = [];
       leads = leads.map((lead) => {
         if (isStopped(lead) || lead.nextDueAt || lead.nextDate) return lead;
-        return {
+        const next = {
           ...lead,
           active: true,
           nextAction: sequence[0].action,
@@ -689,8 +1029,16 @@
           sequenceStep: lead.sequenceStep || 0,
           updatedAt: Date.now()
         };
+        changed.push(next);
+        return next;
       });
       saveLeads();
+      try {
+        await upsertLeadsToCloud(changed);
+      } catch (error) {
+        showToast(error.message || "Cloud schedule failed");
+        return;
+      }
       render();
       showToast("Unscheduled leads added to today");
     }
@@ -807,6 +1155,7 @@
     }
 
     async function generateAllDueDrafts() {
+      if (!requireAuth()) return;
       if (!claudeApiKey) { showToast("Add your Anthropic API key in Settings"); return; }
       const due = leads.filter((l) => !isStopped(l) && l.nextDueAt && l.nextDueAt <= todayIso && isValidEmail(l.email));
       if (!due.length) { showToast("No due leads with valid emails"); return; }
@@ -822,8 +1171,7 @@
         if (existing && !existing.isTemplate) { skipped++; continue; }
         const step = sequence[Math.min(Number(l.sequenceStep || 0), sequence.length - 1)];
         const result = await generateAIDraft(l, step.key);
-        aiDrafts.set(l.id, { ...result, generatedAt: Date.now() });
-        saveAiDrafts();
+        await setAndSaveAiDraft(l.id, { ...result, generatedAt: Date.now() });
         generated++;
         await wait(100);
       }
@@ -833,6 +1181,7 @@
     }
 
     async function generateQueueAIDraft(id, button) {
+      if (!requireAuth()) return;
       const lead = leads.find((item) => item.id === id);
       if (!lead) return;
       const step = sequence[Math.min(Number(lead.sequenceStep || 0), sequence.length - 1)];
@@ -841,8 +1190,7 @@
       button.textContent = "Generating...";
       const result = await generateAIDraft(lead, step.key);
       const cached = { ...result, generatedAt: Date.now() };
-      aiDrafts.set(lead.id, cached);
-      saveAiDrafts();
+      await setAndSaveAiDraft(lead.id, cached);
       const draftBox = button.closest(".queue-card")?.querySelector(".draft-box");
       if (draftBox) draftBox.textContent = cached.text;
       button.disabled = false;
@@ -950,6 +1298,7 @@
       const active = leads.filter((l) => !isStopped(l) && isValidEmail(l.email) && l.lastSentAt);
       if (!active.length) return 0;
       let updated = 0;
+      const changed = [];
       for (const lead of active) {
         const afterDate = toGmailDate(lead.lastSentAt);
         try {
@@ -979,6 +1328,7 @@
               } else {
                 leads[idx] = { ...leads[idx], replied: true, active: false, replyMessageId: replyHits[0].id, repliedAt: todayIso, replySnippet: snippet, updatedAt: Date.now() };
               }
+              changed.push(leads[idx]);
               updated++;
             }
             await wait(200);
@@ -989,6 +1339,7 @@
             const idx = leads.findIndex((x) => x.id === lead.id);
             if (idx >= 0) {
               leads[idx] = { ...leads[idx], bounced: true, active: false, bounceMessageId: bounceHits[0].id, bouncedAt: todayIso, updatedAt: Date.now() };
+              changed.push(leads[idx]);
               updated++;
             }
           }
@@ -998,11 +1349,16 @@
         }
         await wait(200);
       }
-      if (updated) { saveLeads(); render(); }
+      if (updated) {
+        saveLeads();
+        await upsertLeadsToCloud(changed);
+        render();
+      }
       return updated;
     }
 
     async function openBatchModal() {
+      if (!requireAuth()) return;
       if (!gmailToken) { showToast("Connect Gmail first"); return; }
       const body = $("batchModalBody");
       const confirmBtn = $("confirmSendBtn");
@@ -1024,8 +1380,7 @@
           if (existing && !existing.isTemplate) continue;
           const step = sequence[Math.min(Number(l.sequenceStep || 0), sequence.length - 1)];
           const result = await generateAIDraft(l, step.key);
-          aiDrafts.set(l.id, { ...result, generatedAt: Date.now() });
-          saveAiDrafts();
+          await setAndSaveAiDraft(l.id, { ...result, generatedAt: Date.now() });
           await wait(100);
         }
       }
@@ -1055,11 +1410,13 @@
     }
 
     async function executeBatch() {
+      if (!requireAuth()) return;
       const confirmBtn = $("confirmSendBtn");
       confirmBtn.disabled = true;
       confirmBtn.textContent = "Sending…";
       let sent = 0;
       let failed = 0;
+      const sentLeadIds = [];
       for (const lead of batchLeads) {
         const step = sequence[Math.min(Number(lead.sequenceStep || 0), sequence.length - 1)];
         const cachedDraft = aiDrafts.get(lead.id);
@@ -1073,17 +1430,36 @@
           );
           const idx = leads.findIndex((x) => x.id === lead.id);
           if (idx >= 0) {
-            leads[idx] = { ...leads[idx], lastSentBody: draft, lastGmailMessageId: resp.result.id, threadId: resp.result.threadId || leads[idx].threadId, updatedAt: Date.now() };
+            const composed = {
+              ...leads[idx],
+              lastSentBody: draft,
+              lastGmailMessageId: resp.result.id,
+              threadId: resp.result.threadId || leads[idx].threadId,
+              updatedAt: Date.now()
+            };
+            const nextLead = applyMarkSentInMemory(composed);
+            if (nextLead) {
+              leads[idx] = nextLead;
+              await upsertLeadToCloud(nextLead);
+              sentLeadIds.push(lead.id);
+            }
           }
-          markSent(lead.id, { silent: true });
           sent++;
         } catch {
           failed++;
         }
         await wait(300);
       }
-      aiDrafts.clear();
-      localStorage.removeItem(aiDraftStorageKey);
+      try {
+        if (sentLeadIds.length) {
+          const { error } = await sbCrm.from("ai_drafts").delete().eq("user_id", currentUser.id).in("lead_id", sentLeadIds);
+          if (error) throw error;
+          sentLeadIds.forEach((id) => aiDrafts.delete(id));
+          saveAiDrafts();
+        }
+      } catch (error) {
+        showToast(error.message || "Cloud batch update failed");
+      }
       closeBatchModal();
       saveLeads();
       render();
@@ -1116,7 +1492,6 @@
             }).then((r) => r.json());
             gmailEmail = info.email || "";
           } catch { gmailEmail = ""; }
-          localStorage.setItem("gmail-connected-hint", "1");
           updateGmailBar();
           showToast(`Gmail connected${gmailEmail ? `: ${gmailEmail}` : ""}`);
         }
@@ -1157,7 +1532,6 @@
         gmailToken = null;
         gmailEmail = null;
         if (typeof gapi !== "undefined" && gapi.client) gapi.client.setToken(null);
-        localStorage.removeItem("gmail-connected-hint");
         updateGmailBar();
         showToast("Gmail disconnected");
         return;
@@ -1208,7 +1582,71 @@
     $("cancelBatchBtn").addEventListener("click", closeBatchModal);
     $("batchModal").addEventListener("click", (event) => { if (event.target.id === "batchModal") closeBatchModal(); });
     $("confirmSendBtn").addEventListener("click", executeBatch);
+    $("signInBtn").addEventListener("click", openSignInModal);
+    $("signOutBtn").addEventListener("click", signOut);
+    $("closeSignInBtn").addEventListener("click", closeSignInModal);
+    $("cancelSignInBtn").addEventListener("click", closeSignInModal);
+    $("signInModal").addEventListener("click", (event) => { if (event.target.id === "signInModal") closeSignInModal(); });
+    $("sendMagicLinkBtn").addEventListener("click", sendMagicLink);
 
-    fillStageSelects();
-    loadAiDrafts();
-    render();
+    async function boot() {
+      fillStageSelects();
+      restoreCachedAuthUI();
+      sbCrm.auth.onAuthStateChange(async (event, session) => {
+        const wasSignedIn = Boolean(currentUser);
+        applyAuthSession(session, event);
+        console.log("[auth]", event, currentUser?.email || "(no user)");
+        updateAuthUI();
+        if (currentUser) {
+          try {
+            await loadFromCloud();
+            subscribeRealtime();
+            closeSignInModal();
+            if (event === "SIGNED_IN" && !wasSignedIn) {
+              showToast(`Signed in as ${currentUser.email}`);
+            }
+          } catch (error) {
+            console.error("[auth] load error", error);
+            showToast(error.message || "Could not load cloud CRM");
+          }
+        } else {
+          unsubscribeRealtime();
+          leads = [];
+          aiDrafts.clear();
+          if (event === "SIGNED_OUT" && wasSignedIn) showToast("Signed out");
+        }
+        updateAuthUI();
+        render();
+      });
+      if (typeof window !== 'undefined' && window.location.hash.includes('error_code=')) {
+        const params = new URLSearchParams(window.location.hash.slice(1));
+        const errCode = params.get('error_code');
+        const errDesc = params.get('error_description');
+        console.warn('[boot] auth error in URL:', errCode, errDesc);
+        showToast(`Sign-in failed: ${errDesc || errCode}`);
+        history.replaceState(null, '', window.location.pathname);
+      }
+      const { data } = await sbCrm.auth.getSession();
+      let bootSession = data.session || null;
+      console.log('[boot] session:', bootSession?.user?.email || 'none', '| hash had access_token:', window.location.hash.includes('access_token='));
+      if (!bootSession) bootSession = await recoverStoredSession();
+      applyAuthSession(bootSession, "BOOT_SESSION");
+      console.log('[boot] resolved user:', currentUser?.email || currentUser?.id || 'none');
+      updateAuthUI();
+      if (currentUser) {
+        try {
+          await loadFromCloud();
+          subscribeRealtime();
+        } catch (error) {
+          showToast(error.message || "Could not load cloud CRM");
+        }
+      }
+      updateAuthUI();
+      render();
+      // Give Supabase up to 1.5s to consume URL hash and fire SIGNED_IN before settling
+      if (!currentUser && window.location.hash.includes('access_token=')) {
+        setTimeout(() => { if (!currentUser) console.warn('[boot] hash had token but session never established'); }, 1500);
+      }
+    }
+
+    boot();
