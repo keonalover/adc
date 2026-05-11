@@ -46,11 +46,18 @@ Outputs land in `outreach-run/`:
 
 ## Rebuilding the Excel template
 
+The template builder produces a blank structural template only — it never overwrites the populated working file.
+
 ```bash
 node build-crm-template/build-template.mjs
 ```
 
-Requires Codex runtime (`@oai/artifact-tool`). Outputs `ADC Outreach Lead List Template.xlsx`.
+Outputs `ADC Outreach Lead List Template (blank).xlsx`. Requires Codex runtime (`@oai/artifact-tool`).
+
+To reconstruct a populated workbook from current CRM state:
+1. In `crm.html`, click Export JSON and save as `crm-export.json` at the repo root
+2. Run: `python outreach-run/populate-from-crm.py crm-export.json`
+3. The populated workbook lands at `ADC Outreach Lead List Template.xlsx`
 
 ## Architecture: CRM (`crm.html`)
 

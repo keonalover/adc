@@ -30,7 +30,9 @@ const headers = [
   "Next Action",
   "Next Action Date",
   "Do Not Contact?",
-  "Owner / Internal Notes"
+  "Owner / Internal Notes",
+  "New Location",
+  "Reviews Summary"
 ];
 
 const examples = [
@@ -53,7 +55,9 @@ const examples = [
     "Send intro email",
     new Date(2026, 4, 6),
     "No",
-    "Replace this row with a real lead."
+    "Replace this row with a real lead.",
+    "Brooklyn opening Q4 2026",
+    ""
   ],
   [
     "Sample Cafe Co.",
@@ -64,7 +68,7 @@ const examples = [
     "TX",
     "",
     "Square",
-    2,
+    1,
     "Google Maps",
     "Cold",
     "Research",
@@ -74,25 +78,27 @@ const examples = [
     "Research decision maker",
     new Date(2026, 4, 7),
     "No",
-    "Optional."
+    "Optional.",
+    "",
+    "147 reviews, 4.6★ on Google"
   ]
 ];
 
-leads.getRange("A1:S1").values = [headers];
-leads.getRange("A2:S3").values = examples;
-leads.getRange("A4:S103").values = Array.from({ length: 100 }, () => Array(headers.length).fill(""));
+leads.getRange("A1:U1").values = [headers];
+leads.getRange("A2:U3").values = examples;
+leads.getRange("A4:U103").values = Array.from({ length: 100 }, () => Array(headers.length).fill(""));
 
-leads.getRange("A1:S1").format = {
+leads.getRange("A1:U1").format = {
   fill: "#2F2823",
   font: { bold: true, color: "#FFF8EF" },
   wrapText: true
 };
-leads.getRange("A1:S103").format = {
+leads.getRange("A1:U103").format = {
   font: { color: "#2F2823" },
   wrapText: true
 };
-leads.getRange("A2:S103").format.fill = "#FFFCF7";
-leads.getRange("A1:S103").format.borders = {
+leads.getRange("A2:U103").format.fill = "#FFFCF7";
+leads.getRange("A1:U103").format.borders = {
   insideHorizontal: { style: "Continuous", color: "#D8CAB8" },
   insideVertical: { style: "Continuous", color: "#E8DCCC" },
   edgeBottom: { style: "Continuous", color: "#B9A792" },
@@ -101,15 +107,15 @@ leads.getRange("A1:S103").format.borders = {
   edgeRight: { style: "Continuous", color: "#B9A792" }
 };
 
-const widths = [210, 150, 210, 130, 130, 70, 210, 110, 90, 130, 115, 120, 140, 250, 270, 160, 130, 120, 260];
+const widths = [210, 150, 210, 130, 130, 70, 210, 110, 90, 130, 115, 120, 140, 250, 270, 160, 130, 120, 260, 170, 220];
 widths.forEach((width, index) => {
   leads.getRangeByIndexes(0, index, 103, 1).format.columnWidthPx = width;
 });
-leads.getRange("A1:S1").format.rowHeightPx = 44;
-leads.getRange("A2:S103").format.rowHeightPx = 54;
+leads.getRange("A1:U1").format.rowHeightPx = 44;
+leads.getRange("A2:U103").format.rowHeightPx = 54;
 leads.freezePanes.freezeRows(1);
 
-leads.tables.add("A1:S103", true, "ADCLeadList");
+leads.tables.add("A1:U103", true, "ADCLeadList");
 leads.getRange("C2:C103").format.numberFormat = "@";
 leads.getRange("I2:I103").format.numberFormat = "0";
 leads.getRange("M2:M103").format.numberFormat = "$#,##0";
@@ -165,8 +171,8 @@ guide.getRange("A3").format = { wrapText: true, fill: "#F1E8DD", font: { color: 
 
 guide.getRange("A5:B15").values = [
   ["Required", "Company and Email are the minimum fields for automated email outreach."],
-  ["Strongly helpful", "Primary Contact, City / Market, POS, Locations, and Likely Red Flags / Pain."],
-  ["Personalization", "Use Personalization Notes for anything I should mention in the first line."],
+  ["Strongly helpful", "Primary Contact, City / Market, POS, Locations, New Location, Reviews Summary, and Likely Red Flags / Pain."],
+  ["Personalization", "Use Personalization Notes, New Location, and Reviews Summary for intro targeting details."],
   ["Do Not Contact?", "Set to Yes for leads that should stay in the CRM but should not receive email."],
   ["Next Action Date", "Leave blank if you want me to schedule the first touch automatically."],
   ["Temperature", "Cold/Warm/Hot affects prioritization and CRM filtering."],
@@ -185,10 +191,10 @@ guide.getRange("A5:B15").format.rowHeightPx = 38;
 
 const inspect = await workbook.inspect({
   kind: "table",
-  range: "Lead List!A1:S5",
+  range: "Lead List!A1:U5",
   include: "values,formulas",
   tableMaxRows: 5,
-  tableMaxCols: 19
+  tableMaxCols: 21
 });
 console.log(inspect.ndjson);
 
@@ -200,10 +206,10 @@ const errors = await workbook.inspect({
 });
 console.log(errors.ndjson);
 
-const leadPreview = await workbook.render({ sheetName: "Lead List", range: "A1:S8", scale: 1, format: "png" });
+const leadPreview = await workbook.render({ sheetName: "Lead List", range: "A1:U8", scale: 1, format: "png" });
 await leadPreview.arrayBuffer();
 const guidePreview = await workbook.render({ sheetName: "How To Use", range: "A1:B15", scale: 1, format: "png" });
 await guidePreview.arrayBuffer();
 
 const output = await SpreadsheetFile.exportXlsx(workbook);
-await output.save(`${outputDir}/ADC Outreach Lead List Template.xlsx`);
+await output.save(`${outputDir}/ADC Outreach Lead List Template (blank).xlsx`);

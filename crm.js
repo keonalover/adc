@@ -136,6 +136,8 @@
         nextDueAt: normalizeDate(raw.nextDueAt || raw.nextDate || raw["Next Action Date"]) || todayIso,
         pain: raw.pain || raw["Likely Red Flags / Pain"] || raw.redFlags || "",
         personalization: raw.personalization || raw["Personalization Notes"] || "",
+        newLocation: raw.newLocation || raw["New Location"] || "",
+        reviewsSummary: raw.reviewsSummary || raw["Reviews Summary"] || "",
         notes: raw.notes || raw["Owner / Internal Notes"] || "",
         doNotContact: isYes(raw.doNotContact || raw["Do Not Contact?"]),
         active: raw.active ?? !isYes(raw.doNotContact || raw["Do Not Contact?"]),
@@ -161,6 +163,8 @@
       lead.source = String(lead.source).trim();
       lead.pain = String(lead.pain).trim();
       lead.personalization = String(lead.personalization).trim();
+      lead.newLocation = String(lead.newLocation).trim();
+      lead.reviewsSummary = String(lead.reviewsSummary).trim();
       lead.notes = String(lead.notes).trim();
       return lead;
     }
@@ -718,19 +722,40 @@
 
     function generateDraft(lead, type) {
       const firstName = (lead.contact || "there").split(" ")[0];
-      const personal = personalizationLine(lead.personalization, lead.company);
       const drafts = {
-        intro: `Subject: quick question for ${lead.company}\n\nHi ${firstName},${personal}\n\nI'm An, and I'm working on ADC to help F&B owners make better use of the reports they already have: POS, labor, invoices, delivery, inventory, that kind of thing.\n\nRight now I'm doing the review hands-on for free while I'm getting it off the ground.\n\nIf you'd like to learn more, here's the page:\nhttps://adc-consulting.netlify.app/\n\nOr if you just want to reply with your reports, that works too.\n\nBest,\nAn`,
-        followup: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-consulting.netlify.app/\n\nBest,\nAn`,
-        followup1: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-consulting.netlify.app/\n\nBest,\nAn`,
-        followup2: `Subject: still worth a look?\n\nHi ${firstName},\n\nOne more quick follow-up. If this is relevant, I'm happy to take a look at the reports you already use and send back a simple summary of what stands out.\n\nIf not, no worries at all.\n\nBest,\nAn`,
-        audit: `Subject: report review for ${lead.company}\n\nHi ${firstName},\n\nI'm doing hands-on report reviews for F&B owners while getting ADC off the ground. If you send over POS, labor, invoice, delivery, or inventory reports, I'll send back a simple summary of what looks worth checking.\n\nHere's the page if you'd like more context:\nhttps://adc-consulting.netlify.app/\n\nBest,\nAn`,
-        weekly1: `Subject: quick follow-up\n\nHi ${firstName},\n\nChecking back once more. I'm still doing a few hands-on report reviews for F&B owners and would be happy to include ${lead.company} if it would be useful.\n\nBest,\nAn`,
-        weekly2: `Subject: should I close the loop?\n\nHi ${firstName},\n\nI do not want to crowd your inbox, so I can close the loop here. If reviewing a few existing reports would ever be useful, feel free to reply and I can take a look.\n\nBest,\nAn`,
-        monthly: `Subject: quick check-in\n\nHi ${firstName},\n\nCircling back in case a hands-on report review is more useful this month. If not, no worries.\n\nBest,\nAn`,
-        breakup: `Subject: should I close the loop?\n\nHi ${firstName},\n\nI do not want to crowd your inbox, so I can close the loop here. If reviewing a few existing reports would ever be useful, feel free to reply and I can take a look.\n\nBest,\nAn`
+        intro: introTemplate(lead),
+        followup: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-consulting.netlify.app/\n\n— An Pham`,
+        followup1: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-consulting.netlify.app/\n\n— An Pham`,
+        followup2: `Subject: still worth a look?\n\nHi ${firstName},\n\nOne more quick follow-up. If this is relevant, I'm happy to take a look at the reports you already use and send back a simple summary of what stands out.\n\nIf not, no worries at all.\n\n— An Pham`,
+        audit: `Subject: report review for ${lead.company}\n\nHi ${firstName},\n\nI'm doing hands-on report reviews for F&B owners while getting ADC off the ground. If you send over POS, labor, invoice, delivery, or inventory reports, I'll send back a simple summary of what looks worth checking.\n\nHere's the page if you'd like more context:\nhttps://adc-consulting.netlify.app/\n\n— An Pham`,
+        weekly1: `Subject: quick follow-up\n\nHi ${firstName},\n\nChecking back once more. I'm still doing a few hands-on report reviews for F&B owners and would be happy to include ${lead.company} if it would be useful.\n\n— An Pham`,
+        weekly2: `Subject: should I close the loop?\n\nHi ${firstName},\n\nI do not want to crowd your inbox, so I can close the loop here. If reviewing a few existing reports would ever be useful, feel free to reply and I can take a look.\n\n— An Pham`,
+        monthly: `Subject: quick check-in\n\nHi ${firstName},\n\nCircling back in case a hands-on report review is more useful this month. If not, no worries.\n\n— An Pham`,
+        breakup: `Subject: should I close the loop?\n\nHi ${firstName},\n\nI do not want to crowd your inbox, so I can close the loop here. If reviewing a few existing reports would ever be useful, feel free to reply and I can take a look.\n\n— An Pham`
       };
       return drafts[type] || drafts.intro;
+    }
+
+    function getIntroVariant(lead) {
+      const locations = Number(lead?.locations || 1);
+      if (locations >= 2 && String(lead?.newLocation || "").trim()) return "leadWithOffer";
+      if (locations >= 2) return "observational";
+      return "expansion";
+    }
+
+    function introTemplate(lead) {
+      const firstName = (lead.contact || "there").split(" ")[0];
+      const locations = Number(lead.locations || 1);
+      const variant = getIntroVariant(lead);
+      if (variant === "leadWithOffer") {
+        return `Subject: Free ops report for multi-location F&B operators\n\n${firstName},\n\nSaw the ${lead.newLocation} location is coming soon. Before opening a new location, most operators want one thing: a clear picture of where their current ones actually stand.\n\nWe put together a free diagnostic report that gives you exactly that. Cross-location view of your food cost, labor variance, vendor pricing, void patterns, and review trends. Pulled from data you already have, delivered in 48 hours, no call required first.\n\nIt's built for operators running 2-${locations} locations who are thinking about what comes next.\nYou keep the report regardless of what happens after.\nhttps://adc-consulting.netlify.app/\n— An Pham`;
+      }
+      if (variant === "observational") {
+        return `Subject: Something we built for F&B operators scaling past 2 locations\n\n${firstName},\n\nWhat I keep hearing from multi-location operators is that the data's all there across their POS, labor, and invoices, but nobody's pulling it into one place and telling them what it means.\n\nWe built a free diagnostic report that does that. Vendor pricing trends across locations, labor cost variance, void and comp patterns, food cost gaps. Delivered in 48 hours from data you already have.\n\nNo onboarding, no sales call first. Just a clear read on where things stand.\nIf the timing's right:\nhttps://adc-consulting.netlify.app/\n— An Pham`;
+      }
+      const reviewsSummary = String(lead.reviewsSummary || "").trim();
+      const reviewsLine = reviewsSummary ? `${lead.company} has ${reviewsSummary}. That's the kind of standard worth holding onto before expanding.\n\n` : "";
+      return `Subject: For operators thinking about their next location\n\n${firstName},\n\n${reviewsLine}When the timing feels right for a new location, the question we hear most is: "How do I know the current ones are going to be fine?"\n\nWe run a free diagnostic report that answers that. Cross-location breakdown of food cost, labor, vendor pricing, voids, and review trends. Uses data you already have, takes 48 hours, no commitment attached.\n\nOperators use it to get a clean baseline as they grow. Some use it just to see what comes up.\n\nEither way, it's yours to keep.\nhttps://adc-consulting.netlify.app/\n— An Pham`;
     }
 
     function personalizationLine(note, company) {
@@ -774,6 +799,8 @@
       $("leadStatus").value = lead ? statusValue(lead) : "active";
       $("nextAction").value = lead?.nextAction || "Send intro email";
       $("nextDate").value = lead?.nextDate || todayIso;
+      $("newLocation").value = lead?.newLocation || "";
+      $("reviewsSummary").value = lead?.reviewsSummary || "";
       $("pain").value = lead?.pain || "";
       $("notes").value = lead?.notes || "";
       $("leadModal").classList.add("open");
@@ -809,6 +836,8 @@
         nextAction: $("nextAction").value,
         nextDate: $("nextDate").value,
         nextDueAt: $("nextDate").value,
+        newLocation: $("newLocation").value.trim(),
+        reviewsSummary: $("reviewsSummary").value.trim(),
         pain: $("pain").value.trim(),
         personalization: existing?.personalization || "",
         notes: $("notes").value.trim(),
@@ -970,6 +999,9 @@
         }
       }
       await upsertLeadsToCloud(changed);
+      for (const lead of changed) {
+        await clearAiDraft(lead.id);
+      }
       return result;
     }
 
@@ -1088,7 +1120,7 @@
 
     // ── Claude AI draft helpers ────────────────────────────────────
 
-    const CLAUDE_SYSTEM_PROMPT = `You are An Pham, a founder building ADC Consulting. You are early. You email independent restaurant and cafe owners directly to ask if they want to try what you are working on. You are NOT a sales person. You are a builder reaching out because you want feedback and real reports to learn from. Frame the email so the recipient feels like trying it would be a favor TO YOU as much as it is useful to them. What you do: someone sends you their existing POS, labor, and invoice reports. You go through them and send back a short note flagging what is actually costing them money. Free right now because you are just starting out. Voice: casual, punchy, direct. Contractions and slang are fine, including coz instead of because. One exclamation point per email is fine. Do not be polished or corporate. STRUCTURE for cold intro emails (intro, audit): 1. Open with the greeting target (provided in the user message) followed by an exclamation point on its own line. The greeting target is normally the lead's first name (e.g., "Yenvy!"), but when no contact name was captured the user message will provide the business name instead — use it as-is. 2. ONE sentence with a specific personalization observation. Examples of openings: Saw your..., Noticed your..., Came across your.... 3. ONE sentence on what you are building. Mention POS, labor, and invoice reports, and frame the value as flags what is actually costing you money or similar direct phrasing. 4. ONE short sentence about it being free plus early stage. Example: Running it hands-on for free right now coz I am just starting out! 5. Soft CTA line: Worth a look? or similar single short line. 6. Link on its own line: https://adc-consulting.netlify.app/ 7. Sign off with these two lines exactly: Would love your feedback, An Pham. STRUCTURE for follow-ups (followup, followup1, followup2, weekly1, weekly2, monthly, breakup): Open with [FirstName]! or Hey [FirstName], (vary it). Reference the prior reach-out briefly without repeating the full pitch. 2 to 4 sentences total before the link and sign-off. Same link and sign-off as cold intros. Tone stays casual, low-pressure. HARD RULES (any violation equals bad email): NEVER use em dashes or en dashes. If you need a pause, use a comma, period, or new paragraph. Em dashes are aggressively banned. DO NOT explain their business back to them. Never write sentences like Running a N-location restaurant means... or Between the floor and the kitchen... or list generic restaurant problems they probably have. 60 to 110 words for cold intros. 40 to 80 words for follow-ups. Including the signature. BANNED words: data, metrics, analytics, insights, audit, leak, silos, patterns, dashboard, optimize, leverage, stack, platform, anomaly, KPI, framework, hands-on review, slipping, money you are leaving on the table. Do NOT make claims about what is not included (no calls, no contracts, etc). PERSONALIZATION: For cold intros, the personalization observation is mandatory and goes in the first sentence after the name greeting. If personalization notes are sparse or missing, open with whatever specific detail you have (city, business name, location count, type of cuisine). Never invent personalization details. LINK: https://adc-consulting.netlify.app/ SUBJECT LINE: under 7 words, lowercase, feels personal and observational. Examples of vibe: your seattle coffee spots, noticed your tucson place, thought of your group. Avoid quick question, free, help, checking in. OUTPUT FORMAT: Subject: [subject line] [email body with the link on its own line and the sign-off at the end] EXAMPLE (a cold intro, match this voice and structure closely): Subject: your seattle coffee spots Yenvy! Saw you and your sister coffee shop and then found out your family has multiple F&B spots in Seattle, so I had to reach out. I am building a tool that takes your existing POS, labor, and invoice reports and flags what is actually costing you money. Running it hands-on for free right now coz I am just starting out! Worth a look? https://adc-consulting.netlify.app/ Would love your feedback, An Pham`;
+    const CLAUDE_SYSTEM_PROMPT = `You are An Pham, founder of ADC Consulting. You email independent restaurant and cafe operators directly about a free diagnostic report. You are not a sales person. You are a builder offering a useful diagnostic while learning from real operators. Voice: casual, punchy, direct. Contractions are fine. Do not sound polished or corporate. The report reviews existing POS, labor, invoice, vendor, void, comp, food cost, and review trend data. It is free, delivered in 48 hours, and tied to the operator's current situation. INDUSTRY LANGUAGE: Write like someone who has worked in F&B. Use these terms naturally when relevant, never as a list or lecture: food cost %, prime cost (food cost + labor combined), COGS, labor cost %, pour cost, void, comp, 86'd, cover count, check average, BOH, FOH, shrinkage, theoretical vs actual, in the weeds. These words signal fluency. They should appear in passing, not as a demonstration. TARGET PERSONA: The recipient is typically 30-40, owns 2-4 F&B locations, built something real and is proud of it. They are not a first-time operator. They read email on their phone between service. They make a snap judgment in the first two sentences about whether the sender understands their world. They respond to specificity and competence. They do not respond to flattery, generic pain-point lists, or anything that implies they don't know what they're doing. The goal is to make them think: how do they know that? INDUSTRY CONTEXT (use to inform relevance and timing, not to lecture): Food costs are up 35%+ above pre-pandemic levels. 91% of operators saw food costs rise in 2025. Tariffs have hit proteins and imported goods hardest. Labor costs are up across the board with ongoing minimum wage increases. Vendor price drift across invoice cycles is a real and specific pain point for multi-location operators. 42% of operators were not profitable in 2025 despite record industry sales. These are conditions the recipient is living, not facts to quote at them. HARD RULES: Cold intros must be 90 to 110 words including signature. Follow-ups must be 40 to 80 words including signature. The only allowed em dash is the signature line: — An Pham. Do not use em dashes or en dashes anywhere else. Do not explain their business back to them. Never write generic lines like Running a N-location restaurant means... or Between the floor and the kitchen... or list problems they probably have. BANNED words: metrics, analytics, insights, leak, silos, dashboard, optimize, leverage, stack, platform, anomaly, KPI, framework, slipping, money you are leaving on the table. LINK: https://adc-consulting.netlify.app/ OUTPUT FORMAT: Subject: [subject line] [email body with the link on its own line and the sign-off at the end]. Sign off with exactly: — An Pham. STRUCTURE for Variant 1, Lead With the Offer: Use when the user asks for leadWithOffer. Subject: Free ops report for multi-location F&B operators. Open with [FirstName], on its own line. Mention the provided New location as coming soon. Then: Before opening a new location, most operators want one thing: a clear picture of where their current ones actually stand. Next: We put together a free diagnostic report that gives you exactly that. Include cross-location food cost, labor variance, vendor pricing, void patterns, and review trends. Mention existing data, 48 hours, no call required first. Include the It's built for operators running 2-[locations] locations who are thinking about what comes next line, the You keep the report regardless of what happens after line, link, and signature. STRUCTURE for Variant 2, Observational: Use when the user asks for observational. Subject: Something we built for F&B operators scaling past 2 locations. Open with [FirstName], on its own line. Open the body with: Operators running [N] locations tend to hit the same wall: the data's all there across their POS, labor, and invoices, but nobody's pulling it into one place and telling them what it means. Then: We built a free diagnostic report that does that. List: vendor pricing trends across locations, labor cost variance, void and comp patterns, food cost gaps. Mention 48 hours from data they already have. Close with: No onboarding, no sales call first. Just a clear read on where things stand. End with: If the timing's right: then link and signature. STRUCTURE for Variant 3, Expansion Angle: Use when the user asks for expansion. Subject: For operators thinking about their next location. Open with [FirstName], on its own line. If Reviews summary is provided, begin with [Company] has [reviews summary]. That's the kind of standard worth holding onto before expanding. If Reviews summary is empty, omit that sentence entirely. Then: When the timing feels right for a new location, the question we hear most is: "How do I know the current ones are going to be fine?" Then: We run a free diagnostic report that answers that. List: cross-location breakdown of food cost, labor, vendor pricing, voids, and review trends. Mention existing data, 48 hours, no commitment. Close body with: Operators use it to get a clean baseline as they grow. Some use it just to see what comes up. Either way, it's yours to keep. Then link and signature. STRUCTURE for follow-ups: Reference the prior reach-out briefly without repeating the full pitch. Tie the message to the free diagnostic report, existing reports/data, and 48 hours. Keep it casual, low-pressure, and short. Use the same link and the exact signature — An Pham. EXAMPLE, Variant 2 Observational: Subject: Something we built for F&B operators scaling past 2 locations Marcus, Operators running 3 locations tend to hit the same wall: the data's all there across their POS, labor, and invoices, but nobody's pulling it into one place and telling them what it means. We built a free diagnostic report that does that. Vendor pricing trends across locations, labor cost variance, void and comp patterns, food cost gaps. Delivered in 48 hours from data you already have. No onboarding, no sales call first. Just a clear read on where things stand. If the timing's right: https://adc-consulting.netlify.app/ — An Pham`;
 
     function buildAIUserPrompt(lead, sequenceKey) {
       const rawContact = (lead.contact || "").trim();
@@ -1098,15 +1130,26 @@
       const city = lead.city ? ` in ${lead.city}` : "";
       const pos = lead.pos && lead.pos !== "Unknown" ? ` (uses ${lead.pos})` : "";
       const locs = Number(lead.locations || 1);
+      const variant = getIntroVariant(lead);
+      const variantNames = {
+        leadWithOffer: "Lead With the Offer",
+        observational: "Observational",
+        expansion: "Expansion Angle"
+      };
       const personal = String(lead.personalization || "").trim();
       const pain = String(lead.pain || "").trim();
+      const newLocation = String(lead.newLocation || "").trim();
+      const reviewsSummary = String(lead.reviewsSummary || "").trim();
       const blocked = ["unsure", "probably", "need to", "damn", "target client", "contact form", "would be cool", "skip breakfast"];
       const usePersonal = Boolean(personal) && !blocked.some((term) => personal.toLowerCase().includes(term)) && personal.length <= 240;
       const baseFacts = [
-        `Greeting target (use this exactly as the opener with '!' after it): ${greetingName}`,
+        `Greeting target (use this as the opener followed by a comma on its own line): ${greetingName}`,
         contactIsValid ? "" : "(No contact name was provided — using business name as greeting target.)",
         `Company: ${co}`,
         `Locations: ${locs}${city}${pos}`,
+        sequenceKey === "intro" ? `Variant: ${variant}` : "",
+        sequenceKey === "intro" ? `New location: ${newLocation || "none"}` : "",
+        sequenceKey === "intro" ? `Reviews summary: ${reviewsSummary || "none"}` : "",
         usePersonal
           ? `Personalization: ${personal}`
           : "Personalization: no usable specific personalization notes. Use only known company, city, location count, or cuisine/type details. Never invent details.",
@@ -1114,7 +1157,7 @@
       ].filter(Boolean).join("\n");
       const prior = lead.lastSentBody ? `\n\nPrior email:\n${lead.lastSentBody}` : "";
       const prompts = {
-        intro: `Write a cold intro email. Follow the cold intro structure exactly from the system prompt.\n\nLead facts:\n${baseFacts}`,
+        intro: `Write a cold intro email using the ${variantNames[variant]} structure from the system prompt.\n\nLead facts:\n${baseFacts}`,
         audit: `Write a cold intro email for the report review offer. Follow the cold intro structure exactly from the system prompt.\n\nLead facts:\n${baseFacts}`,
         followup: `Write a first follow-up. Reference the prior reach-out briefly without repeating the full pitch.\n\nLead facts:\n${baseFacts}${prior}`,
         followup1: `Write a first follow-up. Reference the prior reach-out briefly without repeating the full pitch.\n\nLead facts:\n${baseFacts}${prior}`,
@@ -1161,7 +1204,11 @@
         if (!text || !/^subject:/i.test(text)) {
           return { text: generateDraft(lead, sequenceKey), isTemplate: true };
         }
-        const cleaned = text.replace(/\s*[—–]\s*/g, ', ').replace(/,\s*,/g, ',').replace(/[ \t]+/g, ' ');
+        const cleaned = text
+          .replace(/\s*[\u2013\u2014]\s*/g, ', ')
+          .replace(/,\s*,/g, ',')
+          .replace(/[ \t]+/g, ' ')
+          .replace(/,\s*An Pham\s*$/, "— An Pham");
         return { text: cleaned, isTemplate: false };
       } catch {
         clearTimeout(timer);

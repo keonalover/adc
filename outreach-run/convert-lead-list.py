@@ -27,6 +27,8 @@ HEADERS = [
     "Next Action Date",
     "Do Not Contact?",
     "Owner / Internal Notes",
+    "New Location",
+    "Reviews Summary",
 ]
 
 uid_counter = 0
@@ -98,6 +100,8 @@ def main():
             "value": to_number(record["Estimated Monthly Value"], 0),
             "pain": clean(record["Likely Red Flags / Pain"], keep_na=True),
             "personalization": clean(record["Personalization Notes"], keep_na=True),
+            "newLocation": clean(record["New Location"], keep_na=True),
+            "reviewsSummary": clean(record["Reviews Summary"], keep_na=True),
             "nextAction": clean(record["Next Action"], keep_na=True) or "Send intro email",
             "nextDate": normalize_date(record["Next Action Date"]) or today,
             "nextDueAt": normalize_date(record["Next Action Date"]) or today,
@@ -267,7 +271,7 @@ def generate_draft(lead):
         "If you'd like to learn more, here's the page:\n"
         "https://adc-consulting.netlify.app/\n\n"
         "Or if you just want to reply with your reports, that works too.\n\n"
-        "Best,\nAn"
+        "— An Pham"
     )
 
 
