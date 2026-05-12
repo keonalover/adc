@@ -28,7 +28,9 @@ HEADERS = [
     "Do Not Contact?",
     "Owner / Internal Notes",
     "New Location",
-    "Reviews Summary",
+    "Review Rating",
+    "Number of Reviews",
+    "Review Platform",
 ]
 
 uid_counter = 0
@@ -101,7 +103,9 @@ def main():
             "pain": clean(record["Likely Red Flags / Pain"], keep_na=True),
             "personalization": clean(record["Personalization Notes"], keep_na=True),
             "newLocation": clean(record["New Location"], keep_na=True),
-            "reviewsSummary": clean(record["Reviews Summary"], keep_na=True),
+            "reviewRating": clean(record["Review Rating"], keep_na=True),
+            "reviewCount": clean(record["Number of Reviews"], keep_na=True),
+            "reviewPlatform": clean(record["Review Platform"], keep_na=True),
             "nextAction": clean(record["Next Action"], keep_na=True) or "Send intro email",
             "nextDate": normalize_date(record["Next Action Date"]) or today,
             "nextDueAt": normalize_date(record["Next Action Date"]) or today,
@@ -261,7 +265,7 @@ def slug(value):
 
 
 def generate_draft(lead):
-    first_name = (lead["contact"] or "there").split(" ")[0]
+    first_name = lead["contact"] or "there"
     personalization = personalization_line(lead["personalization"], lead["company"])
     return (
         f"Subject: quick question for {lead['company']}\n\n"
@@ -269,7 +273,7 @@ def generate_draft(lead):
         "I'm An, and I'm working on ADC to help F&B owners make better use of the reports they already have: POS, labor, invoices, delivery, inventory, that kind of thing.\n\n"
         "Right now I'm doing the review hands-on for free while I'm getting it off the ground.\n\n"
         "If you'd like to learn more, here's the page:\n"
-        "https://adc-consulting.netlify.app/\n\n"
+        "https://adc-ops.com/\n\n"
         "Or if you just want to reply with your reports, that works too.\n\n"
         "— An Pham"
     )

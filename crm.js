@@ -137,7 +137,9 @@
         pain: raw.pain || raw["Likely Red Flags / Pain"] || raw.redFlags || "",
         personalization: raw.personalization || raw["Personalization Notes"] || "",
         newLocation: raw.newLocation || raw["New Location"] || "",
-        reviewsSummary: raw.reviewsSummary || raw["Reviews Summary"] || "",
+        reviewRating: raw.reviewRating || raw["Review Rating"] || "",
+        reviewCount: raw.reviewCount || raw["Number of Reviews"] || "",
+        reviewPlatform: raw.reviewPlatform || raw["Review Platform"] || "",
         notes: raw.notes || raw["Owner / Internal Notes"] || "",
         doNotContact: isYes(raw.doNotContact || raw["Do Not Contact?"]),
         active: raw.active ?? !isYes(raw.doNotContact || raw["Do Not Contact?"]),
@@ -164,7 +166,9 @@
       lead.pain = String(lead.pain).trim();
       lead.personalization = String(lead.personalization).trim();
       lead.newLocation = String(lead.newLocation).trim();
-      lead.reviewsSummary = String(lead.reviewsSummary).trim();
+      lead.reviewRating = String(lead.reviewRating).trim();
+      lead.reviewCount = String(lead.reviewCount).trim();
+      lead.reviewPlatform = String(lead.reviewPlatform).trim();
       lead.notes = String(lead.notes).trim();
       return lead;
     }
@@ -665,7 +669,7 @@
     }
 
     function renderTasks(visible) {
-      const tasks = [...visible].filter((lead) => !isStopped(lead)).sort((a, b) => (a.nextDueAt || lead.nextDate || "9999").localeCompare(b.nextDueAt || b.nextDate || "9999"));
+      const tasks = [...visible].filter((lead) => !isStopped(lead)).sort((a, b) => (a.nextDueAt || a.nextDate || "9999").localeCompare(b.nextDueAt || b.nextDate || "9999"));
       taskRows.innerHTML = tasks.length ? tasks.map((lead) => `
         <tr>
           <td class="${(lead.nextDueAt || lead.nextDate) <= todayIso ? "due" : ""}">${escapeHtml(lead.nextDueAt || lead.nextDate || "Unscheduled")}</td>
@@ -721,13 +725,13 @@
     }
 
     function generateDraft(lead, type) {
-      const firstName = (lead.contact || "there").split(" ")[0];
+      const firstName = lead.contact || "there";
       const drafts = {
         intro: introTemplate(lead),
-        followup: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-consulting.netlify.app/\n\n— An Pham`,
-        followup1: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-consulting.netlify.app/\n\n— An Pham`,
+        followup: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-ops.com/\n\n— An Pham`,
+        followup1: `Subject: Re: ${lead.company}\n\nHi ${firstName},\n\nJust following up in case my note got buried. I'm doing these report reviews hands-on right now and thought ${lead.company} might be a fit.\n\nHere's the page if useful:\nhttps://adc-ops.com/\n\n— An Pham`,
         followup2: `Subject: still worth a look?\n\nHi ${firstName},\n\nOne more quick follow-up. If this is relevant, I'm happy to take a look at the reports you already use and send back a simple summary of what stands out.\n\nIf not, no worries at all.\n\n— An Pham`,
-        audit: `Subject: report review for ${lead.company}\n\nHi ${firstName},\n\nI'm doing hands-on report reviews for F&B owners while getting ADC off the ground. If you send over POS, labor, invoice, delivery, or inventory reports, I'll send back a simple summary of what looks worth checking.\n\nHere's the page if you'd like more context:\nhttps://adc-consulting.netlify.app/\n\n— An Pham`,
+        audit: `Subject: report review for ${lead.company}\n\nHi ${firstName},\n\nI'm doing hands-on report reviews for F&B owners while getting ADC off the ground. If you send over POS, labor, invoice, delivery, or inventory reports, I'll send back a simple summary of what looks worth checking.\n\nHere's the page if you'd like more context:\nhttps://adc-ops.com/\n\n— An Pham`,
         weekly1: `Subject: quick follow-up\n\nHi ${firstName},\n\nChecking back once more. I'm still doing a few hands-on report reviews for F&B owners and would be happy to include ${lead.company} if it would be useful.\n\n— An Pham`,
         weekly2: `Subject: should I close the loop?\n\nHi ${firstName},\n\nI do not want to crowd your inbox, so I can close the loop here. If reviewing a few existing reports would ever be useful, feel free to reply and I can take a look.\n\n— An Pham`,
         monthly: `Subject: quick check-in\n\nHi ${firstName},\n\nCircling back in case a hands-on report review is more useful this month. If not, no worries.\n\n— An Pham`,
@@ -744,18 +748,26 @@
     }
 
     function introTemplate(lead) {
-      const firstName = (lead.contact || "there").split(" ")[0];
+      const firstName = lead.contact || "there";
       const locations = Number(lead.locations || 1);
       const variant = getIntroVariant(lead);
       if (variant === "leadWithOffer") {
-        return `Subject: Free ops report for multi-location F&B operators\n\n${firstName},\n\nSaw the ${lead.newLocation} location is coming soon. Before opening a new location, most operators want one thing: a clear picture of where their current ones actually stand.\n\nWe put together a free diagnostic report that gives you exactly that. Cross-location view of your food cost, labor variance, vendor pricing, void patterns, and review trends. Pulled from data you already have, delivered in 48 hours, no call required first.\n\nIt's built for operators running 2-${locations} locations who are thinking about what comes next.\nYou keep the report regardless of what happens after.\nhttps://adc-consulting.netlify.app/\n— An Pham`;
+        return `Subject: Free ops report for multi-location F&B operators\n\n${firstName},\n\nSaw the ${lead.newLocation} location is coming soon. Before opening a new location, most operators want one thing: a clear picture of where their current ones actually stand.\n\nWe put together a free diagnostic report that gives you exactly that. Cross-location view of your food cost, labor variance, vendor pricing, void patterns, and review trends. Pulled from data you already have, delivered in 48 hours, no call required first.\n\nIt's built for operators running 2-${locations} locations who are thinking about what comes next.\nYou keep the report regardless of what happens after.\nhttps://adc-ops.com/\n— An Pham`;
       }
       if (variant === "observational") {
-        return `Subject: Something we built for F&B operators scaling past 2 locations\n\n${firstName},\n\nWhat I keep hearing from multi-location operators is that the data's all there across their POS, labor, and invoices, but nobody's pulling it into one place and telling them what it means.\n\nWe built a free diagnostic report that does that. Vendor pricing trends across locations, labor cost variance, void and comp patterns, food cost gaps. Delivered in 48 hours from data you already have.\n\nNo onboarding, no sales call first. Just a clear read on where things stand.\nIf the timing's right:\nhttps://adc-consulting.netlify.app/\n— An Pham`;
+        return `Subject: Something we built for F&B operators scaling past 2 locations\n\n${firstName},\n\nWhat I keep hearing from multi-location operators is that the data's all there across their POS, labor, and invoices, but nobody's pulling it into one place and telling them what it means.\n\nWe built a free diagnostic report that does that. Vendor pricing trends across locations, labor cost variance, void and comp patterns, food cost gaps. Delivered in 48 hours from data you already have.\n\nNo onboarding, no sales call first. Just a clear read on where things stand.\nIf the timing's right:\nhttps://adc-ops.com/\n— An Pham`;
       }
-      const reviewsSummary = String(lead.reviewsSummary || "").trim();
-      const reviewsLine = reviewsSummary ? `${lead.company} has ${reviewsSummary}. That's the kind of standard worth holding onto before expanding.\n\n` : "";
-      return `Subject: For operators thinking about their next location\n\n${firstName},\n\n${reviewsLine}When the timing feels right for a new location, the question we hear most is: "How do I know the current ones are going to be fine?"\n\nWe run a free diagnostic report that answers that. Cross-location breakdown of food cost, labor, vendor pricing, voids, and review trends. Uses data you already have, takes 48 hours, no commitment attached.\n\nOperators use it to get a clean baseline as they grow. Some use it just to see what comes up.\n\nEither way, it's yours to keep.\nhttps://adc-consulting.netlify.app/\n— An Pham`;
+      const reviewRating = String(lead.reviewRating || "").trim();
+      const reviewCount = String(lead.reviewCount || "").trim();
+      const reviewPlatform = String(lead.reviewPlatform || "").trim();
+      const hasReviews = reviewRating || reviewCount;
+      const reviewsDesc = [
+        reviewCount ? `${reviewCount} reviews` : "",
+        reviewRating ? `${reviewRating}★` : "",
+        reviewPlatform ? `on ${reviewPlatform}` : ""
+      ].filter(Boolean).join(" ");
+      const reviewsLine = hasReviews ? `${lead.company} has ${reviewsDesc}. That's the kind of standard worth holding onto before expanding.\n\n` : "";
+      return `Subject: For operators thinking about their next location\n\n${firstName},\n\n${reviewsLine}When the timing feels right for a new location, the question we hear most is: "How do I know the current ones are going to be fine?"\n\nWe run a free diagnostic report that answers that. Cross-location breakdown of food cost, labor, vendor pricing, voids, and review trends. Uses data you already have, takes 48 hours, no commitment attached.\n\nOperators use it to get a clean baseline as they grow. Some use it just to see what comes up.\n\nEither way, it's yours to keep.\nhttps://adc-ops.com/\n— An Pham`;
     }
 
     function personalizationLine(note, company) {
@@ -800,7 +812,9 @@
       $("nextAction").value = lead?.nextAction || "Send intro email";
       $("nextDate").value = lead?.nextDate || todayIso;
       $("newLocation").value = lead?.newLocation || "";
-      $("reviewsSummary").value = lead?.reviewsSummary || "";
+      $("reviewRating").value = lead?.reviewRating || "";
+      $("reviewCount").value = lead?.reviewCount || "";
+      $("reviewPlatform").value = lead?.reviewPlatform || "";
       $("pain").value = lead?.pain || "";
       $("notes").value = lead?.notes || "";
       $("leadModal").classList.add("open");
@@ -837,7 +851,9 @@
         nextDate: $("nextDate").value,
         nextDueAt: $("nextDate").value,
         newLocation: $("newLocation").value.trim(),
-        reviewsSummary: $("reviewsSummary").value.trim(),
+        reviewRating: $("reviewRating").value.trim(),
+        reviewCount: $("reviewCount").value.trim(),
+        reviewPlatform: $("reviewPlatform").value.trim(),
         pain: $("pain").value.trim(),
         personalization: existing?.personalization || "",
         notes: $("notes").value.trim(),
@@ -914,13 +930,23 @@
           const result = await mergeImportedLeads(imported);
           saveLeads();
           render();
-          showToast(`Imported ${result.added} new, updated ${result.updated}, skipped ${result.skipped}`);
+          showToast(`Imported ${result.added} new, ${result.dupes.length} updated (duplicates), ${result.skipped} invalid`);
+          showImportReport(result.dupes);
         } catch (error) {
           showToast(`Import failed: ${error.message}`);
         }
       };
       reader.readAsText(file);
       event.target.value = "";
+    }
+
+    function showImportReport(dupes) {
+      const el = $("importReport");
+      if (!dupes.length) { el.style.display = "none"; return; }
+      const text = `${dupes.length} duplicate(s) updated with new info from import:\n` +
+        dupes.map((d) => `• ${d}`).join("\n");
+      $("importReportText").value = text;
+      el.style.display = "";
     }
 
     function parseLeadFile(text, fileName) {
@@ -972,10 +998,28 @@
     }
 
     async function mergeImportedLeads(imported) {
-      if (!requireAuth()) return { added: 0, updated: 0, skipped: imported.length };
-      const result = { added: 0, updated: 0, skipped: 0 };
+      if (!requireAuth()) return { added: 0, dupes: [], skipped: imported.length };
+      const result = { added: 0, dupes: [], skipped: 0 };
       const seen = new Set();
       const changed = [];
+      // Profile fields the Excel can update — non-empty import value wins; blank keeps CRM value
+      const profileFields = [
+        "company", "contact", "phone", "city", "state", "website",
+        "pos", "locations", "source", "temperature", "value",
+        "pain", "personalization", "newLocation",
+        "reviewRating", "reviewCount", "reviewPlatform", "notes"
+      ];
+      // normalizeLead coerces blank cells to these defaults — treat them as "not provided"
+      const importDefaults = { pos: "Unknown", temperature: "Cold" };
+      // Pipeline fields to protect when lead is past Research
+      const pipelineFields = [
+        "stage", "nextAction", "nextDate", "nextDueAt",
+        "sequenceStep", "touches", "touchCount",
+        "lastSentAt", "lastTouch", "lastGmailMessageId", "threadId",
+        "active", "replied", "bounced", "paused", "doNotContact",
+        "replyMessageId", "repliedAt", "replySnippet",
+        "bounceMessageId", "bouncedAt", "pausedReason"
+      ];
       for (const lead of imported) {
         const key = lead.email ? `email:${lead.email.toLowerCase()}` : `company:${lead.company.toLowerCase()}`;
         if (!lead.company || lead.doNotContact || seen.has(key)) {
@@ -988,9 +1032,34 @@
           return item.company.toLowerCase() === lead.company.toLowerCase();
         });
         if (existingIndex >= 0) {
-          leads[existingIndex] = { ...leads[existingIndex], ...lead, id: leads[existingIndex].id, updatedAt: Date.now() };
-          changed.push(leads[existingIndex]);
-          result.updated += 1;
+          const existing = leads[existingIndex];
+          const label = existing.email
+            ? `${existing.company} <${existing.email}>`
+            : existing.company;
+          // Merge: overlay non-empty profile fields from import onto existing
+          const merged = { ...existing };
+          for (const f of profileFields) {
+            const v = lead[f];
+            if (f === "locations") {
+              // 1 is the normalizeLead default for blank — treat as not provided
+              if (Number(v) > 1) merged[f] = v;
+            } else if (f === "value") {
+              if (Number(v) > 0) merged[f] = v;
+            } else if (f in importDefaults && v === importDefaults[f]) {
+              // value equals normalizeLead default, meaning source cell was blank — keep CRM value
+            } else if (v !== undefined && v !== null && v !== "") {
+              merged[f] = v;
+            }
+          }
+          // Protect pipeline if lead is past Research (treat missing stage as Research)
+          if ((existing.stage || "Research") !== "Research") {
+            for (const f of pipelineFields) merged[f] = existing[f];
+          }
+          merged.id = existing.id;
+          merged.updatedAt = Date.now();
+          leads[existingIndex] = merged;
+          changed.push(merged);
+          result.dupes.push(label);
         } else {
           const next = { ...lead, id: uid(), updatedAt: Date.now() };
           leads.unshift(next);
@@ -1120,12 +1189,12 @@
 
     // ── Claude AI draft helpers ────────────────────────────────────
 
-    const CLAUDE_SYSTEM_PROMPT = `You are An Pham, founder of ADC Consulting. You email independent restaurant and cafe operators directly about a free diagnostic report. You are not a sales person. You are a builder offering a useful diagnostic while learning from real operators. Voice: casual, punchy, direct. Contractions are fine. Do not sound polished or corporate. The report reviews existing POS, labor, invoice, vendor, void, comp, food cost, and review trend data. It is free, delivered in 48 hours, and tied to the operator's current situation. INDUSTRY LANGUAGE: Write like someone who has worked in F&B. Use these terms naturally when relevant, never as a list or lecture: food cost %, prime cost (food cost + labor combined), COGS, labor cost %, pour cost, void, comp, 86'd, cover count, check average, BOH, FOH, shrinkage, theoretical vs actual, in the weeds. These words signal fluency. They should appear in passing, not as a demonstration. TARGET PERSONA: The recipient is typically 30-40, owns 2-4 F&B locations, built something real and is proud of it. They are not a first-time operator. They read email on their phone between service. They make a snap judgment in the first two sentences about whether the sender understands their world. They respond to specificity and competence. They do not respond to flattery, generic pain-point lists, or anything that implies they don't know what they're doing. The goal is to make them think: how do they know that? INDUSTRY CONTEXT (use to inform relevance and timing, not to lecture): Food costs are up 35%+ above pre-pandemic levels. 91% of operators saw food costs rise in 2025. Tariffs have hit proteins and imported goods hardest. Labor costs are up across the board with ongoing minimum wage increases. Vendor price drift across invoice cycles is a real and specific pain point for multi-location operators. 42% of operators were not profitable in 2025 despite record industry sales. These are conditions the recipient is living, not facts to quote at them. HARD RULES: Cold intros must be 90 to 110 words including signature. Follow-ups must be 40 to 80 words including signature. If the greeting target is a company or business name (no contact person provided), open with the company name on its own line followed by a comma — same format as a first name. The only allowed em dash is the signature line: — An Pham. Do not use em dashes or en dashes anywhere else. Do not explain their business back to them. Never write generic lines like Running a N-location restaurant means... or Between the floor and the kitchen... or list problems they probably have. BANNED words: metrics, analytics, insights, leak, silos, dashboard, optimize, leverage, stack, platform, anomaly, KPI, framework, slipping, money you are leaving on the table. LINK: https://adc-consulting.netlify.app/ OUTPUT FORMAT: Subject: [subject line] [email body with the link on its own line and the sign-off at the end]. Sign off with exactly: — An Pham. PERSONALIZATION: Every email must be written specifically for this lead. Use their company name, location count, city, POS system, and any provided personalization or pain notes. Vary your sentence openings, transitions, and phrasing from lead to lead. The voice reference below shows arc and tone — do not copy its phrases verbatim. An operator reading this should feel it was written for them, not generated. STRUCTURE for Variant 1, Lead With the Offer: Use when the user asks for leadWithOffer. Subject close to: Free ops report for multi-location F&B operators. Open with the greeting target on its own line, followed by a comma. Use it exactly as given — do not modify or replace it. Hook on the specific new location coming — connect the timing of expansion to wanting a clear picture of where the current ones stand. Offer the free diagnostic report: cross-location food cost, labor variance, vendor pricing, void patterns, review trends — pulled from existing data, 48 hours, no call required. Signal who it's built for using their actual location count. Low-pressure close: they keep the report regardless. Link and signature. STRUCTURE for Variant 2, Observational: Use when the user asks for observational. Subject close to: Something we built for F&B operators scaling past 2 locations. Open with the greeting target on its own line, followed by a comma. Use it exactly as given — do not modify or replace it. Hook on the cross-location data fragmentation reality: the data exists across POS, labor, and invoices but nothing connects it into a single read. State this as a shared condition for operators at their scale — not a complaint, not a pitch. The report is what solves it: vendor pricing trends, labor cost variance, void and comp patterns, food cost gaps. Existing data, 48 hours. Low-pressure timing close. Link and signature. STRUCTURE for Variant 3, Expansion Angle: Use when the user asks for expansion. Subject close to: For operators thinking about their next location. Open with the greeting target on its own line, followed by a comma. Use it exactly as given — do not modify or replace it. If Reviews summary is provided, open with a line about their specific track record being worth protecting before expanding — use the actual reviews data, not a generic compliment. If not, start directly with the pre-expansion tension. The central question: before opening another location, how do you know the current ones are solid? The report answers that — food cost, labor, vendor pricing, voids, review trends, existing data, 48 hours, no commitment. Close with the baseline idea and that they keep it either way. Link and signature. STRUCTURE for follow-ups: Reference the prior reach-out briefly without repeating the full pitch. Tie back to the free diagnostic report and the 48-hour turnaround. Keep it casual, low-pressure, short. Use the same link and exact signature. VOICE REFERENCE — arc and tone only, do not copy phrases: Subject: Something we built for F&B operators scaling past 2 locations Marcus, Operators running 3 locations tend to hit the same wall: the data's all there across their POS, labor, and invoices, but nobody's pulling it into one place and telling them what it means. We built a free diagnostic report that does that. Vendor pricing trends across locations, labor cost variance, void and comp patterns, food cost gaps. Delivered in 48 hours from data you already have. No onboarding, no sales call first. Just a clear read on where things stand. If the timing's right: https://adc-consulting.netlify.app/ — An Pham`;
+    const CLAUDE_SYSTEM_PROMPT = `You are An Pham, founder of ADC Consulting. You email independent restaurant and cafe operators directly about a free diagnostic report. You are not a sales person. You are a builder offering a useful diagnostic while learning from real operators. Voice: casual, punchy, direct. Contractions are fine. Do not sound polished or corporate. The report reviews existing POS, labor, invoice, vendor, void, comp, food cost, and review trend data. It is free, delivered in 48 hours, and tied to the operator's current situation. INDUSTRY LANGUAGE: Write like someone who has worked in F&B. Use these terms naturally when relevant, never as a list or lecture: food cost %, prime cost (food cost + labor combined), COGS, labor cost %, pour cost, void, comp, 86'd, cover count, check average, BOH, FOH, shrinkage, theoretical vs actual, in the weeds. These words signal fluency. They should appear in passing, not as a demonstration. TARGET PERSONA: The recipient is typically 30-40, owns 2-4 F&B locations, built something real and is proud of it. They are not a first-time operator. They read email on their phone between service. They make a snap judgment in the first two sentences about whether the sender understands their world. They respond to specificity and competence. They do not respond to flattery, generic pain-point lists, or anything that implies they don't know what they're doing. The goal is to make them think: how do they know that? INDUSTRY CONTEXT (use to inform relevance and timing, not to lecture): Food costs are up 35%+ above pre-pandemic levels. 91% of operators saw food costs rise in 2025. Tariffs have hit proteins and imported goods hardest. Labor costs are up across the board with ongoing minimum wage increases. Vendor price drift across invoice cycles is a real and specific pain point for multi-location operators. 42% of operators were not profitable in 2025 despite record industry sales. These are conditions the recipient is living, not facts to quote at them. HARD RULES: Cold intros must be 90 to 110 words including signature. Follow-ups must be 40 to 80 words including signature. If the greeting target is a company or business name (no contact person provided), open with the company name on its own line followed by a comma — same format as a first name. The only allowed em dash is the signature line: — An Pham. Do not use em dashes or en dashes anywhere else. Do not explain their business back to them. Never write generic lines like Running a N-location restaurant means... or Between the floor and the kitchen... or list problems they probably have. BANNED words: metrics, analytics, insights, leak, silos, dashboard, optimize, leverage, stack, platform, anomaly, KPI, framework, slipping, money you are leaving on the table. LINK: https://adc-ops.com/ OUTPUT FORMAT: Subject: [subject line] [email body with the link on its own line and the sign-off at the end]. Sign off with exactly: — An Pham. PERSONALIZATION: Every email must be written specifically for this lead. Use their company name, location count, city, POS system, and any provided personalization or pain notes. Vary your sentence openings, transitions, and phrasing from lead to lead. The voice reference below shows arc and tone — do not copy its phrases verbatim. An operator reading this should feel it was written for them, not generated. STRUCTURE for Variant 1, Lead With the Offer: Use when the user asks for leadWithOffer. Subject close to: Free ops report for multi-location F&B operators. Open with the greeting target on its own line, followed by a comma. Use it exactly as given — do not modify or replace it. Hook on the specific new location coming — connect the timing of expansion to wanting a clear picture of where the current ones stand. Offer the free diagnostic report: cross-location food cost, labor variance, vendor pricing, void patterns, review trends — pulled from existing data, 48 hours, no call required. Signal who it's built for using their actual location count. Low-pressure close: they keep the report regardless. Link and signature. STRUCTURE for Variant 2, Observational: Use when the user asks for observational. Subject close to: Something we built for F&B operators scaling past 2 locations. Open with the greeting target on its own line, followed by a comma. Use it exactly as given — do not modify or replace it. Hook on the cross-location data fragmentation reality: the data exists across POS, labor, and invoices but nothing connects it into a single read. State this as a shared condition for operators at their scale — not a complaint, not a pitch. The report is what solves it: vendor pricing trends, labor cost variance, void and comp patterns, food cost gaps. Existing data, 48 hours. Low-pressure timing close. Link and signature. STRUCTURE for Variant 3, Expansion Angle: Use when the user asks for expansion. Subject close to: For operators thinking about their next location. Open with the greeting target on its own line, followed by a comma. Use it exactly as given — do not modify or replace it. If Reviews summary is provided, open with a line about their specific track record being worth protecting before expanding — use the actual reviews data, not a generic compliment. If not, start directly with the pre-expansion tension. The central question: before opening another location, how do you know the current ones are solid? The report answers that — food cost, labor, vendor pricing, voids, review trends, existing data, 48 hours, no commitment. Close with the baseline idea and that they keep it either way. Link and signature. STRUCTURE for follow-ups: Reference the prior reach-out briefly without repeating the full pitch. Tie back to the free diagnostic report and the 48-hour turnaround. Keep it casual, low-pressure, short. Use the same link and exact signature. VOICE REFERENCE — arc and tone only, do not copy phrases: Subject: Something we built for F&B operators scaling past 2 locations Marcus, Operators running 3 locations tend to hit the same wall: the data's all there across their POS, labor, and invoices, but nobody's pulling it into one place and telling them what it means. We built a free diagnostic report that does that. Vendor pricing trends across locations, labor cost variance, void and comp patterns, food cost gaps. Delivered in 48 hours from data you already have. No onboarding, no sales call first. Just a clear read on where things stand. If the timing's right: https://adc-ops.com/ — An Pham`;
 
     function buildAIUserPrompt(lead, sequenceKey) {
       const rawContact = (lead.contact || "").trim();
       const contactIsValid = rawContact && !/^n\/?a$/i.test(rawContact);
-      const greetingName = contactIsValid ? rawContact.split(" ")[0] : (lead.company || "");
+      const greetingName = contactIsValid ? rawContact : (lead.company || "");
       const co = lead.company || "your spot";
       const city = lead.city ? ` in ${lead.city}` : "";
       const pos = lead.pos && lead.pos !== "Unknown" ? ` (uses ${lead.pos})` : "";
@@ -1139,7 +1208,10 @@
       const personal = String(lead.personalization || "").trim();
       const pain = String(lead.pain || "").trim();
       const newLocation = String(lead.newLocation || "").trim();
-      const reviewsSummary = String(lead.reviewsSummary || "").trim();
+      const reviewRating = String(lead.reviewRating || "").trim();
+      const reviewCount = String(lead.reviewCount || "").trim();
+      const reviewPlatform = String(lead.reviewPlatform || "").trim();
+      const reviewsContext = [reviewCount && `${reviewCount} reviews`, reviewRating && `${reviewRating}★`, reviewPlatform && `on ${reviewPlatform}`].filter(Boolean).join(", ");
       const blocked = ["unsure", "probably", "need to", "damn", "target client", "contact form", "would be cool", "skip breakfast"];
       const usePersonal = Boolean(personal) && !blocked.some((term) => personal.toLowerCase().includes(term)) && personal.length <= 240;
       const baseFacts = [
@@ -1151,7 +1223,7 @@
         `Locations: ${locs}${city}${pos}`,
         sequenceKey === "intro" ? `Variant: ${variant}` : "",
         sequenceKey === "intro" ? `New location: ${newLocation || "none"}` : "",
-        sequenceKey === "intro" ? `Reviews summary: ${reviewsSummary || "none"}` : "",
+        sequenceKey === "intro" ? `Reviews: ${reviewsContext || "none"}` : "",
         usePersonal
           ? `Personalization: ${personal}`
           : "Personalization: no usable specific personalization notes. Use only known company, city, location count, or cuisine/type details. Never invent details.",

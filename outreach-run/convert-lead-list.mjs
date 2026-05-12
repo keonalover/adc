@@ -11,10 +11,10 @@ await fs.mkdir(outputDir, { recursive: true });
 const workbook = await SpreadsheetFile.importXlsx(await FileBlob.load(inputPath));
 const inspected = await workbook.inspect({
   kind: "table",
-  range: "Lead List!A1:U500",
+  range: "Lead List!A1:W500",
   include: "values",
   tableMaxRows: 500,
-  tableMaxCols: 21,
+  tableMaxCols: 23,
   maxChars: 200000
 });
 
@@ -71,7 +71,9 @@ for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
     pain: clean(record["Likely Red Flags / Pain"]),
     personalization: clean(record["Personalization Notes"]),
     newLocation: clean(record["New Location"]),
-    reviewsSummary: clean(record["Reviews Summary"]),
+    reviewRating: clean(record["Review Rating"]),
+    reviewCount: clean(record["Number of Reviews"]),
+    reviewPlatform: clean(record["Review Platform"]),
     nextAction: clean(record["Next Action"]) || "Send intro email",
     nextDate: normalizeDate(record["Next Action Date"]) || today,
     doNotContact: false,
@@ -176,9 +178,10 @@ function uid() {
 }
 
 function generateDraft(lead) {
-  const firstName = (lead.contact || "there").split(" ")[0];
+  const firstName = lead.contact || "there";
   const pain = lead.pain || "labor, delivery, inventory, refund, discount, or invoice patterns";
-  const context = [lead.personalization, lead.newLocation, lead.reviewsSummary].filter(Boolean).join(" ");
+  const reviewsText = [lead.reviewCount && `${lead.reviewCount} reviews`, lead.reviewRating && `${lead.reviewRating}★`, lead.reviewPlatform && `on ${lead.reviewPlatform}`].filter(Boolean).join(" ");
+  const context = [lead.personalization, lead.newLocation, reviewsText].filter(Boolean).join(" ");
   const personalization = context ? `\n\nI noticed: ${context}` : "";
   return `Subject: Quick red-flag review for ${lead.company}\n\nHi ${firstName},${personalization}\n\nI work with ADC Consulting. We help independent F&B operators spot hidden margin leaks across POS, labor, delivery, inventory, invoices, refunds, discounts, and waste reports.\n\nIf useful, I can do a free one-time Red Flag Report for ${lead.company}. You send the exports you already have, and I send back a concise summary of what looks worth checking.\n\nFor ${lead.company}, I would especially look around ${pain}.\n\nWould it be worth a short intro call next week?\n\n— An Pham`;
 }

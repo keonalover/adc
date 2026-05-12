@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#2F2823" />
   <title>ADC Outreach CRM</title>
   <meta name="description" content="Local MVP CRM for ADC Consulting outreach." />
+  <link rel="canonical" href="https://adc-ops.com/crm.html" />
   <link rel="apple-touch-icon" href="adc-new-logo-white-bg-header.png" />
   <link rel="preload" href="adc-new-logo-white-bg-header.png" as="image" />
   <link rel="stylesheet" href="crm.css" />
@@ -56,6 +57,14 @@
           <input id="importFile" type="file" accept=".json,.csv,application/json,text/csv" hidden />
           <button class="btn primary" id="addLeadBtn" type="button">Add Lead</button>
         </div>
+      </div>
+
+      <div id="importReport" style="display:none;margin:0 0 12px;padding:10px 14px;background:#FFF8EF;border:1px solid #D8CAB8;border-radius:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:600;color:#2F2823;">Duplicates updated</span>
+          <button type="button" onclick="document.getElementById('importReport').style.display='none'" style="font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;">Dismiss</button>
+        </div>
+        <textarea id="importReportText" readonly rows="4" style="width:100%;font-size:12px;font-family:monospace;resize:vertical;border:1px solid #D8CAB8;border-radius:4px;padding:6px;background:#FFFCF7;color:#2F2823;box-sizing:border-box;"></textarea>
       </div>
 
       <section class="stats" aria-label="CRM metrics">
@@ -332,8 +341,16 @@
             <input id="newLocation" placeholder="e.g. Brooklyn opening Q4 2026" />
           </div>
           <div class="field">
-            <label for="reviewsSummary">Reviews summary (single-location leads)</label>
-            <input id="reviewsSummary" placeholder="e.g. 147 reviews, 4.6★ on Google" />
+            <label for="reviewRating">Review rating</label>
+            <input id="reviewRating" placeholder="e.g. 4.6" />
+          </div>
+          <div class="field">
+            <label for="reviewCount">Number of reviews</label>
+            <input id="reviewCount" placeholder="e.g. 147" />
+          </div>
+          <div class="field">
+            <label for="reviewPlatform">Review platform</label>
+            <input id="reviewPlatform" placeholder="Google, Yelp, TripAdvisor..." />
           </div>
           <div class="field wide">
             <label for="pain">Likely red flags</label>

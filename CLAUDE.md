@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-ADC Consulting outreach toolkit for independent multi-location F&B operators. Deployed on Netlify at `https://adc-consulting.netlify.app/` as a static site — no `netlify.toml`, `_redirects`, `package.json`, or build command. Netlify deploy settings are configured in the Netlify dashboard.
+ADC Consulting outreach toolkit for independent multi-location F&B operators. Deployed on Netlify at `https://adc-ops.com/` as a static site — no `netlify.toml`, `package.json`, or build command. Netlify deploy settings are configured in the Netlify dashboard. `_redirects` preserves old Netlify-subdomain traffic and canonicalizes `www` to the apex domain.
 
 **Deployment:** Netlify auto-deploys from the main branch of https://github.com/keonalover/adc. Push to main = live.
 
@@ -25,7 +25,7 @@ npx serve .
 python -m http.server 8080
 ```
 
-For Gmail OAuth to work locally, `http://localhost:8080` (or your port) must be added as an authorized JavaScript origin in Google Cloud Console alongside `https://adc-consulting.netlify.app`.
+For Gmail OAuth to work locally, `http://localhost:8080` (or your port) must be added as an authorized JavaScript origin in Google Cloud Console alongside `https://adc-ops.com`.
 
 ## Outreach run workflow
 
@@ -79,7 +79,7 @@ Single-file vanilla JS app. Key design decisions:
 2. Enable Gmail API
 3. OAuth consent screen → External → add your Google account as a Test User
 4. Credentials → OAuth 2.0 Client ID → Web application
-5. Authorized JavaScript origins: `https://adc-consulting.netlify.app` and `http://localhost:8080`
+5. Authorized JavaScript origins: `https://adc-ops.com` and `http://localhost:8080`
 6. No redirect URIs needed (GIS token popup flow)
 7. Paste the Client ID into `GMAIL_CLIENT_ID` at the top of the `<script>` block in `crm.html`
 
