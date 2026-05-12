@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-ADC Consulting outreach toolkit for independent multi-location F&B operators. Deployed on Netlify at `https://adc-ops.com/` as a static site — no `netlify.toml`, `package.json`, or build command. Netlify deploy settings are configured in the Netlify dashboard. `_redirects` preserves old Netlify-subdomain traffic and canonicalizes `www` to the apex domain.
+ADC Consulting outreach toolkit for independent multi-location F&B operators. Public domain: `https://adc-ops.com/`. Static site with no build system, no `package.json`, and no host-specific config.
 
-**Deployment:** Netlify auto-deploys from the main branch of https://github.com/keonalover/adc. Push to main = live.
+**Deployment:** Host the repository root as a static site. Point `adc-ops.com` DNS at the chosen static host and keep the host's publish directory set to the repo root.
 
 Five areas:
 - **`index.html`** — Public marketing/landing page
@@ -85,7 +85,7 @@ Single-file vanilla JS app. Key design decisions:
 
 ## Architecture: marketing pages (`index.html` / `index-packages.html`)
 
-Static HTML with embedded CSS and vanilla JS. Fonts loaded async via Google Fonts (Playfair Display + DM Sans). CSS custom properties under `/* CSS CUSTOM PROPERTIES — Edit colors here */` at the top of `<style>` are the single place to change the palette. CTAs link to Google Forms and Cal.com — there is no Netlify Forms handling.
+Static HTML with embedded CSS and vanilla JS. Fonts loaded async via Google Fonts (Playfair Display + DM Sans). CSS custom properties under `/* CSS CUSTOM PROPERTIES — Edit colors here */` at the top of `<style>` are the single place to change the palette. CTAs link to Google Forms and Cal.com; there is no host-specific form handling.
 
 Image assets required by each page:
 - `index.html`: `adc-new-logo-header-optimized.jpg`, `chopsticks_logo_300x300px-1.jpg`, `ninemax-media.jpg`, `curate logo.jpeg`, `mahaaya_logo.jpeg`, `davien logo.avif`
