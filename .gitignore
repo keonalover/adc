@@ -9,7 +9,9 @@ node_modules/
 # Editor and tooling
 .vscode/
 .idea/
-.claude/
+# Ignore local Claude state but keep project-scoped skills tracked
+.claude/*
+!.claude/skills/
 *.swp
 *.swo
 
@@ -26,6 +28,10 @@ outreach-run/*-crm-import.json
 outreach-run/*-summary.json
 outreach-run/*-draft-preview.json
 outreach-run/*-batch-review.json
+
+# Python artifacts
+__pycache__/
+*.pyc
 
 # Logs
 *.log
