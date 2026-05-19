@@ -75,7 +75,7 @@ function Get-InvocationLine {
     $lines = $SkillText -split "`r?`n"
     foreach ($line in $lines) {
         $trimmed = $line.Trim()
-        if ($trimmed -match "^python\s+\.claude/skills/adc-lead-research/scripts/build-instantly-list\.py\s+<rows\.json>\s+outreach-run$") {
+        if ($trimmed -match "^python\s+\.claude/skills/adc-lead-research/scripts/build-lead-list\.py\s+<qualified\.json>\s+outreach-run$") {
             return $trimmed
         }
     }
@@ -143,5 +143,9 @@ $codexParent = Split-Path -Parent $codexPath
 if (-not (Test-Path -LiteralPath $codexParent)) {
     New-Item -ItemType Directory -Path $codexParent -Force | Out-Null
 }
-[System.IO.File]::WriteAllBytes($codexPath, [System.IO.File]::ReadAllBytes($canonicalPath))
-Write-Utf8NoBom $agentsPath $generatedAgentsText
+if (-not (Test-ByteEqual $canonicalPath $codexPath)) {
+    [System.IO.File]::WriteAllBytes($codexPath, [System.IO.File]::ReadAllBytes($canonicalPath))
+}
+if (-not (Test-Path -LiteralPath $agentsPath) -or (Read-Utf8Text $agentsPath) -ne $generatedAgentsText) {
+    Write-Utf8NoBom $agentsPath $generatedAgentsText
+}

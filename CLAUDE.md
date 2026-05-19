@@ -6,14 +6,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ADC Consulting outreach toolkit for independent multi-location F&B operators. Public domain: `https://adc-ops.com/`. Static site with no build system, no `package.json`, and no host-specific config.
 
-**Deployment:** Host the repository root as a static site. Point `adc-ops.com` DNS at the chosen static host and keep the host's publish directory set to the repo root.
+**Deployment:** GitHub Pages (custom domain `adc-ops.com`). The repository root is the publish directory; no build step required. DNS for `adc-ops.com` points to GitHub's servers.
 
 Five areas:
 - **`index.html`** — Public marketing/landing page
 - **`index-packages.html`** — Alternate landing page variant (slightly different color tokens, synchronous font loading)
-- **`crm.html`** — Local-first outreach CRM (single HTML file, all state in `localStorage`)
+- **`crm.html`** — Local-first outreach CRM. **Status: dormant (see below).**
 - **`outreach-run/`** — Excel → JSON draft/review pipeline for Gmail outreach
 - **`build-crm-template/`** — Codex script to regenerate the `.xlsx` lead list template
+
+> **`crm.html` is dormant and not maintained — likely for a long time.** Lead
+> work currently stops at the qualified domain list (the `adc-lead-research`
+> skill → Instantly/Apollo enrichment). The CRM, its Gmail OAuth integration,
+> and the `crm.html`-dependent steps of the outreach-run / populate-from-crm
+> flows below are **not in active use**. The sections are kept for context and
+> easy revival; do not invest in CRM changes or treat CRM breakage as
+> in-scope unless explicitly reviving it.
 
 ## Running locally
 
@@ -62,6 +70,9 @@ To reconstruct a populated workbook from current CRM state:
 3. The populated workbook lands at `ADC Outreach Lead List Template.xlsx`
 
 ## Architecture: CRM (`crm.html`)
+
+> **Dormant — not in active use.** Retained for context and possible future
+> revival. Treat the rest of this section as reference only.
 
 Single-file vanilla JS app. Key design decisions:
 

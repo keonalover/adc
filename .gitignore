@@ -29,6 +29,17 @@ outreach-run/*-summary.json
 outreach-run/*-draft-preview.json
 outreach-run/*-batch-review.json
 
+# Lead PII and run artifacts — MUST NOT be committed (repo publishes to public GitHub Pages)
+outreach-run/lead-master.csv
+outreach-run/instantly-lead-list-*.xlsx
+outreach-run/instantly-lead-list-*.csv
+outreach-run/candidates*.json
+qualified-*.json
+rows-*.json
+*-leads-*.json
+.tmp-*
+.tmp-run/
+
 # Python artifacts
 __pycache__/
 *.pyc
