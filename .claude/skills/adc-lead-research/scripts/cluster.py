@@ -1,3 +1,16 @@
+"""adc-lead-research: shared, source-agnostic clustering core.
+
+Imported by BOTH discovery front ends: places-discover.py and apify-ingest.py.
+build_outputs() takes a list of place dicts and produces the
+candidates.json / candidates-skipped.json contract (domain clustering,
+aggregator blocking, 2+ distinct-address filter).
+
+MAINTAINER: this is the single source of clustering truth. A change here
+affects every discovery source. Keep it source-neutral — pass the origin via
+the `source` argument, never hardcode it. Re-run the fixture regression in
+SKILL.md (Verify) before committing any change to build_outputs().
+"""
+
 import re
 import time
 from collections import Counter, defaultdict

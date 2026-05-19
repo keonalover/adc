@@ -1,3 +1,14 @@
+"""adc-lead-research: Google Places API -> candidates (DORMANT).
+
+Retained but inactive: Google Cloud billing is unavailable, so apify-ingest.py
+is the active discovery path. Clustering / filtering was extracted to
+cluster.py; this file is now only the Places API acquisition front end.
+
+MAINTAINER: do NOT delete — this is revived if Places billing returns. Any
+shared clustering logic belongs in cluster.py, not here. See SKILL.md
+(Discovery Sources) for the active vs dormant split.
+"""
+
 import argparse
 import json
 import os

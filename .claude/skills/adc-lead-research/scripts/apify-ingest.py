@@ -1,3 +1,15 @@
+"""adc-lead-research: Apify Google Maps export -> candidates (ACTIVE default).
+
+Adapts an Apify google-maps / places crawler JSON export onto the place-dict
+shape cluster.build_outputs() expects, raw-dedups, then delegates clustering.
+Expected per-record keys: title, website, totalScore, reviewsCount, street,
+city, state, url (the url carries query_place_id used for dedup).
+
+MAINTAINER: clustering / 2+-location filtering lives in cluster.py, NOT here.
+This file is only the Apify schema adapter — keep the field mapper tolerant
+(actors vary). This is the active discovery path; places-discover.py is dormant.
+"""
+
 import argparse
 import json
 import os
