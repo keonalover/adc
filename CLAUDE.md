@@ -53,6 +53,8 @@ ADC should not promise to save money or fix the business. ADC should surface wha
 
 ### Archived CRM / outreach workspace
 
+**`crm.html` is dormant and not maintained — likely for a long time.** Lead work currently stops at the qualified domain list (the `adc-lead-research` skill → Instantly/Apollo enrichment). The CRM, its Gmail OAuth integration, and the `crm.html`-dependent steps of the outreach-run / populate-from-crm flows are **not in active use**. The sections are kept for context and easy revival; do not invest in CRM changes or treat CRM breakage as in-scope unless explicitly reviving it.
+
 The former CRM/outreach workspace is stored locally at `.local-archive/crm-outreach-2026-05-20/` and ignored by Git. It includes the old `crm.html`, `crm.css`, `crm.js`, `outreach-run/`, `build-crm-template/`, workbook templates, and CRM export data.
 
 Do not restore, recommit, or deploy those files unless the user explicitly asks for the CRM to come back.
