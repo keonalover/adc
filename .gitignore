@@ -27,5 +27,10 @@ outreach-run/*-summary.json
 outreach-run/*-draft-preview.json
 outreach-run/*-batch-review.json
 
+# Local-only archives / private CRM materials
+.local-archive/
+adc-crm-*.json
+ADC Outreach Lead List Template*.xlsx
+
 # Logs
 *.log
