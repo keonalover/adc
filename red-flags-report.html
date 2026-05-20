@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ember: 4-Week Red-Flag Report | ADC Consulting</title>
   <meta name="description" content="A static ADC Consulting red-flag report mock-up for a four-location casual restaurant operator." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/adc-favicon-32.png" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg:#F7F3EE; --bg-alt:#F0EAE0; --bg-card:#FDFAF6;
-      --espresso:#081c05; --clay:#A8523D;
+      --espresso:#081c05; --espresso-hi:#12330d; --clay:#A8523D;
       --red-flag:#9E342D; --red-bg:#FDF0EE;
       --amber:#C47A2B; --amber-bg:#FDF3E3;
       --sage:#7A957A; --taupe:#342A23; --taupe-mid:#66574D;
@@ -17,6 +18,9 @@
       --cream:#FDFAF6;
       --shadow-sm:0 2px 8px rgba(52,42,35,.08);
       --shadow-md:0 8px 24px rgba(52,42,35,.12);
+      --font-display:'DM Sans', system-ui, sans-serif;
+      --font-body:'DM Sans', system-ui, sans-serif;
+      --max-w:1100px;
     }
 
     * { box-sizing: border-box; }
@@ -32,7 +36,11 @@
       line-height: 1.6;
     }
 
-    body { padding: 0 20px 32px; }
+    html {
+      scroll-padding-top: 112px;
+    }
+
+    body { padding: 84px 0 0; }
 
     a {
       color: var(--clay);
@@ -42,31 +50,67 @@
 
     .page {
       width: 100%;
-      max-width: 800px;
+      max-width: 840px;
       margin: 0 auto;
+      padding: 0 20px 32px;
     }
 
-    .top-nav {
-      position: sticky;
+    nav {
+      position: fixed;
       top: 0;
-      z-index: 5;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 36px;
+      background: #fff;
+      border-bottom: 1px solid var(--sand-light);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      min-height: 40px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-logo img {
+      width: auto;
+      height: auto;
+      max-height: 40px;
+      object-fit: contain;
+    }
+
+    .nav-links {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 0;
-      background: rgba(247,243,238,.94);
-      border-bottom: 1px solid var(--sand-light);
-      backdrop-filter: blur(10px);
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
     }
 
-    .wordmark {
-      color: var(--espresso);
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .18em;
+    .nav-links a {
+      margin-left: 18px;
+      color: var(--taupe-mid);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .05em;
       text-transform: uppercase;
+      text-decoration: none;
+      transition: color .18s;
     }
+
+    .nav-links a:hover { color: var(--red-flag); }
 
     .btn {
       display: inline-flex;
@@ -85,9 +129,25 @@
       box-shadow: var(--shadow-sm);
     }
 
-    header,
-    section,
-    footer {
+    .btn-primary {
+      background: var(--espresso);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--espresso-hi);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta {
+      justify-self: end;
+      min-height: auto;
+      padding: 10px 20px;
+      font-size: .82rem;
+    }
+
+    .page > header,
+    .page > section {
       border-top: 1px solid var(--sand-light);
       padding: 44px 0;
     }
@@ -125,6 +185,10 @@
       max-width: 720px;
       font-size: clamp(2.35rem, 8vw, 4.45rem);
       font-weight: 700;
+    }
+
+    h2[id] {
+      scroll-margin-top: 112px;
     }
 
     h2 {
@@ -483,25 +547,60 @@
       color: #1f7a4d !important;
     }
 
-    footer {
-      padding-bottom: 0;
-    }
-
     .disclaimer {
+      margin-top: 18px;
       padding: 18px;
       color: var(--taupe-mid);
       font-size: .92rem;
     }
 
-    @media (max-width: 640px) {
-      body { padding: 0 14px 28px; }
+    footer {
+      background: #000;
+      color: rgba(247,243,238,.5);
+      padding: 32px clamp(20px, 5vw, 40px);
+      font-size: .82rem;
+    }
 
-      .top-nav {
-        gap: 10px;
-        padding: 12px 0;
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: rgba(247,243,238,.75);
+    }
+
+    @media (max-width: 760px) {
+      nav { padding: 14px 20px; }
+
+      .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
       }
 
-      .wordmark { letter-spacing: .12em; }
+      .nav-logo img { max-height: 34px; }
+    }
+
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      html {
+        scroll-padding-top: 98px;
+      }
+
+      body { padding-top: 74px; }
+
+      .page { padding: 0 14px 28px; }
 
       .btn {
         min-height: 38px;
@@ -509,10 +608,13 @@
         font-size: .82rem;
       }
 
-      header,
-      section,
-      footer {
+      .page > header,
+      .page > section {
         padding: 34px 0;
+      }
+
+      h2[id] {
+        scroll-margin-top: 98px;
       }
 
       header { padding-top: 40px; }
@@ -594,12 +696,24 @@
   </style>
 </head>
 <body>
-  <main class="page">
-    <nav class="top-nav" aria-label="Report navigation">
-      <div class="wordmark">ADC</div>
-      <a class="btn" href="https://cal.com/an-pham-ktqlcd/adc-intro-call" target="_blank" rel="noopener noreferrer">Book a full review →</a>
-    </nav>
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html#hero" class="nav-logo" aria-label="ADC Operations home">
+        <img src="assets/adc-new-logo-header-optimized.jpg" width="480" height="189" alt="ADC Operations" decoding="async" fetchpriority="high" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="#owner-summary">Owner Summary</a></li>
+        <li><a href="#profit-gap">Profit Gap</a></li>
+        <li><a href="#targets">Operating Targets</a></li>
+        <li><a href="#red-flags">Top 5 Red Flags</a></li>
+        <li><a href="#action-plan">Action Plan</a></li>
+        <li><a href="#data-sources">Data Sources</a></li>
+      </ul>
+      <a class="btn btn-primary nav-cta" href="index.html#cta">Get Report</a>
+    </div>
+  </nav>
 
+  <main class="page">
     <header>
       <span class="eyebrow">CONFIDENTIAL · PREPARED FOR MARCUS CHEN</span>
       <h1>Ember: 4-Week Red-Flag Report</h1>
@@ -731,7 +845,6 @@
     </section>
 
     <section aria-labelledby="targets">
-      <span class="eyebrow">Your Operating Targets</span>
       <h2 id="targets">Your Operating Targets</h2>
       <p class="section-intro">These are your working operating targets: thresholds for deciding where to investigate first, not accounting standards. Prime-cost guidance follows Baker Tilly (&gt; 65% is structurally hard to profit from). Food and labor context reflects National Restaurant Association (NRA) 2024 operator data, which the NRA itself notes is descriptive, not a goal. Discount, void, and waste targets are your working thresholds from field experience.</p>
       <div class="table-scroll">
@@ -754,7 +867,6 @@
     </section>
 
     <section aria-labelledby="red-flags">
-      <span class="eyebrow">Top 5 Red Flags</span>
       <h2 id="red-flags">Top 5 Red Flags</h2>
       <p class="ranking-note">Vendor pricing ranks first because it is the largest price-variance leakage bucket and touches Stores B, C, and D. Discounting ranks second because Store C is the clearest behavior-policy outlier. Labor follows because the overage repeats across soft weekdays; shrinkage and void control risk follow through inventory and POS review.</p>
 
@@ -898,7 +1010,6 @@
     </section>
 
     <section aria-labelledby="action-plan">
-      <span class="eyebrow">Owner Action Plan</span>
       <h2 id="action-plan">Owner Action Plan</h2>
       <ol class="action-list">
         <li><strong>This week:</strong> Email/call Sysco rep; request consolidated pricing for chicken thighs, 80/20 ground beef, salmon fillets, and roma tomatoes.<span class="action-savings">Potential savings: <span class="cost-figure">~$4,800</span> in price-variance leakage per <u>month</u>.</span></li>
@@ -910,7 +1021,6 @@
     </section>
 
     <section aria-labelledby="data-sources">
-      <span class="eyebrow">Data Sources</span>
       <h2 id="data-sources">Data Sources</h2>
       <div class="table-scroll">
         <table>
@@ -926,12 +1036,17 @@
           </tbody>
         </table>
       </div>
-    </section>
-
-    <footer>
       <div class="disclaimer">This mock report uses illustrative operating data and directional calculations. In a real ADC engagement, figures would be validated against source systems before recommendations are finalized. ADC surfaces operating patterns; this is not an audit.</div>
-    </footer>
+    </section>
   </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">ADC Operations</div>
+      <div>Weekly reports for busy F&amp;B owners.</div>
+    </div>
+  </footer>
+
   <script>
     (() => {
       const ownerSummary = document.querySelector('.summary');
