@@ -9,7 +9,9 @@ node_modules/
 # Editor and tooling
 .vscode/
 .idea/
-.claude/
+# Ignore local Claude state but keep project-scoped skills tracked
+.claude/*
+!.claude/skills/
 *.swp
 *.swo
 
@@ -31,6 +33,21 @@ outreach-run/*-batch-review.json
 .local-archive/
 adc-crm-*.json
 ADC Outreach Lead List Template*.xlsx
+
+# Lead PII and run artifacts — MUST NOT be committed (repo publishes to public GitHub Pages)
+outreach-run/lead-master.csv
+outreach-run/instantly-lead-list-*.xlsx
+outreach-run/instantly-lead-list-*.csv
+outreach-run/candidates*.json
+qualified-*.json
+rows-*.json
+*-leads-*.json
+.tmp-*
+.tmp-run/
+
+# Python artifacts
+__pycache__/
+*.pyc
 
 # Logs
 *.log

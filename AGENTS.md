@@ -32,3 +32,16 @@ python -m http.server 8080
 ```
 
 For page work, edit the owning HTML/CSS/JS surface directly and verify with a targeted browser or file check.
+
+## Skills
+
+<!-- BEGIN SKILL: adc-lead-research -->
+### adc-lead-research
+
+Pure scraper that discovers independent multi-location F&B operators from an Apify Google Maps export (or Google Places API) and outputs a domain list for Apollo/Instantly enrichment; NOT for email, owner-name, or personalization research.
+
+```bash
+python .claude/skills/adc-lead-research/scripts/build-lead-list.py <qualified.json> outreach-run
+```
+
+<!-- END SKILL: adc-lead-research -->
