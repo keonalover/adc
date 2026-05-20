@@ -22,6 +22,8 @@ This is a static-site repository with multiple independent surfaces and no app-w
 - Public domain: `https://adc-ops.com/`
 - The former CRM/outreach workspace is intentionally not part of the committed public repo.
 
+**Deployment:** GitHub Pages (custom domain `adc-ops.com`). The repository root is the publish directory; no build step required. DNS for `adc-ops.com` points to GitHub's servers.
+
 ## Core positioning
 
 ADC Operations turns scattered restaurant reports into a short owner-facing red-flag brief.
