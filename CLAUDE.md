@@ -59,7 +59,7 @@ Do not restore, recommit, or deploy those files unless the user explicitly asks 
 
 ### Dashboard / reporting product
 
-- `dashboard.html`, `upload.html`, `inventory.html`, `red-flags.html`: platform/reporting pages
+- `dashboard.html`, `upload.html`, `inventory.html`, `red-flags-report.html`: platform/reporting pages
 - `js/main.js`: dashboard entry point
 - `js/features/`: feature modules (`sales`, `labor`, `inventory`, `breakRisk`, `weeklyActions`)
 - `js/config.js`: Supabase URL, anon key, and demo context constants
@@ -80,7 +80,7 @@ Use the code file that owns the behavior instead of scanning the whole repo.
 Start with:
 
 - the `Core positioning` section in this file
-- the target page content (`index.html`, `index-packages.html`, `red-flags.html`, or `dashboard.html`)
+- the target page content (`index.html`, `index-packages.html`, `red-flags-report.html`, or `dashboard.html`)
 - nearby headline, CTA, and section context before editing isolated lines
 
 Copy objectives:
@@ -112,7 +112,7 @@ The CRM is archived outside the committed repo. Start with `.local-archive/crm-o
 
 Start with:
 
-- `dashboard.html`, `upload.html`, `inventory.html`, or `red-flags.html` for the page shell
+- `dashboard.html`, `upload.html`, `inventory.html`, or `red-flags-report.html` for the page shell
 - `js/main.js` for orchestration
 - `js/features/<feature>.js` for feature-specific logic
 - `js/utils/formatters.js` for shared formatting helpers
