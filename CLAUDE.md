@@ -63,7 +63,7 @@ Do not restore, recommit, or deploy those files unless the user explicitly asks 
 - `js/main.js`: dashboard entry point
 - `js/features/`: feature modules (`sales`, `labor`, `inventory`, `breakRisk`, `weeklyActions`)
 - `js/config.js`: Supabase URL, anon key, and demo context constants
-- `css/dashboard.css`: dashboard styles
+- `css/site.css`: dashboard styles
 - `normalizer/`: transformation pipeline utilities for report data shaping
 
 ### Data / infra support
@@ -117,7 +117,7 @@ Start with:
 - `js/features/<feature>.js` for feature-specific logic
 - `js/utils/formatters.js` for shared formatting helpers
 - `js/config.js` for environment constants
-- `css/dashboard.css` for shared dashboard styling
+- `css/site.css` for shared dashboard styling
 
 ### If the task is about the landing page
 
@@ -162,7 +162,7 @@ Do not:
 These are verified from the repo and are safe to rely on unless the code changes again.
 
 - The CRM/outreach workspace has been removed from the committed repo and archived locally.
-- `dashboard.html` loads `js/main.js` as a module and uses `css/dashboard.css`.
+- `dashboard.html` loads `js/main.js` as a module and uses `css/site.css`.
 - Dashboard/reporting logic is split across `js/features/` modules, not embedded inline in the HTML pages.
 - The committed repo now focuses on static marketing pages and reporting/product pages.
 
