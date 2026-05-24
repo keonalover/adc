@@ -95,9 +95,10 @@
     section { padding: var(--section-pad); }
 
     #problem,
-    #growing-pains,
+    #audit,
     #how,
-    #needs,
+    #health-check,
+    #about,
     #cta {
       content-visibility: auto;
       contain-intrinsic-size: auto 720px;
@@ -476,16 +477,18 @@
        3. SOLUTION SECTION
     ============================================================ */
     #problem,
-    #growing-pains,
-    #needs { background: #fff; padding: var(--section-pad); }
+    #audit,
+    #health-check,
+    #about { background: #fff; padding: var(--section-pad); }
 
     #how,
     #cta { background: #fff; padding: var(--section-pad); }
 
     #problem,
-    #growing-pains,
+    #audit,
     #how,
-    #needs,
+    #health-check,
+    #about,
     #cta {
       border-top: 1px solid var(--sand-light);
     }
@@ -1233,17 +1236,17 @@
     }
 
     /* Growing pains feature grid */
-    #growing-pains {
+    #audit {
       padding-top: clamp(74px, 8vw, 118px);
     }
 
-    #growing-pains .section-header {
+    #audit .section-header {
       max-width: 780px;
       margin: 0 auto clamp(54px, 7vw, 92px);
       text-align: center;
     }
 
-    #growing-pains .section-header h2 {
+    #audit .section-header h2 {
       margin-bottom: 0;
       font-size: clamp(2.05rem, 4vw, 3.05rem);
     }
@@ -2245,11 +2248,11 @@
         width: 10px;
         height: 10px;
       }
-      #growing-pains .section-header {
+      #audit .section-header {
         margin-bottom: 32px;
         text-align: left;
       }
-      #growing-pains .section-header h2 {
+      #audit .section-header h2 {
         font-size: clamp(2rem, 10vw, 2.65rem);
       }
       .growth-feature-shell {
@@ -2519,9 +2522,10 @@
         white-space: nowrap;
         text-align: center;
       }
-      #growing-pains,
+      #audit,
       #how,
-      #needs,
+      #health-check,
+      #about,
       #cta {
         content-visibility: visible;
         contain-intrinsic-size: none;
@@ -2667,7 +2671,7 @@
       box-shadow: var(--shadow-sm);
     }
 
-    .choice-option strong {
+    .choice-option > strong {
       display: block;
       color: var(--taupe);
       font-size: .98rem;
