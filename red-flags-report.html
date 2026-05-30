@@ -506,6 +506,32 @@
 
     .callout strong { color: var(--espresso); }
 
+    .methodology {
+      margin: 0 0 18px;
+      padding: 12px 15px;
+      border: 1px solid var(--sand-light);
+      border-left: 3px solid var(--sand);
+      border-radius: 10px;
+      background: var(--bg-alt);
+      color: var(--taupe-mid);
+      font-size: .89rem;
+      line-height: 1.55;
+    }
+
+    .methodology strong { color: var(--espresso); }
+
+    .methodology .conf {
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      font-size: .8rem;
+    }
+
+    .methodology.high { border-left-color: #1f7a4d; }
+    .methodology.high .conf { color: #1f7a4d; }
+    .methodology.med { border-left-color: var(--amber); }
+    .methodology.med .conf { color: var(--amber); }
+
     .cost-line {
       margin: 14px 0 0;
       color: var(--red-flag);
@@ -703,6 +729,7 @@
       </a>
       <ul class="nav-links">
         <li><a href="#owner-summary">Owner Summary</a></li>
+        <li><a href="#methodology">How It's Built</a></li>
         <li><a href="#profit-gap">Profit Gap</a></li>
         <li><a href="#targets">Operating Targets</a></li>
         <li><a href="#red-flags">Top 5 Red Flags</a></li>
@@ -737,6 +764,21 @@
         <li><strong>Store B after-hours voids: control/theft risk (~$690 quantified, exposure unknown).</strong> Store B has 35 after-hours voids concentrated in two employee IDs, so the headline issue is a possible control issue, not just dollars.</li>
       </ol>
       <p>The money isn't disappearing in one place; it's leaking across five operating patterns. At industry-consistent targets a typical Ember store nets roughly $8,750/month. Store C, the clearest underperformer, is closer to $2,500. That is a ~$6,250 monthly Store C gap, about $75,000 a year, and across all four locations the five patterns below trace to roughly $12,450 a month in monthly leakage.</p>
+    </section>
+
+    <section aria-labelledby="methodology">
+      <h2 id="methodology">How This Analysis Was Built</h2>
+      <p class="section-intro">A short note on where the numbers come from and how confident each finding is, so you can weigh the report the way you would weigh a trusted manager's read.</p>
+      <p>This audit draws on five operating systems: Toast POS (sales, voids, discounts, and comps by employee), 7shifts labor and scheduling (scheduled vs. actual hours and cover counts), supplier invoices (five vendors, 42 invoices, priced SKU-by-SKU), MarketMan inventory (theoretical vs. physical counts), and third-party delivery statements (DoorDash, UberEats). ADC's standard benchmarking pulls a trailing twelve months per location. This first-pass review centers on the four-week window of April 14–May 11, 2025, set against each location's trailing-twelve-month and same-period-prior-year baselines.</p>
+      <p>Findings are graded by cross-location internal benchmarking: for each metric, the strongest-performing location sets the target the others are measured against (Store A is the price and labor benchmark here). Where a location is structurally non-comparable, the fallback is its own history. To separate seasonal swings from operating drift, each location is also compared against the same period one year earlier, so a slow April reads as a slow April rather than a new problem.</p>
+      <p>Every finding below carries a confidence tier so you know how hard to lean on it.</p>
+      <div class="callout">
+        <strong>HIGH confidence:</strong> complete data for the category and period, with corroborating context confirmed during the review.
+        <br><br>
+        <strong>MEDIUM confidence:</strong> complete data without operator-confirmed context, or partial data with strong corroborating context. The analytical reasoning is shown so you can evaluate the finding yourself.
+      </div>
+      <p>ADC's framework also carries a LOW tier, weighted at 50% toward any performance-guarantee threshold, but no LOW-confidence findings appear in this report; the sample is held to HIGH and MEDIUM findings only. Most findings here are HIGH confidence, three are MEDIUM, and each MEDIUM finding states what would move it to HIGH.</p>
+      <p>What this analysis does not cover: anything outside the data provided. Qualitative factors such as a new competitor, nearby construction, weather, or a short-staffed week are not captured unless they surfaced in the numbers, and any finding that needed operator context we did not have was held back rather than guessed. As with any first pass, figures are directional until validated against source systems; ADC surfaces operating patterns, it is not an audit.</p>
     </section>
 
     <section aria-labelledby="profit-gap">
@@ -842,6 +884,7 @@
         </table>
       </div>
       <p class="note">The ~$12,450 is the monthly leakage tied to the five red flags across all four locations. Store C carries the largest store-level gap at roughly $6,250/mo; Stores B and D are smaller gaps, and Store A is the internal benchmark.</p>
+      <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Store-level P&amp;L reconstructed from complete POS sales and reconciled labor and invoice data for all four locations, benchmarked against the 7% net-profit operating target and the strongest-performing location. The store figures reconcile to the portfolio total shown in the math-check lines above.</p>
     </section>
 
     <section aria-labelledby="targets">
@@ -893,6 +936,7 @@
           </div>
           <div class="callout"><strong>Benchmark callout:</strong> Actual: Stores B, C, and D are paying above Store A's benchmark on key items. Your target: consolidated pricing across all locations on the shared account.</div>
           <p class="cost-line">Monthly leakage: ~$4,800 price-variance leakage</p>
+          <p class="methodology med"><strong>Methodology:</strong> <span class="conf">MEDIUM confidence.</span> Unit pricing compared SKU-by-SKU across all four locations on the shared Sysco account, with Store A's prices as the internal benchmark. Confidence is medium because several store invoices arrived as scanned PDFs requiring manual line-item entry, so a small number of SKUs beyond the four shown are not yet cross-checked.</p>
         </article>
 
         <article class="flag-card red">
@@ -931,6 +975,7 @@
           </div>
           <div class="callout"><strong>Benchmark callout:</strong> Actual: 5.8% discount rate. Your target: 4.1%. <br><br>Review POS job permissions and employee job assignments.</div>
           <p class="cost-line">Monthly leakage: ~$2,125</p>
+          <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Discount and comp rates pulled directly from complete Toast POS exports for the period and compared against the other three locations and your 4.1% working target. The absence of a POS-enforced approval rule was confirmed against job permissions during the review.</p>
         </article>
 
         <article class="flag-card watch">
@@ -955,6 +1000,85 @@
           </div>
           <p class="note">The issue is not weekday sales volume; it is fixed staffing on weekdays.</p>
           <p class="cost-line">Monthly leakage: ~$3,100</p>
+          <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Built from POS-integrated scheduled-vs-actual labor and cover counts (7shifts and Toast) for the period, compared against the 28% labor target after normalizing for daypart mix. The weekday pattern was corroborated against the posted staffing template during the review. The daypart-level breakdown of this finding follows in the two store cards directly below.</p>
+        </article>
+
+        <article class="flag-card watch">
+          <span class="badge watch">WATCH · STORE B</span>
+          <h3>Store B: Tuesday lunch and early-week late night run hottest</h3>
+          <p class="finding">Store B's weekday labor averages <strong>36.9% vs. the 28% target</strong>. The dinner rush holds near target; the drift is in thin lunches and late-night closes that stay staffed for weekend-size covers.</p>
+          <p><strong>Weekday labor cost % by daypart: Store B</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Weekday</th><th>Lunch (11a–2p)</th><th>Dinner (5p–9p)</th><th>Late Night (9p–close)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Weekday">Monday</td><td data-label="Lunch">44%</td><td data-label="Dinner">31%</td><td data-label="Late Night">52%</td></tr>
+                <tr><td data-label="Weekday">Tuesday</td><td data-label="Lunch">47%</td><td data-label="Dinner">30%</td><td data-label="Late Night">49%</td></tr>
+                <tr><td data-label="Weekday">Wednesday</td><td data-label="Lunch">42%</td><td data-label="Dinner">29%</td><td data-label="Late Night">46%</td></tr>
+                <tr><td data-label="Weekday">Thursday</td><td data-label="Lunch">39%</td><td data-label="Dinner">28%</td><td data-label="Late Night">44%</td></tr>
+                <tr><td data-label="Weekday">Friday</td><td data-label="Lunch">33%</td><td data-label="Dinner">26%</td><td data-label="Late Night">34%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">Cells above 32% (your labor red-flag line) are where staffing outruns covers. Tuesday lunch (47%) and Monday late night (52%) are the two worst.</p>
+          <p><strong>Monthly overage by daypart: Store B</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Daypart</th><th>Avg weekday labor %</th><th>Target</th><th>Weekly overage</th><th>Monthly overage</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Daypart">Lunch (Mon–Fri)</td><td data-label="Avg weekday labor %">41%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$230</td><td data-label="Monthly overage">~$920</td></tr>
+                <tr><td data-label="Daypart">Late night (Mon–Fri)</td><td data-label="Avg weekday labor %">45%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$205</td><td data-label="Monthly overage">~$820</td></tr>
+                <tr><td data-label="Daypart">Dinner (Mon–Fri)</td><td data-label="Avg weekday labor %">29%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$45</td><td data-label="Monthly overage">~$160</td></tr>
+                <tr><td data-label="Daypart"><strong>Store B total</strong></td><td data-label="Avg weekday labor %"><strong>36.9%</strong></td><td data-label="Target"><strong>28%</strong></td><td data-label="Weekly overage"><strong>~$475</strong></td><td data-label="Monthly overage"><strong>~$1,900</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>Monday-morning move:</strong> Drop Store B Tuesday lunch FOH from 4 to 3 between 11am–1pm (ticket volume doesn't build until ~12:30pm), and run the Mon–Wed late-night close with one line cook instead of two after 9pm. Those two changes recover roughly $300/week on their own.</div>
+          <p class="cost-line">Daypart-attributable overage: ~$1,900/mo (part of the ~$3,100 in Red Flag 03)</p>
+          <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Built from POS-integrated scheduled-vs-actual labor and cover counts (7shifts and Toast) for the period, compared against the 28% labor target after normalizing for daypart mix. The weekday pattern was corroborated against the posted staffing template during the review.</p>
+        </article>
+
+        <article class="flag-card watch">
+          <span class="badge watch">WATCH · STORE A</span>
+          <h3>Store A: same lunch and late-night drift, milder than Store B</h3>
+          <p class="finding">Store A's weekday labor averages <strong>33.2% vs. the 28% target</strong>. The shape matches Store B but is less severe, and dinner runs at or under target every weekday.</p>
+          <p><strong>Weekday labor cost % by daypart: Store A</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Weekday</th><th>Lunch (11a–2p)</th><th>Dinner (5p–9p)</th><th>Late Night (9p–close)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Weekday">Monday</td><td data-label="Lunch">38%</td><td data-label="Dinner">29%</td><td data-label="Late Night">45%</td></tr>
+                <tr><td data-label="Weekday">Tuesday</td><td data-label="Lunch">40%</td><td data-label="Dinner">28%</td><td data-label="Late Night">43%</td></tr>
+                <tr><td data-label="Weekday">Wednesday</td><td data-label="Lunch">37%</td><td data-label="Dinner">27%</td><td data-label="Late Night">41%</td></tr>
+                <tr><td data-label="Weekday">Thursday</td><td data-label="Lunch">35%</td><td data-label="Dinner">27%</td><td data-label="Late Night">39%</td></tr>
+                <tr><td data-label="Weekday">Friday</td><td data-label="Lunch">31%</td><td data-label="Dinner">25%</td><td data-label="Late Night">33%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">Tuesday lunch (40%) and Monday late night (45%) lead again, but no cell reaches Store B's extremes.</p>
+          <p><strong>Monthly overage by daypart: Store A</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Daypart</th><th>Avg weekday labor %</th><th>Target</th><th>Weekly overage</th><th>Monthly overage</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Daypart">Lunch (Mon–Fri)</td><td data-label="Avg weekday labor %">36%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$150</td><td data-label="Monthly overage">~$600</td></tr>
+                <tr><td data-label="Daypart">Late night (Mon–Fri)</td><td data-label="Avg weekday labor %">40%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$150</td><td data-label="Monthly overage">~$600</td></tr>
+                <tr><td data-label="Daypart">Dinner (Mon–Fri)</td><td data-label="Avg weekday labor %">27%</td><td data-label="Target">28%</td><td data-label="Weekly overage">$0</td><td data-label="Monthly overage">at target</td></tr>
+                <tr><td data-label="Daypart"><strong>Store A total</strong></td><td data-label="Avg weekday labor %"><strong>33.2%</strong></td><td data-label="Target"><strong>28%</strong></td><td data-label="Weekly overage"><strong>~$300</strong></td><td data-label="Monthly overage"><strong>~$1,200</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>Monday-morning move:</strong> Hold one fewer FOH on Store A weekday lunches until the noon build, and cut the second bartender on Mon–Tue late night. Store A's dinner staffing is already right; leave it alone.</div>
+          <p class="cost-line">Daypart-attributable overage: ~$1,200/mo (part of the ~$3,100 in Red Flag 03)</p>
+          <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Built from POS-integrated scheduled-vs-actual labor and cover counts (7shifts and Toast) for the period, compared against the 28% labor target after normalizing for daypart mix. The weekday pattern was corroborated against the posted staffing template during the review.</p>
         </article>
 
         <article class="flag-card watch">
@@ -981,6 +1105,7 @@
           </div>
           <div class="callout"><strong>Benchmark callout:</strong> Actual: ~$1,735 inventory shrinkage gap. Your target: waste &lt; 10% of food cost and complete waste logs.</div>
           <p class="cost-line">Monthly leakage: ~$1,735</p>
+          <p class="methodology med"><strong>Methodology:</strong> <span class="conf">MEDIUM confidence.</span> Shrinkage triangulated across categories from MarketMan theoretical-vs-physical counts (April 28 and May 11) priced at current unit costs. Confidence is medium because waste logs were complete for only 3 of 7 days and no 86 records matched the variance, so the cause is not yet isolated.</p>
         </article>
 
         <article class="flag-card watch">
@@ -1005,6 +1130,7 @@
           <p class="note">35 of 43 voids occurred after 6 PM; company guideline is &lt; 8 unresolved/month. Void value = <strong>1.15% of Store B sales</strong> (target &lt; 1%). 35 of 43 tied to two employee IDs, none with a reason code. Most-voided items: wings (12×), house cocktails (9×), desserts (8×). Quantified after-hours shrinkage: <strong>~$690</strong>; full control/theft exposure is unquantified until receipt-level review is complete. Investigate the pattern before accusing staff.</p>
           <div class="callout"><strong>Benchmark callout:</strong> Actual: 43 voids, 35 after 6 PM, 35 tied to two employee IDs, 1.15% of Store B sales. Your target: &lt; 8 unresolved/month and void value &lt; 1% of sales.</div>
           <p class="cost-line">Monthly leakage: ~$690 quantified; control/theft exposure unknown</p>
+          <p class="methodology med"><strong>Methodology:</strong> <span class="conf">MEDIUM confidence.</span> Void counts and timing are complete from the Toast POS log for the period, and the after-hours concentration on two employee IDs is unambiguous. Confidence is medium because the cause is not operator-confirmed: no reason codes are on file and receipt-level detail has not been reviewed, so exposure beyond the ~$690 quantified stays open.</p>
         </article>
       </div>
     </section>
