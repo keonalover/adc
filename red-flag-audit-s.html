@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birchwood Kitchen: 12-Month Red-Flags Audit | ADC Consulting</title>
+  <meta name="description" content="A static ADC Consulting red-flag report mock-up for a single-location restaurant, showing trailing-twelve-month leakage patterns." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/adc-favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#F7F3EE; --bg-alt:#F0EAE0; --bg-card:#FDFAF6;
+      --espresso:#081c05; --espresso-hi:#12330d; --clay:#A8523D;
+      --red-flag:#9E342D; --red-bg:#FDF0EE;
+      --amber:#C47A2B; --amber-bg:#FDF3E3;
+      --sage:#7A957A; --taupe:#342A23; --taupe-mid:#66574D;
+      --sand:#CDBFAF; --sand-light:#DED4C9;
+      --cream:#FDFAF6;
+      --shadow-sm:0 2px 8px rgba(52,42,35,.08);
+      --shadow-md:0 8px 24px rgba(52,42,35,.12);
+      --font-display:'DM Sans', system-ui, sans-serif;
+      --font-body:'DM Sans', system-ui, sans-serif;
+      --max-w:1100px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--taupe);
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    html {
+      scroll-padding-top: 112px;
+    }
+
+    body { padding: 84px 0 0; }
+
+    a {
+      color: var(--clay);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 20px 32px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 36px;
+      background: #fff;
+      border-bottom: 1px solid var(--sand-light);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      min-height: 40px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-logo img {
+      width: auto;
+      height: auto;
+      max-height: 40px;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      margin-left: 18px;
+      color: var(--taupe-mid);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color .18s;
+    }
+
+    .nav-links a:hover { color: var(--red-flag); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--espresso);
+      background: var(--espresso);
+      color: var(--cream);
+      font-size: .9rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary {
+      background: var(--espresso);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--espresso-hi);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta {
+      justify-self: end;
+      min-height: auto;
+      padding: 10px 20px;
+      font-size: .82rem;
+    }
+
+    .page > header,
+    .page > section {
+      border-top: 1px solid var(--sand-light);
+      padding: 44px 0;
+    }
+
+    header {
+      border-top: 0;
+      display: block;
+      position: static;
+      z-index: auto;
+      background: transparent;
+      padding-top: 52px;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--clay);
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      color: var(--espresso);
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 720px;
+      font-size: clamp(2.35rem, 8vw, 4.45rem);
+      font-weight: 700;
+    }
+
+    h2[id] {
+      scroll-margin-top: 112px;
+    }
+
+    h2 {
+      margin-bottom: 18px;
+      font-size: clamp(1.7rem, 5vw, 2.5rem);
+      font-weight: 700;
+    }
+
+    h3 {
+      font-size: clamp(1.35rem, 4vw, 1.8rem);
+      font-weight: 600;
+    }
+
+    p { margin: 0 0 16px; }
+
+    .subtitle {
+      max-width: 700px;
+      margin: 22px 0 24px;
+      color: var(--taupe-mid);
+      font-size: 1.08rem;
+    }
+
+    .meta-strip,
+    .mini-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .meta-strip {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      padding: 14px;
+      border: 1px solid var(--sand-light);
+      border-radius: 12px;
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .meta-item,
+    .stat,
+    .callout,
+    .note {
+      overflow-wrap: anywhere;
+    }
+
+    .meta-item span,
+    .stat span {
+      display: block;
+      color: var(--taupe-mid);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .meta-item strong,
+    .stat strong {
+      display: block;
+      margin-top: 3px;
+      color: var(--espresso);
+      font-size: .94rem;
+      line-height: 1.3;
+    }
+
+    .summary p {
+      color: var(--taupe);
+      font-size: 1.05rem;
+    }
+
+    .summary-list {
+      margin: 18px 0;
+      padding-left: 28px;
+    }
+
+    .summary-list li {
+      margin: 12px 0;
+      padding-left: 4px;
+      color: var(--taupe);
+      font-size: 1.05rem;
+    }
+
+    .summary-list strong {
+      color: var(--espresso);
+    }
+
+    .profit-gap {
+      padding: 24px;
+      border-radius: 12px;
+      background: var(--bg-alt);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profit-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--sand-light);
+      border-radius: 12px;
+      background: var(--bg-card);
+    }
+
+    .stat strong {
+      margin-top: 8px;
+      font-size: clamp(1.45rem, 5vw, 2rem);
+      line-height: 1.08;
+    }
+
+    .stat em {
+      display: block;
+      margin-top: 7px;
+      color: var(--taupe-mid);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .stat.gap {
+      border-color: rgba(158,52,45,.35);
+      box-shadow: inset 3px 0 0 var(--red-flag);
+    }
+
+    .stat.gap strong,
+    .stat.gap em {
+      color: var(--red-flag);
+    }
+
+    .caption,
+    .basis,
+    .note,
+    .source-note {
+      color: var(--taupe-mid);
+      font-size: .92rem;
+    }
+
+    .basis {
+      margin: 8px 0 0;
+      font-weight: 700;
+    }
+
+    .section-intro {
+      margin-bottom: 22px;
+      color: var(--taupe-mid);
+    }
+
+    .source-note {
+      margin-top: 10px;
+    }
+
+    .table-scroll {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 16px 0 18px;
+      border: 1px solid var(--sand-light);
+      border-radius: 12px;
+      background:
+        linear-gradient(to right, rgba(253,250,246,0), var(--bg-card) 78%) right / 34px 100% no-repeat,
+        var(--bg-card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      color: var(--taupe);
+      font-size: .9rem;
+    }
+
+    .table-scroll table { min-width: 640px; }
+    .table-scroll.compact table { min-width: 480px; }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--sand-light);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--espresso);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--bg-alt);
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .stacked-table {
+      margin: 16px 0 18px;
+      border: 1px solid var(--sand-light);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stacked-table table { min-width: 0; }
+
+    .financial-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      margin: 24px 0 46px;
+    }
+
+    .financial-card,
+    .flag-card,
+    .action-list,
+    .disclaimer {
+      background: var(--bg-card);
+      border: 1px solid var(--sand-light);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .financial-card {
+      padding: 18px;
+    }
+
+    .financial-card h3 {
+      margin-bottom: 12px;
+      font-size: 1.22rem;
+    }
+
+    .leakage-heading {
+      margin: 0 0 14px;
+    }
+
+    .check-line {
+      margin-top: 10px;
+      color: var(--taupe-mid);
+      font-size: .86rem;
+    }
+
+    .flag-list {
+      display: grid;
+      gap: 24px;
+    }
+
+    .ranking-note {
+      margin: 0 0 24px;
+      padding: 16px 18px;
+      border-left: 3px solid var(--clay);
+      border-radius: 0 12px 12px 0;
+      background: var(--bg-alt);
+      color: var(--taupe-mid);
+      font-size: .95rem;
+    }
+
+    .flag-card {
+      position: relative;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .flag-card.red { border-left: 3px solid var(--red-flag); }
+    .flag-card.watch { border-left: 3px solid var(--amber); }
+
+    .rank {
+      position: absolute;
+      top: 8px;
+      right: 18px;
+      color: var(--sand);
+      font-size: 3rem;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .badge.red {
+      background: var(--red-bg);
+      color: var(--red-flag);
+    }
+
+    .badge.watch {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .finding {
+      margin-top: 14px;
+      color: var(--taupe-mid);
+    }
+
+    .callout {
+      display: grid;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--sand-light);
+      border-radius: 12px;
+      background: var(--bg-alt);
+      color: var(--taupe);
+      font-size: .93rem;
+    }
+
+    .callout strong { color: var(--espresso); }
+
+    .methodology {
+      margin: 0 0 18px;
+      padding: 12px 15px;
+      border: 1px solid var(--sand-light);
+      border-left: 3px solid var(--sand);
+      border-radius: 10px;
+      background: var(--bg-alt);
+      color: var(--taupe-mid);
+      font-size: .89rem;
+      line-height: 1.55;
+    }
+
+    .methodology strong { color: var(--espresso); }
+
+    .methodology .conf {
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      font-size: .8rem;
+    }
+
+    .methodology.high { border-left-color: #1f7a4d; }
+    .methodology.high .conf { color: #1f7a4d; }
+    .methodology.med { border-left-color: var(--amber); }
+    .methodology.med .conf { color: var(--amber); }
+
+    .cost-line {
+      margin: 14px 0 0;
+      color: var(--red-flag);
+      font-weight: 800;
+    }
+
+    .table-note {
+      margin: -4px 0 18px;
+      color: var(--taupe-mid);
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    .cost-figure {
+      color: #FF0000 !important;
+      font-weight: 800;
+    }
+
+    .action-list {
+      margin: 0;
+      padding: 8px 22px 8px 42px;
+    }
+
+    .action-list li {
+      margin: 14px 0;
+      padding-left: 4px;
+    }
+
+    .action-savings {
+      display: block;
+      margin-top: 8px;
+      padding-left: 12px;
+      border-left: 3px solid #1f7a4d;
+      color: #1f7a4d;
+      font-weight: 700;
+    }
+
+    .action-list .action-savings .cost-figure {
+      color: #1f7a4d !important;
+    }
+
+    .disclaimer {
+      margin-top: 18px;
+      padding: 18px;
+      color: var(--taupe-mid);
+      font-size: .92rem;
+    }
+
+    footer {
+      background: #000;
+      color: rgba(247,243,238,.5);
+      padding: 32px clamp(20px, 5vw, 40px);
+      font-size: .82rem;
+    }
+
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: rgba(247,243,238,.75);
+    }
+
+    @media (max-width: 760px) {
+      nav { padding: 14px 20px; }
+
+      .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .nav-logo img { max-height: 34px; }
+    }
+
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      html {
+        scroll-padding-top: 98px;
+      }
+
+      body { padding-top: 74px; }
+
+      .page { padding: 0 14px 28px; }
+
+      .btn {
+        min-height: 38px;
+        padding: 8px 12px;
+        font-size: .82rem;
+      }
+
+      .page > header,
+      .page > section {
+        padding: 34px 0;
+      }
+
+      h2[id] {
+        scroll-margin-top: 98px;
+      }
+
+      header { padding-top: 40px; }
+
+      .meta-strip,
+      .profit-stats,
+      .financial-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profit-gap,
+      .flag-card {
+        padding: 18px;
+      }
+
+      .table-scroll {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .stacked-table {
+        border: 0;
+        overflow: visible;
+        box-shadow: none;
+        background: transparent;
+      }
+
+      .stacked-table table,
+      .stacked-table thead,
+      .stacked-table tbody,
+      .stacked-table tr,
+      .stacked-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .stacked-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .stacked-table tr {
+        margin-bottom: 12px;
+        border: 1px solid var(--sand-light);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-card);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .stacked-table td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        min-width: 0;
+        padding: 10px 12px;
+        text-align: right;
+      }
+
+      .stacked-table td::before {
+        content: attr(data-label);
+        flex: 0 0 45%;
+        color: var(--espresso);
+        font-weight: 800;
+        text-align: left;
+      }
+
+      .stacked-table tr:last-child td { border-bottom: 1px solid var(--sand-light); }
+      .stacked-table tr td:last-child { border-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html#hero" class="nav-logo" aria-label="ADC Operations home">
+        <img src="assets/adc-new-logo-header-optimized.jpg" width="480" height="189" alt="ADC Operations" decoding="async" fetchpriority="high" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="#owner-summary">Owner Summary</a></li>
+        <li><a href="#methodology">How It's Built</a></li>
+        <li><a href="#profit-gap">Profit Gap</a></li>
+        <li><a href="#targets">Operating Targets</a></li>
+        <li><a href="#red-flags">Top 5 Red Flags</a></li>
+        <li><a href="#action-plan">Action Plan</a></li>
+        <li><a href="#data-sources">Data Sources</a></li>
+      </ul>
+      <a class="btn btn-primary nav-cta" href="index.html#cta">Get Report</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header>
+      <span class="eyebrow">DEMO REPORT · PREPARED FOR SOFIA REYES</span>
+      <h1>Birchwood Kitchen: 12-Month Red-Flags Audit</h1>
+      <p class="subtitle">First-pass review of the trailing twelve months of operating data (April 2025–March 2026) for a single location. Surfacing the patterns that repeat month after month and warrant owner-level attention before they compound.</p>
+      <div class="meta-strip" aria-label="Report metadata">
+        <div class="meta-item"><span>Period</span><strong>April 2025–March 2026</strong></div>
+        <div class="meta-item"><span>Scope</span><strong>1 location, trailing 12 months</strong></div>
+        <div class="meta-item"><span>Inputs</span><strong>5 data sources</strong></div>
+        <div class="meta-item"><span>Prepared by</span><strong>ADC Consulting</strong></div>
+      </div>
+    </header>
+
+    <section class="summary" aria-labelledby="owner-summary">
+      <h2 id="owner-summary">Owner Summary</h2>
+      <p>Across the trailing twelve months, the clearest signal isn't any single bad month. It's the distance between what Birchwood should be making and what nearly every recent month shows, and the fact that the gap has been widening.</p>
+      <ol class="summary-list">
+        <li><strong>Vendor price creep (~$1,200/mo): the same items cost more than a year ago.</strong> The same SKUs from the same vendor, with no pack-size or quality change, are running $0.20–$0.25 per unit above last year's pricing. Nothing was renegotiated, so the creep compounds every month.</li>
+        <li><strong>Discount rate drift to 4.9% (~$1,000/mo): a behavioral pattern.</strong> Your discount rate sat at your 4.1% target a year ago and has drifted to 4.9% today, with 35 manager-override comps in the latest month and no POS-enforced approval rule.</li>
+        <li><strong>Weekday labor overage (~$800/mo).</strong> On soft weekdays, labor has averaged 32% of weekday sales against a 28% target, leaving roughly $200 of overage per week, or about $800 a month, almost every week of the year.</li>
+        <li><strong>Inventory shrinkage gap (~$500/mo, growing).</strong> The most recent count came in larger than the one before it, so the gap is widening rather than closing, and waste logs are incomplete.</li>
+        <li><strong>After-hours voids: control/theft risk (~$250 quantified, exposure unknown).</strong> 18 of 24 voids occurred after close, all tied to two employee IDs with no reason codes, so the headline issue is a possible control issue, not just dollars.</li>
+      </ol>
+      <p>The money isn't disappearing in one place, and it isn't a one-time event; it's leaking across five operating patterns that repeat every month. At industry-consistent targets Birchwood nets roughly $8,750/month. The trailing three months are closer to $5,000. That is a ~$3,750 monthly gap, about $45,000 a year, and the five patterns below trace to all of it.</p>
+    </section>
+
+    <section aria-labelledby="methodology">
+      <h2 id="methodology">How This Analysis Was Built</h2>
+      <p class="section-intro">A short note on where the numbers come from and how confident each finding is, so you can weigh the report the way you would weigh a trusted manager's read.</p>
+      <p>This audit draws on five operating systems: Toast POS (sales, voids, discounts, and comps by employee), 7shifts labor and scheduling (scheduled vs. actual hours and cover counts), supplier invoices (five vendors, priced SKU-by-SKU against the same period a year earlier), MarketMan inventory (theoretical vs. physical counts), and third-party delivery statements (DoorDash, UberEats). The review covers the trailing twelve months, April 2025 through March 2026, with the most recent month and quarter read against the store's own earlier-period and same-period-prior-year baselines.</p>
+      <p>Because this is a single location, findings are graded against the store's own history rather than a sister store: for each metric, the store's stronger earlier periods set the reference the current period is measured against. To separate seasonal swings from operating drift, each metric is also compared against the same period one year earlier, so a slow January reads as a slow January rather than a new problem.</p>
+      <p>Every finding below carries a confidence tier so you know how hard to lean on it.</p>
+      <div class="callout">
+        <strong>HIGH confidence:</strong> complete data for the category and period, with corroborating context confirmed during the review.
+        <br><br>
+        <strong>MEDIUM confidence:</strong> complete data without operator-confirmed context, or partial data with strong corroborating context. The analytical reasoning is shown so you can evaluate the finding yourself.
+      </div>
+      <p>ADC's framework also carries a LOW tier, weighted at 50% toward any performance-guarantee threshold, but no LOW-confidence findings appear in this report; the sample is held to HIGH and MEDIUM findings only. Most findings here are HIGH confidence, three are MEDIUM, and each MEDIUM finding states what would move it to HIGH.</p>
+      <p>What this analysis does not cover: anything outside the data provided. Qualitative factors such as a new competitor, nearby construction, weather, or a short-staffed week are not captured unless they surfaced in the numbers, and any finding that needed operator context we did not have was held back rather than guessed. As with any first pass, figures are directional until validated against source systems; ADC surfaces operating patterns, it is not an audit.</p>
+    </section>
+
+    <section aria-labelledby="profit-gap">
+      <h2 id="profit-gap">The Profit Gap Over Time</h2>
+      <div class="profit-gap">
+        <div class="profit-stats">
+          <div class="stat">
+            <span>Target profit</span>
+            <strong>~$8,750 / mo net</strong>
+            <em>~$105K / yr</em>
+          </div>
+          <div class="stat">
+            <span>Recent pace (last 3 mo)</span>
+            <strong>~$5,000 / mo net</strong>
+            <em>~$60K / yr</em>
+          </div>
+          <div class="stat gap">
+            <span>Monthly gap</span>
+            <strong>~$3,750 / mo</strong>
+            <em>~$45,000 / yr</em>
+          </div>
+        </div>
+        <p class="caption">A year ago Birchwood was running close to target. Net profit pace has fallen quarter over quarter to its current ~4%, while revenue held near $125,000/month. The trend table below shows the drift; the five red flags that follow trace to roughly $3,750/month in recurring leakage.</p>
+        <p class="basis">Assumes $125,000 monthly net revenue.</p>
+      </div>
+
+      <div class="financial-grid" aria-label="Financial math">
+        <article class="financial-card">
+          <h3>AT TARGET scenario (this location)</h3>
+          <div class="table-scroll compact">
+            <table>
+              <thead>
+                <tr><th>Line</th><th>%</th><th>$/mo</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Revenue</td><td>100%</td><td>$125,000</td></tr>
+                <tr><td>Food Cost</td><td>30%</td><td>$37,500</td></tr>
+                <tr><td>Labor</td><td>28%</td><td>$35,000</td></tr>
+                <tr><td><strong>Prime Cost</strong></td><td><strong>58%</strong></td><td><strong>$72,500</strong></td></tr>
+                <tr><td>Occupancy + other ops</td><td>35%</td><td>$43,750</td></tr>
+                <tr><td><strong>Net Profit</strong></td><td><strong>7%</strong></td><td><strong>$8,750</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="check-line">Annual net profit at target: <strong>~$105,000</strong></p>
+        </article>
+
+        <article class="financial-card">
+          <h3>CURRENT most-recent-month performance</h3>
+          <div class="table-scroll compact">
+            <table>
+              <thead>
+                <tr><th>Line</th><th>%</th><th>$/mo</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Revenue</td><td>100%</td><td>$125,000</td></tr>
+                <tr><td>Food Cost</td><td>32%</td><td>$40,000</td></tr>
+                <tr><td>Labor</td><td>29%</td><td>$36,250</td></tr>
+                <tr><td><strong>Prime Cost</strong></td><td><strong>61%</strong></td><td><strong>$76,250</strong></td></tr>
+                <tr><td>Occupancy + other ops</td><td>35%</td><td>$43,750</td></tr>
+                <tr><td><strong>Net Profit</strong></td><td><strong>4%</strong></td><td><strong>$5,000</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="check-line">Annual net profit at the current leakage rate: <strong>~$60,000</strong></p>
+        </article>
+
+        <article class="financial-card">
+          <h3>Trailing 12-month trend (by quarter)</h3>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>Period</th><th>Revenue</th><th>Food Cost</th><th>Labor</th><th>Prime Cost</th><th>Other Ops</th><th>Net Profit</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>2025 Q2 (Apr–Jun)</td><td>$125,000</td><td>30.5%</td><td>28.0%</td><td>58.5%</td><td>35.0%</td><td>6.5% / $8,125</td></tr>
+                <tr><td>2025 Q3 (Jul–Sep)</td><td>$125,000</td><td>31.0%</td><td>28.4%</td><td>59.4%</td><td>35.0%</td><td>5.6% / $7,000</td></tr>
+                <tr><td>2025 Q4 (Oct–Dec)</td><td>$125,000</td><td>31.5%</td><td>28.7%</td><td>60.2%</td><td>35.0%</td><td>4.8% / $6,000</td></tr>
+                <tr><td><strong>2026 Q1 (Jan–Mar)</strong></td><td><strong>$125,000</strong></td><td><strong>32.0%</strong></td><td><strong>29.0%</strong></td><td><strong>61.0%</strong></td><td><strong>35.0%</strong></td><td><strong>4.0% / $5,000</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="check-line">Math check: each quarter's net = 100% − prime cost − 35% other ops. Net pace fell from 6.5% to 4.0% across the year while revenue held near $125,000/mo. The pattern, not a single month, is the finding.</p>
+        </article>
+      </div>
+
+      <h3 class="leakage-heading">Identified monthly leakage</h3>
+      <p><strong>Leakage by red flag</strong></p>
+      <div class="table-scroll compact">
+        <table>
+          <thead>
+            <tr><th>Flag</th><th>Pattern</th><th>Monthly Leakage</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Vendor price creep (same items vs. 12 mo ago)</td><td>Recurring, compounding</td><td>~$1,200</td></tr>
+            <tr><td>Excess discounts (4.9% vs 4.1%)</td><td>Drifting up over the year</td><td>~$1,000</td></tr>
+            <tr><td>Weekday labor overage (32% vs 28%)</td><td>Almost every week</td><td>~$800</td></tr>
+            <tr><td>Inventory shrinkage gap</td><td>Growing count over count</td><td>~$500</td></tr>
+            <tr><td>After-hours void control/theft risk</td><td>Concentrated, 2 employee IDs</td><td>~$250</td></tr>
+            <tr><td><strong>Total identified</strong></td><td></td><td><strong>~$3,750/mo (~$45K/yr)</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">The ~$3,750 is the monthly leakage tied to the five recurring patterns at this single location. It accounts for the full gap between target net profit (~$8,750/mo) and the recent pace (~$5,000/mo). The after-hours void figure is the quantified portion only; the full control/theft exposure is unknown until receipt-level review is complete.</p>
+      <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Monthly P&amp;L reconstructed from complete POS sales and reconciled labor and invoice data for the location, benchmarked against the 7% net-profit operating target and the store's own trailing-twelve-month and prior-year baselines. The quarterly figures reconcile to the trend and math-check lines above.</p>
+    </section>
+
+    <section aria-labelledby="targets">
+      <h2 id="targets">Your Operating Targets</h2>
+      <p class="section-intro">These are your working operating targets: thresholds for deciding where to investigate first, not accounting standards. Prime-cost guidance follows Baker Tilly (&gt; 65% is structurally hard to profit from). Food and labor context reflects National Restaurant Association (NRA) operator data, which the NRA itself notes is descriptive, not a goal. Discount, void, and waste targets are your working thresholds from field experience.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Your Target</th><th>Watch</th><th>Red Flag</th><th>Industry context</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Food Cost %</td><td>≤ 30%</td><td>31–33%</td><td>&gt; 33%</td><td>NRA actuals typically ~31–32%</td></tr>
+            <tr><td>Labor %</td><td>≤ 28%</td><td>29–32%</td><td>&gt; 32%</td><td>Many casual operators run 30%+ (NRA)</td></tr>
+            <tr><td>Prime Cost %</td><td>≤ 60%</td><td>61–64%</td><td>&gt; 65%</td><td>Baker Tilly: &gt; 65% structurally hard to profit</td></tr>
+            <tr><td>Discount / Comp rate</td><td>≤ 4.1%</td><td>4.2–5.8%</td><td>&gt; 5.8%</td><td>Your working target</td></tr>
+            <tr><td>Void value</td><td>&lt; 1% of sales</td><td>1–2%</td><td>&gt; 2%</td><td>Your working target</td></tr>
+            <tr><td>Food waste</td><td>&lt; 10% of food cost</td><td>10–14%</td><td>&gt; 15%</td><td>Your working target</td></tr>
+            <tr><td>Net profit</td><td>5–7%</td><td>2–4%</td><td>&lt; 2%</td><td>Full-service casual typically 3–5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="source-note">Sources: <a href="https://www.bakertilly.com/insights/prime-cost-target-tips" target="_blank" rel="noopener noreferrer">Baker Tilly prime-cost guidance</a>; <a href="https://www.restaurant.org/research-and-media/research/restaurant-economic-insights/" target="_blank" rel="noopener noreferrer">NRA restaurant operations data</a>.</p>
+    </section>
+
+    <section aria-labelledby="red-flags">
+      <h2 id="red-flags">Top 5 Red Flags</h2>
+      <p class="ranking-note">Vendor price creep ranks first because it is the largest recurring leakage and compounds every month it goes unaddressed. Discounting ranks second because it is the clearest behavior-policy drift over the year. Labor follows because the overage repeats on soft weekdays; shrinkage and void control risk follow through inventory and POS review.</p>
+
+      <div class="flag-list">
+        <article class="flag-card red">
+          <div class="rank">01</div>
+          <span class="badge red">RED FLAG</span>
+          <h3>Vendor price creep (~$1,200/mo): same items, higher prices than a year ago</h3>
+          <p class="finding">Twelve months ago these were your prices. Today the same SKUs from the same vendor cost more, with no offsetting pack-size or quality change. The figures below are <strong>price-creep leakage</strong> dollars, not total item cost or total food cost.</p>
+          <p><strong>Unit price: current vs. 12 months ago (same vendor, same pack)</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Item</th><th>Price 12 mo ago</th><th>Current Price</th><th>Increase / Unit</th><th>Monthly Qty</th><th>Monthly Price-Creep Leakage</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Item">80/20 ground beef (lb)</td><td data-label="Price 12 mo ago">$4.12</td><td data-label="Current Price">$4.37</td><td data-label="Increase / Unit">+$0.25/lb</td><td data-label="Monthly Qty">1,900 lb</td><td data-label="Monthly Price-Creep Leakage">~$475/mo</td></tr>
+                <tr><td data-label="Item">Chicken thighs (lb)</td><td data-label="Price 12 mo ago">$2.89</td><td data-label="Current Price">$3.09</td><td data-label="Increase / Unit">+$0.20/lb</td><td data-label="Monthly Qty">1,700 lb</td><td data-label="Monthly Price-Creep Leakage">~$340/mo</td></tr>
+                <tr><td data-label="Item">Roma tomatoes (case)</td><td data-label="Price 12 mo ago">$22.00</td><td data-label="Current Price">$23.50</td><td data-label="Increase / Unit">+$1.50/case</td><td data-label="Monthly Qty">160 cases</td><td data-label="Monthly Price-Creep Leakage">~$240/mo</td></tr>
+                <tr><td data-label="Item">Salmon fillet (lb)</td><td data-label="Price 12 mo ago">$8.40</td><td data-label="Current Price">$8.65</td><td data-label="Increase / Unit">+$0.25/lb</td><td data-label="Monthly Qty">580 lb</td><td data-label="Monthly Price-Creep Leakage">~$145/mo</td></tr>
+                <tr><td data-label="Item"><strong>Total</strong></td><td data-label="Price 12 mo ago"></td><td data-label="Current Price"></td><td data-label="Increase / Unit"></td><td data-label="Monthly Qty"></td><td data-label="Monthly Price-Creep Leakage"><strong>~$1,200/mo</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>Benchmark callout:</strong> Actual: same-SKU prices up $0.20–$0.25/unit vs. a year ago, never renegotiated. Your target: re-quote against two alternate vendors and hold pricing on a fixed review schedule.</div>
+          <p class="cost-line">Monthly leakage: ~$1,200 price-creep leakage</p>
+          <p class="methodology med"><strong>Methodology:</strong> <span class="conf">MEDIUM confidence.</span> Current invoices compared SKU-by-SKU against the same items on the same vendor account twelve months earlier. Confidence is medium because several older invoices arrived as scanned PDFs requiring manual line-item entry, so a small number of SKUs beyond the four shown are not yet cross-checked.</p>
+        </article>
+
+        <article class="flag-card watch">
+          <div class="rank">02</div>
+          <span class="badge watch">WATCH</span>
+          <h3>Discount rate drift to 4.9% (~$1,000/mo): a behavioral pattern</h3>
+          <p class="finding">Your discount rate sat at your <strong>4.1% target a year ago and has drifted to 4.9% today</strong>. No POS-enforced approval rule or written comp policy was found. The trend, not any single comp, is the issue.</p>
+          <p><strong>Discount rate by quarter (trailing 12 months)</strong></p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>Period</th><th>Discount Rate</th><th>Monthly Gross Sales</th><th>Monthly Discounts Given</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>2025 Q2 (Apr–Jun)</td><td>4.1%</td><td>$125,000</td><td>$5,125</td></tr>
+                <tr><td>2025 Q3 (Jul–Sep)</td><td>4.4%</td><td>$125,000</td><td>$5,500</td></tr>
+                <tr><td>2025 Q4 (Oct–Dec)</td><td>4.7%</td><td>$125,000</td><td>$5,875</td></tr>
+                <tr><td><strong>2026 Q1 (Jan–Mar)</strong></td><td><strong>4.9%</strong></td><td><strong>$125,000</strong></td><td><strong>$6,125</strong></td></tr>
+                <tr><td><strong>Your target</strong></td><td><strong>4.1%</strong></td><td>n/a</td><td><strong>$5,125</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>POS export: most recent month, March 2026</strong></p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>Discount Type</th><th>Transactions</th><th>Total Value</th><th>% of Gross</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Manager override / comp</td><td>35</td><td>$1,750</td><td>1.4%</td></tr>
+                <tr><td>Employee meal discount</td><td>18</td><td>$875</td><td>0.7%</td></tr>
+                <tr><td>Promotional (app promo)</td><td>60</td><td>$3,500</td><td>2.8%</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>113</strong></td><td><strong>$6,125</strong></td><td><strong>4.9%</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>Benchmark callout:</strong> Actual: 4.9% discount rate, up from 4.1% a year ago. Your target: 4.1%. <br><br>Review POS job permissions and require manager approval for comps.</div>
+          <p class="cost-line">Monthly leakage: ~$1,000</p>
+          <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Discount and comp rates pulled directly from complete Toast POS exports across the trailing twelve months and compared against the store's own prior-year rate and your 4.1% working target. The absence of a POS-enforced approval rule was confirmed against job permissions during the review.</p>
+        </article>
+
+        <article class="flag-card watch">
+          <div class="rank">03</div>
+          <span class="badge watch">WATCH</span>
+          <h3>Weekday labor overage (~$800/mo, recurring)</h3>
+          <p class="finding">Weekends carry the volume; the weekday test is whether you flex labor when covers soften. Across the trailing twelve months, weekday labor has averaged <strong>32% of weekday sales against a 28% target</strong>, and the gap shows up almost every week.</p>
+          <p><strong>Average weekly weekday labor bridge (trailing 12 months)</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Metric</th><th>Weekly Average</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Metric">Avg weekly weekday sales</td><td data-label="Weekly Average">~$5,000 / week</td></tr>
+                <tr><td data-label="Metric">Actual weekly weekday labor (32%)</td><td data-label="Weekly Average">~$1,600 / week</td></tr>
+                <tr><td data-label="Metric">Target weekly weekday labor (28%)</td><td data-label="Weekly Average">~$1,400 / week</td></tr>
+                <tr><td data-label="Metric">Avg overage cost</td><td data-label="Weekly Average">~$200 / week</td></tr>
+                <tr><td data-label="Metric"><strong>Monthly leakage (×4 weeks)</strong></td><td data-label="Weekly Average"><strong>~$800 / mo</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">The issue is not weekday sales volume; it is fixed staffing on soft weekdays, repeated week after week.</p>
+          <p class="cost-line">Monthly leakage: ~$800</p>
+          <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Built from POS-integrated scheduled-vs-actual labor and cover counts (7shifts and Toast) for the period, compared against the 28% labor target after normalizing for daypart mix. The weekday pattern was corroborated against the posted staffing template during the review. The daypart-level breakdown of this finding follows in the card directly below.</p>
+        </article>
+
+        <article class="flag-card watch">
+          <span class="badge watch">WATCH · BY DAYPART</span>
+          <h3>By daypart: Tuesday lunch and early-week late night run hottest</h3>
+          <p class="finding">Weekday labor averages <strong>32% vs. the 28% target</strong>. The dinner rush holds near target; the drift is in thin lunches and late-night closes that stay staffed for weekend-size covers.</p>
+          <p><strong>Weekday labor cost % by daypart</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Weekday</th><th>Lunch (11a–2p)</th><th>Dinner (5p–9p)</th><th>Late Night (9p–close)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Weekday">Monday</td><td data-label="Lunch (11a–2p)">41%</td><td data-label="Dinner (5p–9p)">31%</td><td data-label="Late Night (9p–close)">46%</td></tr>
+                <tr><td data-label="Weekday">Tuesday</td><td data-label="Lunch (11a–2p)">44%</td><td data-label="Dinner (5p–9p)">30%</td><td data-label="Late Night (9p–close)">43%</td></tr>
+                <tr><td data-label="Weekday">Wednesday</td><td data-label="Lunch (11a–2p)">39%</td><td data-label="Dinner (5p–9p)">29%</td><td data-label="Late Night (9p–close)">41%</td></tr>
+                <tr><td data-label="Weekday">Thursday</td><td data-label="Lunch (11a–2p)">37%</td><td data-label="Dinner (5p–9p)">28%</td><td data-label="Late Night (9p–close)">39%</td></tr>
+                <tr><td data-label="Weekday">Friday</td><td data-label="Lunch (11a–2p)">31%</td><td data-label="Dinner (5p–9p)">27%</td><td data-label="Late Night (9p–close)">33%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">Cells above 32% (your labor red-flag line) are where staffing outruns covers. Tuesday lunch (44%) and Monday late night (46%) are the two worst.</p>
+          <p><strong>Monthly overage by daypart</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Daypart</th><th>Avg weekday labor %</th><th>Target</th><th>Weekly overage</th><th>Monthly overage</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Daypart">Lunch (Mon–Fri)</td><td data-label="Avg weekday labor %">38%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$110</td><td data-label="Monthly overage">~$440</td></tr>
+                <tr><td data-label="Daypart">Late night (Mon–Fri)</td><td data-label="Avg weekday labor %">40%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$80</td><td data-label="Monthly overage">~$320</td></tr>
+                <tr><td data-label="Daypart">Dinner (Mon–Fri)</td><td data-label="Avg weekday labor %">29%</td><td data-label="Target">28%</td><td data-label="Weekly overage">~$10</td><td data-label="Monthly overage">~$40</td></tr>
+                <tr><td data-label="Daypart"><strong>Weekday total</strong></td><td data-label="Avg weekday labor %"><strong>32%</strong></td><td data-label="Target"><strong>28%</strong></td><td data-label="Weekly overage"><strong>~$200</strong></td><td data-label="Monthly overage"><strong>~$800</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>Monday-morning move:</strong> Drop Tuesday lunch FOH from 3 to 2 between 11am–12:30pm (ticket volume doesn't build until ~12:30pm), and run the Mon–Wed late-night close with one cook instead of two after 9pm. Those two changes recover roughly $130/week on their own.</div>
+          <p class="cost-line">Daypart-attributable overage: ~$800/mo (the full ~$800 in Red Flag 03, not additive to the ~$3,750 total)</p>
+          <p class="methodology high"><strong>Methodology:</strong> <span class="conf">HIGH confidence.</span> Built from POS-integrated scheduled-vs-actual labor and cover counts (7shifts and Toast) for the period, compared against the 28% labor target after normalizing for daypart mix. The weekday pattern was corroborated against the posted staffing template during the review.</p>
+        </article>
+
+        <article class="flag-card watch">
+          <div class="rank">04</div>
+          <span class="badge watch">WATCH</span>
+          <h3>Inventory shrinkage gap (~$500/mo, growing)</h3>
+          <p class="finding">Waste logs incomplete (3 of 7 days). No 86 records matched the variance. Prior reconciliation (Feb 2026) showed ~$350, so the gap grew roughly 40% in one cycle.</p>
+          <p><strong>Reconciliation: most recent count, March 2026</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Category</th><th>Theoretical</th><th>Physical</th><th>Variance</th><th>Price / Unit</th><th>Gap $</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Category">Chicken thighs (lb)</td><td data-label="Theoretical">847</td><td data-label="Physical">822</td><td data-label="Variance">−25</td><td data-label="Price / Unit">$3.09/lb</td><td data-label="Gap $">$77</td></tr>
+                <tr><td data-label="Category">80/20 ground beef (lb)</td><td data-label="Theoretical">623</td><td data-label="Physical">603</td><td data-label="Variance">−20</td><td data-label="Price / Unit">$4.37/lb</td><td data-label="Gap $">$87</td></tr>
+                <tr><td data-label="Category">Salmon fillet (lb)</td><td data-label="Theoretical">214</td><td data-label="Physical">206</td><td data-label="Variance">−8</td><td data-label="Price / Unit">$8.65/lb</td><td data-label="Gap $">$69</td></tr>
+                <tr><td data-label="Category">House wine (750ml)</td><td data-label="Theoretical">72</td><td data-label="Physical">68</td><td data-label="Variance">−4</td><td data-label="Price / Unit">$18/bottle</td><td data-label="Gap $">$72</td></tr>
+                <tr><td data-label="Category">Dry goods / produce</td><td data-label="Theoretical">reconciled</td><td data-label="Physical">reconciled</td><td data-label="Variance">n/a</td><td data-label="Price / Unit">mixed</td><td data-label="Gap $">~$195</td></tr>
+                <tr><td data-label="Category"><strong>Total gap</strong></td><td data-label="Theoretical"></td><td data-label="Physical"></td><td data-label="Variance"></td><td data-label="Price / Unit"></td><td data-label="Gap $"><strong>~$500</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>Benchmark callout:</strong> Actual: ~$500 shrinkage this count, up from ~$350 last count. Your target: waste &lt; 10% of food cost and complete daily waste logs.</div>
+          <p class="cost-line">Monthly leakage: ~$500</p>
+          <p class="methodology med"><strong>Methodology:</strong> <span class="conf">MEDIUM confidence.</span> Shrinkage triangulated across categories from MarketMan theoretical-vs-physical counts (February and March 2026) priced at current unit costs. Confidence is medium because waste logs were complete for only 3 of 7 days and no 86 records matched the variance, so the cause is not yet isolated.</p>
+        </article>
+
+        <article class="flag-card watch">
+          <div class="rank">05</div>
+          <span class="badge watch">WATCH</span>
+          <h3>After-hours voids: control/theft risk (~$250 quantified, exposure unknown)</h3>
+          <p class="finding">Total void value $346 ÷ $125,000 sales = <strong>0.28% of sales</strong> (inside the &lt; 1% target), so the dollars are small. The headline issue is the <strong>after-hours count concentration</strong>: this is a possible theft/control issue until receipt detail proves otherwise.</p>
+          <p><strong>Void log: most recent month, March 2026</strong></p>
+          <div class="stacked-table">
+            <table>
+              <thead>
+                <tr><th>Employee ID</th><th>Voids</th><th>Avg Ticket</th><th>Total Voided</th><th>Reason Codes</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Employee ID">Emp #312</td><td data-label="Voids">10</td><td data-label="Avg Ticket">$13.00</td><td data-label="Total Voided">$130</td><td data-label="Reason Codes">None on file</td></tr>
+                <tr><td data-label="Employee ID">Emp #418</td><td data-label="Voids">8</td><td data-label="Avg Ticket">$15.00</td><td data-label="Total Voided">$120</td><td data-label="Reason Codes">None on file</td></tr>
+                <tr><td data-label="Employee ID">All other staff</td><td data-label="Voids">6</td><td data-label="Avg Ticket">$16.00</td><td data-label="Total Voided">$96</td><td data-label="Reason Codes">5 of 6 coded</td></tr>
+                <tr><td data-label="Employee ID"><strong>Total</strong></td><td data-label="Voids"><strong>24</strong></td><td data-label="Avg Ticket">n/a</td><td data-label="Total Voided"><strong>$346</strong></td><td data-label="Reason Codes">n/a</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">18 of 24 voids occurred after close; company guideline is &lt; 8 unresolved/month. Total void value = <strong>0.28% of sales</strong> (target &lt; 1%), so the dollars are small but the pattern is the concern. 18 of 24 tied to two employee IDs, none with a reason code. Most-voided items: wings (8×), house cocktails (6×), desserts (4×). Quantified after-hours shrinkage: <strong>~$250</strong>; full control/theft exposure is unquantified until receipt-level review is complete. Investigate the pattern before accusing staff.</p>
+          <div class="callout"><strong>Benchmark callout:</strong> Actual: 24 voids, 18 after close tied to two employee IDs, none coded. Your target: &lt; 8 unresolved/month and a reason code on every void.</div>
+          <p class="cost-line">Monthly leakage: ~$250 quantified; control/theft exposure unknown</p>
+          <p class="methodology med"><strong>Methodology:</strong> <span class="conf">MEDIUM confidence.</span> Void counts and timing are complete from the Toast POS log for the period, and the after-hours concentration on two employee IDs is unambiguous. Confidence is medium because the cause is not operator-confirmed: no reason codes are on file and receipt-level detail has not been reviewed, so exposure beyond the ~$250 quantified stays open.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="action-plan">
+      <h2 id="action-plan">Owner Action Plan</h2>
+      <ol class="action-list">
+        <li><strong>This week:</strong> Re-quote 80/20 ground beef, chicken thighs, salmon fillets, and roma tomatoes against two alternate vendors; bring the current vendor back to last year's pricing or switch, and set a fixed price-review schedule.<span class="action-savings">Potential savings: <span class="cost-figure">~$1,200</span> in price-creep leakage per <u>month</u>.</span></li>
+        <li><strong>This week:</strong> Review POS job permissions and require manager approval for comps. Double check that every employee has the appropriate job assigned, then review the discounted checks and follow up with staff.<span class="action-savings">Potential savings: <span class="cost-figure">$1,000</span> per <u>month</u>.</span></li>
+        <li><strong>Next scheduling cycle:</strong> Set cover-count triggers, add pre-shift cut rules for soft weeknights, and send staff home when projected covers are below threshold.<span class="action-savings">Potential savings: <span class="cost-figure">~$200</span>/week. Total <span class="cost-figure">~$800</span> per <u>month</u>.</span></li>
+        <li><strong>This week:</strong> Pull the after-hours void report filtered by employee ID; review receipts for Emp #312 and #418, require reason codes, add manager PIN approval for after-hours/no-reason voids, and monitor daily for two weeks. Treat as a control review before accusing staff.<span class="action-savings">Potential savings: <span class="cost-figure">~$250</span> per <u>month</u>, quantified; full control/theft exposure unknown.</span></li>
+        <li><strong>Before next invoice cycle:</strong> Manual inventory count compared by category against system count and cross-referenced to receiving logs.<span class="action-savings">Potential savings: <span class="cost-figure">~$500</span> per <u>month</u>.</span></li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="data-sources">
+      <h2 id="data-sources">Data Sources</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Source</th><th>Data Covered</th><th>Period</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>POS (Toast)</td><td>Sales, voids, discounts, comps by employee</td><td>Apr 2025–Mar 2026</td></tr>
+            <tr><td>Labor/Scheduling (7shifts)</td><td>Scheduled vs. actual hours, cover count</td><td>Apr 2025–Mar 2026</td></tr>
+            <tr><td>Supplier invoices (5 vendors)</td><td>Unit pricing by SKU, this year vs. last year</td><td>Apr 2025–Mar 2026</td></tr>
+            <tr><td>Inventory (MarketMan)</td><td>Theoretical vs. physical by category</td><td>Feb &amp; Mar 2026</td></tr>
+            <tr><td>3PO (DoorDash, UberEats)</td><td>Order volume, platform fees, refund rate</td><td>Apr 2025–Mar 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="disclaimer">This mock report uses illustrative operating data and directional calculations. In a real ADC engagement, figures would be validated against source systems before recommendations are finalized. ADC surfaces operating patterns; this is not an audit.</div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">ADC Operations</div>
+      <div>Weekly reports for busy F&amp;B owners.</div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const ownerSummary = document.querySelector('.summary');
+
+      if (!ownerSummary) {
+        return;
+      }
+
+      const moneyPattern = /~?\$[\d,]+(?:\.\d+)?(?:\s*[KM])?(?:\s*\/\s*(?:mo|month|yr|year))?/gi;
+      const walker = document.createTreeWalker(ownerSummary, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const parent = node.parentElement;
+
+          if (!parent || parent.closest('script, style, .cost-figure')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          moneyPattern.lastIndex = 0;
+          return moneyPattern.test(node.nodeValue)
+            ? NodeFilter.FILTER_ACCEPT
+            : NodeFilter.FILTER_REJECT;
+        }
+      });
+      const nodes = [];
+
+      while (walker.nextNode()) {
+        nodes.push(walker.currentNode);
+      }
+
+      nodes.forEach((node) => {
+        moneyPattern.lastIndex = 0;
+        const fragment = document.createDocumentFragment();
+        let lastIndex = 0;
+
+        node.nodeValue.replace(moneyPattern, (match, offset) => {
+          fragment.append(document.createTextNode(node.nodeValue.slice(lastIndex, offset)));
+
+          const span = document.createElement('span');
+          span.className = 'cost-figure';
+          span.textContent = match;
+          fragment.append(span);
+
+          lastIndex = offset + match.length;
+          return match;
+        });
+
+        fragment.append(document.createTextNode(node.nodeValue.slice(lastIndex)));
+        node.parentNode.replaceChild(fragment, node);
+      });
+    })();
+  </script>
+</body>
+</html>
