@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ember: Red-Flags Dashboard | ADC Consulting</title>
+  <meta name="description" content="A demo dashboard for a four-location restaurant showing 12 months of results, the profit gap, five red flags, an action plan, and the source of every number." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/adc-favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#F7F3EE; --bg-alt:#F0EAE0; --bg-card:#FDFAF6;
+      --espresso:#081c05; --espresso-hi:#12330d; --clay:#A8523D;
+      --red-flag:#9E342D; --red-bg:#FDF0EE;
+      --amber:#C47A2B; --amber-bg:#FDF3E3;
+      --green:#1f7a4d; --green-bg:#ECF4EE;
+      --sage:#7A957A; --taupe:#342A23; --taupe-mid:#66574D;
+      --sand:#CDBFAF; --sand-light:#DED4C9;
+      --cream:#FDFAF6;
+      --shadow-sm:0 2px 8px rgba(52,42,35,.08);
+      --shadow-md:0 8px 24px rgba(52,42,35,.12);
+      --nav-h:73px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--taupe);
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    body { padding-top: 84px; }
+
+    a { color: var(--clay); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+    .page { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 20px 40px; }
+
+    /* ---- nav (shared with report pages) ---- */
+    nav.site {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 36px; background: #fff;
+      border-bottom: 1px solid var(--sand-light); backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      width: 100%; min-height: 40px;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    }
+    .nav-logo { display: inline-flex; align-items: center; flex-shrink: 0; }
+    .nav-logo img { width: auto; height: auto; max-height: 40px; object-fit: contain; }
+    .nav-links { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+    .nav-links a {
+      margin-left: 18px; color: var(--taupe-mid); font-size: 11px; font-weight: 500;
+      letter-spacing: .05em; text-transform: uppercase; text-decoration: none; transition: color .18s;
+    }
+    .nav-links a:hover { color: var(--red-flag); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 42px;
+      padding: 10px 18px; border-radius: 8px; border: 1px solid var(--espresso);
+      background: var(--espresso); color: var(--cream); font-size: .9rem; font-weight: 700;
+      text-decoration: none; white-space: nowrap; box-shadow: var(--shadow-sm);
+    }
+    .btn:hover { background: var(--espresso-hi); transform: translateY(-1px); }
+    .nav-cta { justify-self: end; min-height: auto; padding: 10px 20px; font-size: .82rem; }
+
+    /* ---- header ---- */
+    header.report { padding: 46px 0 30px; }
+    .eyebrow {
+      display: block; margin-bottom: 14px; color: var(--clay);
+      font-size: .76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    }
+    h1, h2, h3 { margin: 0; color: var(--espresso); line-height: 1.1; letter-spacing: 0; }
+    h1 { max-width: 760px; font-size: clamp(2.1rem, 6.5vw, 3.6rem); font-weight: 700; }
+    h2 { margin-bottom: 16px; font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 700; }
+    h3 { font-size: 1.12rem; font-weight: 600; }
+    p { margin: 0 0 14px; }
+    .subtitle { max-width: 700px; margin: 18px 0 22px; color: var(--taupe-mid); font-size: 1.05rem; }
+
+    .meta-strip {
+      display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px;
+      padding: 14px; border: 1px solid var(--sand-light); border-radius: 12px;
+      background: var(--bg-card); box-shadow: var(--shadow-sm);
+    }
+    .meta-item { overflow-wrap: anywhere; }
+    .meta-item span {
+      display: block; color: var(--taupe-mid);
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    }
+    .meta-item strong { display: block; margin-top: 3px; color: var(--espresso); font-size: .94rem; line-height: 1.3; }
+
+    /* ---- lens tab bar ---- */
+    .lens-bar {
+      position: sticky; top: 84px; z-index: 90;
+      margin: 0 -20px; padding: 0 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--sand-light);
+    }
+    .lens-tabs {
+      display: flex; gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .lens-tabs::-webkit-scrollbar { display: none; }
+    .lens-tab {
+      appearance: none; border: 0; background: none; cursor: pointer;
+      padding: 14px 16px 12px; white-space: nowrap;
+      color: var(--taupe-mid); font-family: inherit;
+      font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      border-bottom: 3px solid transparent; transition: color .15s;
+    }
+    .lens-tab:hover { color: var(--espresso); }
+    .lens-tab[aria-selected="true"] { color: var(--espresso); border-bottom-color: var(--clay); }
+    .lens-tab:focus-visible { outline: 2px solid var(--clay); outline-offset: -2px; border-radius: 6px; }
+
+    .lens-panel { display: none; padding: 34px 0 10px; }
+    .lens-panel.active { display: block; }
+    .lens-intro { max-width: 720px; color: var(--taupe-mid); margin-bottom: 26px; }
+
+    /* ---- stat cards ---- */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 34px; }
+    .stat {
+      min-width: 0; padding: 18px; border: 1px solid var(--sand-light);
+      border-radius: 12px; background: var(--bg-card); box-shadow: var(--shadow-sm);
+      overflow-wrap: anywhere;
+    }
+    .stat span {
+      display: block; color: var(--taupe-mid);
+      font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    }
+    .stat strong { display: block; margin-top: 8px; color: var(--espresso); font-size: clamp(1.3rem, 3.4vw, 1.7rem); line-height: 1.1; }
+    .stat em { display: block; margin-top: 7px; color: var(--taupe-mid); font-style: normal; font-size: .85rem; line-height: 1.45; }
+    .stat.gap { border-color: rgba(158,52,45,.35); box-shadow: inset 3px 0 0 var(--red-flag); }
+    .stat.gap strong { color: var(--red-flag); }
+
+    /* ---- store bars ---- */
+    .store-bars { display: grid; gap: 14px; margin: 18px 0 8px; }
+    .store-bar { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: center; }
+    .store-bar .sb-name { font-weight: 700; color: var(--espresso); font-size: .95rem; line-height: 1.3; }
+    .store-bar .sb-name small { display: block; font-weight: 500; color: var(--taupe-mid); font-size: .78rem; }
+    .sb-track {
+      position: relative; height: 30px; border-radius: 8px;
+      background: var(--red-bg); border: 1px solid var(--sand-light); overflow: hidden;
+    }
+    .sb-fill { position: absolute; inset: 0 auto 0 0; background: var(--sage); opacity: .85; }
+    .sb-label {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 10px; font-size: .78rem; font-weight: 700; color: var(--espresso); white-space: nowrap;
+    }
+    .sb-label .lose { color: var(--red-flag); }
+    .bars-note { color: var(--taupe-mid); font-size: .88rem; margin: 10px 0 34px; }
+
+    /* ---- flag cards ---- */
+    .flag-list { display: grid; gap: 14px; }
+    .flag-card {
+      display: flex; gap: 18px; align-items: flex-start;
+      padding: 18px 20px; background: var(--bg-card);
+      border: 1px solid var(--sand-light); border-left: 4px solid var(--amber); border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .flag-card.red { border-left-color: var(--red-flag); }
+    .flag-amt { flex: 0 0 auto; min-width: 92px; font-weight: 700; font-size: 1.35rem; color: var(--red-flag); }
+    .flag-amt small { display: block; font-size: .64rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--taupe-mid); }
+    .flag-body { flex: 1; min-width: 0; }
+    .flag-body h3 { font-size: 1.05rem; }
+    .tag {
+      display: inline-block; font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle;
+    }
+    .tag.red { background: var(--red-bg); color: var(--red-flag); }
+    .tag.amber { background: var(--amber-bg); color: var(--amber); }
+    .flag-stores { margin: 2px 0 0; color: var(--taupe-mid); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .flag-finding { margin: 8px 0 0; color: var(--taupe-mid); font-size: .92rem; }
+    .flag-move { margin: 9px 0 0; font-size: .88rem; color: var(--espresso); }
+    .move-label { font-weight: 700; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--clay); margin-right: 7px; }
+
+    /* ---- confidence chip + drawer ---- */
+    .conf-row { margin-top: 12px; }
+    .conf-chip {
+      appearance: none; cursor: pointer; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 4px 11px; border-radius: 999px;
+      font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+      border: 1px solid var(--sand-light); background: var(--bg-alt); color: var(--taupe-mid);
+      transition: border-color .15s;
+    }
+    .conf-chip:hover { border-color: var(--sand); }
+    .conf-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .conf-chip.high .dot { background: var(--green); }
+    .conf-chip.med .dot { background: var(--amber); }
+    .conf-chip .why { font-weight: 600; letter-spacing: .02em; text-transform: none; color: var(--clay); }
+    .conf-drawer {
+      display: none; margin-top: 10px; padding: 12px 15px;
+      border: 1px solid var(--sand-light); border-left: 3px solid var(--sand);
+      border-radius: 10px; background: var(--bg-alt);
+      font-size: .85rem; color: var(--taupe-mid); line-height: 1.55;
+    }
+    .conf-drawer.open { display: block; }
+    .conf-drawer.high { border-left-color: var(--green); }
+    .conf-drawer.med { border-left-color: var(--amber); }
+    .conf-drawer dt { font-weight: 800; color: var(--espresso); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; margin-top: 9px; }
+    .conf-drawer dt:first-child { margin-top: 0; }
+    .conf-drawer dd { margin: 2px 0 0; }
+    .conf-drawer .trail-link { display: inline-block; margin-top: 11px; font-size: .82rem; font-weight: 700; }
+
+    /* ---- 12-month trend bars ---- */
+    .flag-history { margin-top: 12px; }
+    .trend { display: flex; gap: 3px; max-width: 380px; }
+    .t-col {
+      position: relative; flex: 1; min-width: 0;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .t-bar { width: 100%; height: 36px; display: flex; align-items: flex-end; }
+    .t-bar i { display: block; width: 100%; background: var(--sand-light); border-radius: 2px 2px 0 0; }
+    .t-bar i.hot { background: var(--red-flag); opacity: .8; }
+    .t-col small { font-size: .56rem; font-weight: 700; letter-spacing: .02em; color: var(--taupe-mid); text-transform: uppercase; }
+    .t-col::after {
+      content: attr(data-tip);
+      position: absolute; bottom: calc(100% + 7px); left: 50%;
+      transform: translateX(-50%) translateY(2px);
+      opacity: 0; pointer-events: none; white-space: nowrap; z-index: 6;
+      background: var(--bg-card); color: var(--espresso);
+      border: 1px solid var(--sand); border-radius: 7px;
+      padding: 3px 9px; font-size: .74rem; font-weight: 700;
+      box-shadow: var(--shadow-md);
+      transition: opacity .12s ease, transform .12s ease;
+    }
+    .t-col:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .trend-note { margin: 7px 0 0; font-size: .8rem; color: var(--taupe-mid); }
+    .trend-note b { color: var(--espresso); }
+
+    /* ---- scenarios ---- */
+    .plan-board {
+      padding: 22px; border: 1px solid var(--sand-light); border-radius: 12px;
+      background: var(--bg-alt); box-shadow: var(--shadow-sm); margin-bottom: 26px;
+    }
+    .plan-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .plan-stat { padding: 16px; border: 1px solid var(--sand-light); border-radius: 12px; background: var(--bg-card); min-width: 0; overflow-wrap: anywhere; }
+    .plan-stat span { display: block; color: var(--taupe-mid); font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    .plan-stat strong { display: block; margin-top: 7px; font-size: clamp(1.25rem, 3vw, 1.6rem); color: var(--espresso); line-height: 1.1; }
+    .plan-stat em { display: block; margin-top: 6px; color: var(--taupe-mid); font-style: normal; font-size: .8rem; line-height: 1.45; }
+    .plan-stat.live { border-color: rgba(31,122,77,.4); box-shadow: inset 3px 0 0 var(--green); }
+    .plan-stat.live strong { color: var(--green); }
+    .plan-track { position: relative; height: 12px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--sand-light); margin: 18px 0 8px; overflow: hidden; }
+    .plan-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--green); border-radius: 999px; transition: width .25s ease; }
+    .plan-track-note { display: flex; justify-content: space-between; font-size: .75rem; font-weight: 700; color: var(--taupe-mid); }
+    .plan-honesty { margin: 16px 0 0; font-size: .85rem; color: var(--taupe-mid); }
+
+    .lever-list { display: grid; gap: 14px; }
+    .lever {
+      display: flex; gap: 18px; align-items: flex-start;
+      padding: 18px 20px; background: var(--bg-card);
+      border: 1px solid var(--sand-light); border-radius: 12px; box-shadow: var(--shadow-sm);
+      transition: border-color .2s;
+    }
+    .lever.on { border-color: rgba(31,122,77,.45); }
+    .lever-switch {
+      appearance: none; cursor: pointer; flex: 0 0 auto;
+      width: 52px; height: 30px; border-radius: 999px;
+      border: 1px solid var(--sand); background: var(--bg-alt);
+      position: relative; transition: background .2s, border-color .2s;
+      margin-top: 3px;
+    }
+    .lever-switch::after {
+      content: ""; position: absolute; top: 3px; left: 3px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #fff; border: 1px solid var(--sand-light);
+      box-shadow: var(--shadow-sm); transition: transform .2s;
+    }
+    .lever-switch[aria-checked="true"] { background: var(--green); border-color: var(--green); }
+    .lever-switch[aria-checked="true"]::after { transform: translateX(22px); }
+    .lever-switch:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+    .lever-body { flex: 1; min-width: 0; }
+    .lever-body h3 { font-size: 1.02rem; }
+    .lever-action { margin: 6px 0 0; color: var(--taupe-mid); font-size: .9rem; }
+    .lever-recovers { margin: 9px 0 0; font-size: .9rem; font-weight: 700; color: var(--green); }
+    .lever-recovers .where { font-weight: 500; color: var(--taupe-mid); }
+    .lever-prevents { margin: 5px 0 0; font-size: .85rem; color: var(--taupe-mid); }
+    .lever-prevents b { color: var(--espresso); font-weight: 700; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; margin-right: 6px; }
+    .lever-floor { margin: 7px 0 0; font-size: .82rem; color: var(--amber); font-weight: 600; }
+    .plan-footnote { margin-top: 20px; color: var(--taupe-mid); font-size: .85rem; }
+
+    /* ---- exposure ---- */
+    .define-block {
+      padding: 18px 20px; border: 1px solid var(--sand-light); border-left: 3px solid var(--clay);
+      border-radius: 0 12px 12px 0; background: var(--bg-alt);
+      margin-bottom: 28px; max-width: 760px;
+    }
+    .define-block p { margin: 0; color: var(--taupe); font-size: .98rem; }
+    .define-block p + p { margin-top: 8px; }
+    .define-block strong { color: var(--espresso); }
+
+    .exp-board { display: grid; gap: 26px; }
+    .exp-group-head {
+      display: flex; align-items: center; gap: 9px; margin-bottom: 9px;
+      color: var(--espresso);
+    }
+    .exp-group-head h3 {
+      font-size: .74rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    }
+    .exp-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px;
+      background: var(--bg-alt); color: var(--taupe-mid); font-size: .7rem; font-weight: 800;
+    }
+    .exp-group-list {
+      overflow: hidden; border: 1px solid var(--sand-light);
+      border-radius: 12px; background: var(--bg-card); box-shadow: var(--shadow-sm);
+    }
+    .exp-item + .exp-item { border-top: 1px solid var(--sand-light); }
+    .exp-row-head {
+      appearance: none; width: 100%; display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+      padding: 15px 18px; border: 0; background: transparent;
+      color: inherit; font: inherit; text-align: left; cursor: pointer;
+    }
+    .exp-row-head:hover { background: var(--bg-alt); }
+    .exp-row-head:focus-visible { outline: 2px solid var(--clay); outline-offset: -3px; }
+    .exp-chevron {
+      color: var(--taupe-mid); font-size: 1.2rem; line-height: 1;
+      transform-origin: center; transition: transform .18s ease;
+    }
+    .exp-row-head[aria-expanded="true"] .exp-chevron { transform: rotate(90deg); }
+    .exp-row-main { min-width: 0; }
+    .exp-row-title { display: block; color: var(--espresso); font-size: .96rem; font-weight: 700; }
+    .exp-row-store { display: block; margin-top: 1px; color: var(--taupe-mid); font-size: .78rem; }
+    .exp-cost { color: var(--green); font-size: .9rem; font-weight: 800; white-space: nowrap; }
+    .exp-group.unknown .exp-cost { color: var(--amber); }
+    .exp-group.uncovered .exp-cost { color: var(--taupe-mid); }
+    .exp-body { display: none; padding: 2px 18px 18px 48px; background: var(--bg-card); }
+    .exp-body.open { display: block; }
+    .exp-detail-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px; padding-top: 14px; border-top: 1px solid var(--sand-light);
+    }
+    .exp-detail {
+      margin: 0; padding: 12px 14px; border-radius: 9px;
+      background: var(--bg-alt); color: var(--taupe-mid); font-size: .86rem;
+    }
+    .exp-detail b, .exp-review b {
+      display: block; margin-bottom: 3px; color: var(--espresso);
+      font-size: .64rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase;
+    }
+    .exp-review {
+      grid-column: 1 / -1; margin: 0; padding: 12px 14px;
+      border-left: 3px solid var(--green); border-radius: 0 9px 9px 0;
+      background: var(--green-bg); color: var(--espresso); font-size: .88rem;
+    }
+    .exp-review b { color: var(--green); }
+    .exp-guardrail { margin-top: 24px; padding: 14px 18px; border: 1px solid var(--sand-light); border-radius: 12px; background: var(--bg-card); color: var(--taupe-mid); font-size: .88rem; }
+
+    /* ---- method lens ---- */
+    .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 30px; }
+    .method-col {
+      padding: 18px 20px; border-radius: 12px; background: var(--bg-card);
+      border: 1px solid var(--sand-light); box-shadow: var(--shadow-sm);
+    }
+    .method-col.facts { border-top: 3px solid var(--espresso-hi); }
+    .method-col.context { border-top: 3px solid var(--clay); }
+    .method-col h3 { font-size: .8rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .method-col.facts h3 { color: var(--espresso); }
+    .method-col.context h3 { color: var(--clay); }
+    .src-list { margin: 0; padding: 0; list-style: none; }
+    .src-list li { padding: 8px 0; border-bottom: 1px solid var(--sand-light); font-size: .88rem; }
+    .src-list li:last-child { border-bottom: 0; }
+    .src-list strong { color: var(--espresso); display: block; }
+    .src-list small { color: var(--taupe-mid); display: block; }
+    .src-list .period { color: var(--clay); font-weight: 600; font-size: .76rem; }
+    .method-col .credo { margin: 12px 0 0; font-size: .84rem; font-style: italic; color: var(--taupe-mid); }
+
+    .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 30px; }
+    .pipe-step {
+      padding: 14px 16px; border: 1px solid var(--sand-light); border-radius: 12px;
+      background: var(--bg-card); font-size: .85rem; color: var(--taupe-mid);
+    }
+    .pipe-step b { display: block; color: var(--espresso); font-size: .92rem; margin-bottom: 3px; }
+    .pipe-step .n { color: var(--clay); font-weight: 800; margin-right: 6px; }
+
+    .tier-block { margin-bottom: 30px; }
+    .tier-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--sand-light); font-size: .9rem; color: var(--taupe-mid); }
+    .tier-row:last-child { border-bottom: 0; }
+    .tier-pill { flex: 0 0 92px; text-align: center; font-size: .66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 4px 0; border-radius: 999px; margin-top: 2px; }
+    .tier-pill.high { background: var(--green-bg); color: var(--green); }
+    .tier-pill.med { background: var(--amber-bg); color: var(--amber); }
+    .tier-pill.low { background: var(--bg-alt); color: var(--taupe-mid); }
+
+    .trace { border: 1px solid var(--sand-light); border-radius: 12px; background: var(--bg-card); box-shadow: var(--shadow-sm); margin-bottom: 12px; overflow: hidden; }
+    .trace.flash { border-color: var(--clay); }
+    .trace-head {
+      appearance: none; border: 0; background: none; cursor: pointer; font-family: inherit;
+      width: 100%; display: flex; align-items: center; gap: 12px; text-align: left;
+      padding: 15px 18px;
+    }
+    .trace-head:hover { background: var(--bg-alt); }
+    .trace-head .t-amt { flex: 0 0 auto; font-weight: 700; color: var(--red-flag); font-size: .95rem; min-width: 86px; }
+    .trace-head .t-title { flex: 1; font-weight: 700; color: var(--espresso); font-size: .98rem; }
+    .trace-head .chev { color: var(--taupe-mid); font-size: .8rem; transition: transform .2s; }
+    .trace-head[aria-expanded="true"] .chev { transform: rotate(180deg); }
+    .trace-body { display: none; padding: 4px 18px 18px; }
+    .trace-body.open { display: block; }
+    .trace-intro { color: var(--taupe-mid); font-size: .9rem; margin-bottom: 8px; }
+    .trace-meta { color: var(--taupe-mid); font-size: .78rem; font-weight: 600; margin: 10px 0 0; }
+
+    .table-scroll {
+      position: relative; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      margin: 12px 0 4px; border: 1px solid var(--sand-light); border-radius: 10px;
+      background:
+        linear-gradient(to right, rgba(253,250,246,0), var(--bg-card) 78%) right / 34px 100% no-repeat,
+        var(--bg-card);
+    }
+    table { width: 100%; border-collapse: collapse; background: var(--bg-card); color: var(--taupe); font-size: .85rem; }
+    .table-scroll table { min-width: 560px; }
+    caption { text-align: left; padding: 10px 12px 2px; font-weight: 700; color: var(--espresso); font-size: .84rem; }
+    th, td { padding: 9px 12px; border-bottom: 1px solid var(--sand-light); text-align: left; vertical-align: top; }
+    th { color: var(--espresso); font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; background: var(--bg-alt); }
+    tr:last-child td { border-bottom: 0; }
+    tr.total td { font-weight: 700; color: var(--espresso); background: var(--bg-alt); }
+    .scroll-hint { color: var(--taupe-mid); font-size: .72rem; margin: 4px 0 0; display: none; }
+
+    .not-covered { margin-top: 26px; max-width: 760px; color: var(--taupe-mid); font-size: .92rem; }
+
+    /* ---- footer ---- */
+    footer { background: #000; color: rgba(247,243,238,.5); padding: 32px clamp(20px,5vw,40px); font-size: .82rem; margin-top: 30px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-logo { font-weight: 700; color: rgba(247,243,238,.75); }
+    .fineprint { max-width: 960px; margin: 14px auto 0; color: rgba(247,243,238,.4); font-size: .74rem; line-height: 1.6; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    @media (max-width: 860px) {
+      .stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .method-grid { grid-template-columns: 1fr; }
+      .pipeline { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 760px) {
+      nav.site { padding: 14px 20px; }
+      .nav-inner { display: flex; justify-content: space-between; gap: 18px; }
+      .nav-logo img { max-height: 34px; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding-top: 74px; }
+      .lens-bar { top: 74px; }
+      .page { padding: 0 14px 28px; }
+      header.report { padding: 34px 0 24px; }
+      .meta-strip, .stat-grid, .plan-stats { grid-template-columns: 1fr; }
+      .store-bar { grid-template-columns: 1fr; gap: 6px; }
+      .flag-card, .lever { flex-direction: column; gap: 10px; padding: 16px; }
+      .flag-amt { min-width: 0; }
+      .exp-row-head { grid-template-columns: 16px minmax(0, 1fr); gap: 9px; padding: 14px; }
+      .exp-cost { grid-column: 2; margin-top: -4px; white-space: normal; }
+      .exp-body { padding: 0 14px 14px 39px; }
+      .exp-detail-grid { grid-template-columns: 1fr; }
+      .scroll-hint { display: block; }
+      .pipeline { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site" aria-label="Site">
+    <div class="nav-inner">
+      <a href="index.html#hero" class="nav-logo" aria-label="ADC Operations home">
+        <img src="assets/adc-new-logo-header-optimized.jpg" width="480" height="189" alt="ADC Operations" decoding="async" fetchpriority="high" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="red-flag-brief-s.html">60-Second Brief</a></li>
+        <li><a href="red-flags-report.html">Full Report</a></li>
+      </ul>
+      <a class="btn nav-cta" href="index.html#cta">Get Report</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="report">
+      <span class="eyebrow">PREPARED FOR</span>
+      <h1>Ember: Red-Flags Report</h1>
+      <p class="subtitle">We reviewed the last 12 months to find recurring problems, then checked the latest four weeks in detail. Open any number to see where it came from.</p>
+      <div class="meta-strip" aria-label="Report metadata">
+        <div class="meta-item"><span>Lookback</span><strong>Trailing 12 months <br>(Jun 2025 – May 2026)</strong></div>
+        <div class="meta-item"><span>Deep-dive</span><strong>April 14 – May 11, 2026</strong></div>
+        <div class="meta-item"><span>Scope</span><strong>4 locations - 5 data sources</strong></div>
+        <div class="meta-item"><span>Prepared by</span><strong>ADC Consulting</strong></div>
+      </div>
+    </header>
+
+    <div class="lens-bar">
+      <div class="lens-tabs" role="tablist" aria-label="Dashboard lenses">
+        <button class="lens-tab" id="tab-overview" role="tab" aria-selected="true" aria-controls="panel-overview">Overview</button>
+        <button class="lens-tab" id="tab-scenarios" role="tab" aria-selected="false" aria-controls="panel-scenarios" tabindex="-1">Scenarios</button>
+        <button class="lens-tab" id="tab-exposure" role="tab" aria-selected="false" aria-controls="panel-exposure" tabindex="-1">Exposure</button>
+        <button class="lens-tab" id="tab-method" role="tab" aria-selected="false" aria-controls="panel-method" tabindex="-1">How It&rsquo;s Built</button>
+      </div>
+    </div>
+
+    <!-- ===== OVERVIEW ===== -->
+    <section class="lens-panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+      <h2 class="sr-only">Overview</h2>
+      <div class="stat-grid" id="ov-stats"></div>
+
+      <h2>Profit pace by store</h2>
+      <p class="lens-intro">Each bar shows how close a store is to the 7% profit target on its own sales. Store A is hitting it; Store C has the biggest gap.</p>
+      <div class="store-bars" id="ov-bars"></div>
+      <p class="bars-note">Based on the 7% profit target applied to each store&rsquo;s actual four-week sales. These store numbers add up to the totals at the top.</p>
+
+      <h2>The five patterns</h2>
+      <p class="lens-intro">Biggest costs first. The bars show when each problem started and whether it is ongoing or recent. Tap a confidence label to see where the number came from.</p>
+      <div class="flag-list" id="ov-flags"></div>
+    </section>
+
+    <!-- ===== SCENARIOS ===== -->
+    <section class="lens-panel" id="panel-scenarios" role="tabpanel" aria-labelledby="tab-scenarios">
+      <h2>Choose the actions you want to take</h2>
+      <p class="lens-intro">Switch on an action to add it to the plan. The dollar figure counts only the stores where we actually found the problem. You would run the same action at your other stores to stop it from starting there too.</p>
+
+      <div class="plan-board">
+        <div class="plan-stats">
+          <div class="plan-stat">
+            <span>Recent monthly profit</span>
+            <strong>~$22,490 / mo</strong>
+            <em>Average for the latest three months.</em>
+          </div>
+          <div class="plan-stat live">
+            <span>Monthly cost the chosen actions could save</span>
+            <strong id="plan-live">~$0 / mo</strong>
+            <em id="plan-live-sub">0 of 5 actions selected</em>
+          </div>
+          <div class="plan-stat">
+            <span>Profit at 7% target</span>
+            <strong>$34,860 / mo</strong>
+            <em>7% of $498K in monthly revenue across all locations.</em>
+          </div>
+        </div>
+        <div class="plan-track" aria-hidden="true"><div class="plan-fill" id="plan-fill"></div></div>
+        <div class="plan-track-note"><span>$0</span><span>~$12,450/mo in costs found</span></div>
+        <p class="plan-honesty">This total is the cost tied to the actions you picked, not a profit forecast. What you actually keep depends on how and when each action gets done.</p>
+      </div>
+
+      <div class="lever-list" id="sc-levers"></div>
+
+      <p class="plan-footnote">The costs we found (~$12,450/mo) land about $50 above the gap to a 7% margin (~$12,400/mo), purely because the store numbers are rounded. For voids we count only the ~$690/mo we can prove right now; the real number may be higher once receipts are reviewed.</p>
+    </section>
+
+    <!-- ===== EXPOSURE ===== -->
+    <section class="lens-panel" id="panel-exposure" role="tabpanel" aria-labelledby="tab-exposure">
+      <h2>Exposure ledger</h2>
+      <div class="define-block">
+        <p><strong>Leakage</strong> is money that is already walking out the door, measured per month.</p>
+        <p><strong>Exposure</strong> is a risk we can see but cannot put a full price on yet. When the data proves part of the cost, we show that part. The rest stays unknown until someone digs into the cause.</p>
+      </div>
+
+      <p class="lens-intro">Sorted by how much the reports can actually prove. Tap any item to see what we know, what is still unclear, and what to look at next.</p>
+      <div class="exp-board" id="exp-list"></div>
+
+      <p class="exp-guardrail"><strong>How to read this section:</strong> the items here are patterns worth running by your attorney, HR advisor, or insurer. ADC points out what shows up in your operating data. It does not rule on compliance, and nothing here is a finding that any law was broken or that anyone did anything wrong.</p>
+    </section>
+
+    <!-- ===== METHOD ===== -->
+    <section class="lens-panel" id="panel-method" role="tabpanel" aria-labelledby="tab-method">
+      <h2>How this analysis was built</h2>
+      <p class="lens-intro">We used the reports you already keep plus details only you could provide. We reviewed 12 months to find recurring problems, then checked the latest four weeks in detail. If the data could not confirm something, we left it out instead of guessing.</p>
+
+      <div class="method-grid">
+        <div class="method-col facts">
+          <h3>Factual data: reports you keep</h3>
+          <ul class="src-list" id="m-sources"></ul>
+        </div>
+        <div class="method-col context">
+          <h3>Your context: what only you know</h3>
+          <ul class="src-list">
+            <li><strong>Working targets</strong><small>The 4.1% discount target, void guidelines, and waste thresholds come from your own benchmarks.</small></li>
+            <li><strong>Policy status</strong><small>Comp policy and POS approval-rule status, confirmed during the review.</small></li>
+            <li><strong>Staffing template</strong><small>The posted weekday template used to confirm the labor pattern.</small></li>
+            <li><strong>Known one-offs</strong><small>Construction, weather, a short-staffed week: flagged by you so they are not misread as drift.</small></li>
+          </ul>
+          <p class="credo">Held back if absent, never guessed.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom:12px;">The pipeline</h3>
+      <div class="pipeline">
+        <div class="pipe-step"><b><span class="n">1</span>Reconcile</b>Clean and line up every export so the systems agree on what happened.</div>
+        <div class="pipe-step"><b><span class="n">2</span>Benchmark</b>Your strongest store sets the bar for each number; the last 12 months and the same period last year separate seasonal swings from real drift.</div>
+        <div class="pipe-step"><b><span class="n">3</span>Grade</b>Every finding carries a confidence tier so you know how hard to lean on it.</div>
+        <div class="pipe-step"><b><span class="n">4</span>Surface</b>The pattern, the dollars attached, and the first move. Decisions stay with you.</div>
+      </div>
+
+      <div class="tier-block">
+        <h3 style="margin-bottom:8px;">Confidence tiers</h3>
+        <div class="tier-row"><span class="tier-pill high">High</span><span>Complete data for that category and period, plus context you confirmed during the review.</span></div>
+        <div class="tier-row"><span class="tier-pill med">Medium</span><span>Complete data but nothing from you to confirm it, or partial data with strong supporting context. We show the reasoning so you can weigh it, and each medium finding says what would move it to high.</span></div>
+        <div class="tier-row"><span class="tier-pill low">Low</span><span>Counts only half toward any performance guarantee. None appear in this report; it holds to high and medium only.</span></div>
+      </div>
+
+      <h3 style="margin-bottom:4px;">The trail, flag by flag</h3>
+      <p class="lens-intro" style="margin-bottom:16px;">Open any flag to follow its number from raw data to final dollar figure. Each number has its own benchmark: Store A sets the price benchmark on the shared vendor account, but still has its own weekday labor overage.</p>
+      <div id="m-traces"></div>
+
+      <p class="not-covered"><strong>What this analysis does not cover:</strong> anything outside the data provided. Things like a new competitor, nearby construction, weather, or a short-staffed week are not captured unless they showed up in the numbers. Figures are directional until checked against the source systems. ADC surfaces operating patterns; it is not an audit.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">ADC Operations</div>
+      <div>Weekly reports for busy F&amp;B owners.</div>
+    </div>
+    <p class="fineprint">Demo dashboard on illustrative operating data, prepared by ADC Operations (adc-ops.com). Numbers are directional and include authored examples (wage-and-hour, platform, vendor concentration rows) to show category range. In a real engagement, figures are validated against source systems before recommendations are finalized. ADC surfaces operating patterns; this is not an audit, and nothing here is legal, HR, or compliance advice.</p>
+  </footer>
+
+  <script>
+  (() => {
+    "use strict";
+
+    /* =====================================================================
+       ENGAGEMENT: one object drives every rendered section.
+       New client = new object. mode:"single" reserved for the singleton
+       variant (cross-store sections will swap to trailing-12 comparisons).
+       Amounts carry {value, approx, basis, status} so the renderer can
+       preserve quantified-vs-floor distinctions. All figures directional.
+    ===================================================================== */
+    const ENGAGEMENT = {
+      meta: {
+        client: "Ember",
+        owner: "Marcus Chen",
+        mode: "multi",
+        lookback: "June 2025 – May 11, 2026",
+        deepDive: "April 14 – May 11, 2026"
+      },
+
+      /* Lookback is per source: system exports reach back a year,
+         paper-based sources cover the recent window. */
+      sources: [
+        { name: "POS (Toast)", covers: "Sales, voids, discounts, comps by employee", period: "Jun 2025 – May 11, 2026 (trailing 12 months)" },
+        { name: "Labor / scheduling (7shifts)", covers: "Scheduled vs. actual hours, cover counts", period: "Jun 2025 – May 11, 2026 (trailing 12 months)" },
+        { name: "Supplier invoices (5 vendors, 42 invoices)", covers: "Unit pricing by SKU, cross-store comparison", period: "Apr 1 – May 11, 2026 (recent window)" },
+        { name: "Inventory (MarketMan)", covers: "Expected vs. counted stock by category", period: "Apr 28 &amp; May 11, 2026 (two counts)" },
+        { name: "Delivery apps (DoorDash, UberEats)", covers: "Order volume, platform fees, refund rates", period: "Feb – May 11, 2026 (recent statements)" }
+      ],
+
+      portfolio: {
+        revenue: 498000,
+        currentNet: 22490,
+        targetNet: 34860,
+        gap: 12400,
+        leakIdentified: 12450
+      },
+
+      stores: [
+        { id: "A", name: "Store A", area: "Downtown", revenue: 128000, netDollars: 8960, netPct: 7.0, targetDollars: 8960, gapToTarget: 0 },
+        { id: "B", name: "Store B", area: "Midtown", revenue: 123000, netDollars: 6150, netPct: 5.0, targetDollars: 8610, gapToTarget: 2460 },
+        { id: "C", name: "Store C", area: "Eastside", revenue: 125000, netDollars: 2500, netPct: 2.0, targetDollars: 8750, gapToTarget: 6250 },
+        { id: "D", name: "Store D", area: "Northside", revenue: 122000, netDollars: 4880, netPct: 4.0, targetDollars: 8540, gapToTarget: 3660 }
+      ],
+
+      flags: [
+        {
+          id: "vendor", rank: 1, severity: "red",
+          title: "Vendor pricing gap",
+          amount: { value: 4800, approx: true, basis: "/mo", status: "quantified" },
+          stores: "Stores B + C + D",
+          finding: "Stores B, C, and D pay more than Store A for the same Sysco items, on the same shared account. The dollars here are price-variance leakage, not total food cost.",
+          firstMove: "Call your Sysco rep this week and request consolidated pricing on ground beef, chicken thighs, salmon, and roma tomatoes.",
+          confidence: "med",
+          history: {
+            type: "limited",
+            summary: "Recent invoice window only. Current prices are confirmed against the shared account; the creep timeline needs last year&rsquo;s invoices from the vendor portal."
+          },
+          methodology: {
+            data: "42 supplier invoices across five vendors, priced SKU by SKU. Invoices arrive on vendor cycles, not calendar weeks, so this flag's window runs Apr 1 – May 11 rather than the Apr 14 – May 11 POS deep-dive.",
+            method: "Each store’s unit price is compared against Store A, the lowest price on the shared account. The gap is multiplied by monthly purchase volume.",
+            whyTier: "Several invoices arrived as scanned PDFs and were entered by hand, so a small set of SKUs beyond the four shown is not yet cross-checked.",
+            toHigh: "Receipt-level verification of the remaining scanned invoices."
+          }
+        },
+        {
+          id: "discounts", rank: 2, severity: "red",
+          title: "Store C discount rate 5.8%",
+          amount: { value: 2125, approx: true, basis: "/mo", status: "quantified" },
+          stores: "Store C",
+          finding: "Store C gives away 5.8% of sales in comps against your 4.1% target, with 47 manager-override comps in four weeks and no approval rule in the POS. The other three stores sit at or near target.",
+          firstMove: "Review POS job permissions, then the override checks. Follow up with the Store C manager afterwards.",
+          confidence: "high",
+          history: {
+            type: "monthly",
+            label: "Store C discount rate by month, last 12 months",
+            unit: "%",
+            target: 4.1,
+            values: [4.0, 3.9, 4.2, 4.5, 4.4, 4.7, 4.6, 4.9, 5.1, 5.0, 5.4, 5.8],
+            summary: "At or above target <b>10 of the last 12 months</b>, and rising. Drifting, not a one-off."
+          },
+          methodology: {
+            data: "Complete Toast POS discount and comp exports for the period, all four stores.",
+            method: "Store C’s rate is compared against the other three locations and your 4.1% working target.",
+            whyTier: "Complete data, and the missing approval rule was confirmed against POS job permissions during the review.",
+            toHigh: null
+          }
+        },
+        {
+          id: "labor", rank: 3, severity: "watch",
+          title: "Weekday labor overage",
+          amount: { value: 3100, approx: true, basis: "/mo", status: "quantified" },
+          stores: "Stores A + B",
+          finding: "Weekday labor runs 35% of sales against a 28% target at Stores A and B. The extra cost is in slow lunches and late-night closes that are still staffed like a busy weekend; dinner stays near target.",
+          firstMove: "Next scheduling cycle, set a guest-count line for slow weeknights and give managers the authority to send staff home early.",
+          confidence: "high",
+          history: {
+            type: "monthly",
+            label: "Stores A + B weekday labor percent of sales by month, last 12 months",
+            unit: "%",
+            target: 28,
+            values: [31, 32, 30, 33, 32, 34, 33, 35, 34, 33, 35, 35],
+            summary: "Above target <b>every month of the trailing twelve</b>. A standing pattern, not a soft April."
+          },
+          methodology: {
+            data: "POS-integrated scheduled vs. actual labor and cover counts (7shifts and Toast) for the period.",
+            method: "Actual weekday labor is compared against the 28% target after normalizing for daypart mix.",
+            whyTier: "Complete labor and cover data, corroborated against the posted staffing template during the review.",
+            toHigh: null
+          }
+        },
+        {
+          id: "shrink", rank: 4, severity: "watch",
+          title: "Store D inventory shrinkage, growing",
+          amount: { value: 1735, approx: true, basis: "/mo", status: "quantified" },
+          stores: "Store D",
+          finding: "The gap between what inventory the system expected and what was actually counted roughly doubled in two weeks, from ~$680 to ~$1,735. Waste logs cover only 3 of 7 days, so we can’t pin the cause yet.",
+          firstMove: "Run a supervised manual count at Store D against receiving logs before the next invoice cycle.",
+          confidence: "med",
+          history: {
+            type: "limited",
+            summary: "Two count dates exist, so no longer trend is available. That gap is part of the finding: standing weekly counts are the fix."
+          },
+          methodology: {
+            data: "MarketMan theoretical vs. physical counts (Apr 28 and May 11), priced at current unit costs.",
+            method: "Variance by category, triangulated across the two count dates.",
+            whyTier: "Waste logs were complete for only 3 of 7 days and no 86 records matched the variance, so the cause is not isolated.",
+            toHigh: "Two weeks of complete waste logs and a supervised manual count."
+          }
+        },
+        {
+          id: "voids", rank: 5, severity: "watch",
+          title: "After-hours voids at Store B",
+          amount: { value: 690, approx: true, basis: "/mo", status: "floor" },
+          stores: "Store B",
+          finding: "35 of 43 voids happened after 6 PM, tied to two employee IDs with no reason codes. The data confirms at least ~$690 in monthly cost. The full amount will stay unknown until receipts are reviewed.",
+          firstMove: "Pull after-hours voids by employee and review receipts with the manager. Treat it as a control review, not an accusation.",
+          confidence: "med",
+          history: {
+            type: "monthly",
+            label: "Store B void value as percent of sales by month, last 12 months",
+            unit: "%",
+            target: 1.0,
+            values: [0.6, 0.7, 0.6, 0.5, 0.7, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.15],
+            summary: "Under the 1% line for most of the year, then at or over it <b>in the last three months</b>. A recent pattern; worth moving quickly."
+          },
+          methodology: {
+            data: "Complete Toast void log for the period, by employee ID and timestamp.",
+            method: "Void value and timing compared against your under-1%-of-sales and under-8-unresolved-per-month guidelines.",
+            whyTier: "The after-hours concentration is unambiguous, but no reason codes exist and receipts have not been reviewed, so cause and full exposure stay open.",
+            toHigh: "Receipt-level review of the two employee IDs."
+          }
+        }
+      ],
+
+      levers: [
+        {
+          id: "lv-vendor", flagId: "vendor",
+          label: "Use one price list for every store",
+          action: "Ask your Sysco rep to give every store Store A’s prices for items on the shared account.",
+          recovers: 4800, where: "Stores B, C, and D currently pay more than Store A",
+          prevents: "It can also keep Store A from being charged a different price later.",
+          floorOnly: false
+        },
+        {
+          id: "lv-comps", flagId: "discounts",
+          label: "Require approval for comps",
+          action: "Require manager approval in the POS and give every store the same one-page comp policy.",
+          recovers: 2125, where: "Store C, where comps are rising",
+          prevents: "Stores A, B, and D are on target today. The same rule can help keep them there.",
+          floorOnly: false
+        },
+        {
+          id: "lv-labor", flagId: "labor",
+          label: "Adjust weekday staffing to demand",
+          action: "Set staffing by expected guest count and decide before each shift when to send staff home on slow weeknights.",
+          recovers: 3100, where: "Stores A and B currently have the extra labor cost",
+          prevents: "Use the same rules at Stores C and D so weekday staffing follows customer traffic.",
+          floorOnly: false
+        },
+        {
+          id: "lv-counts", flagId: "shrink",
+          label: "Count problem inventory every day",
+          action: "Count the items with the biggest gaps every day and record all waste at every store.",
+          recovers: 1735, where: "Store D, where the inventory gap is growing",
+          prevents: "Doing the same at Stores A, B, and C can catch missing inventory before the gap grows.",
+          floorOnly: false
+        },
+        {
+          id: "lv-voids", flagId: "voids",
+          label: "Require manager approval for risky voids",
+          action: "Require a manager PIN for after-hours voids and any void without a reason. Require a reason code for every void.",
+          recovers: 690, where: "Store B; $690/mo is the confirmed minimum",
+          prevents: "Use the same controls at Stores A, C, and D to block unapproved voids there too.",
+          floorOnly: true,
+          floorNote: "This plan counts only the ~$690/mo we can confirm. The real total may be higher; receipts need to be reviewed to know."
+        }
+      ],
+
+      exposure: [
+        {
+          id: "exp-shrink", group: "confirmed",
+          item: "Unexplained inventory shrink", location: "Store D", costLabel: "~$1,735/mo",
+          dataShows: "Variance roughly doubled in two weeks, concentrated in proteins and the bar. The waste log has holes exactly where the variance sits.",
+          dataCannotShow: "Whether it is leaving as waste, theft, or a receiving mistake. The logs have too many holes to pin down the cause.",
+          firstMove: "Supervised manual count against receiving logs; complete waste logs for two weeks."
+        },
+        {
+          id: "exp-voids", group: "confirmed",
+          item: "After-hours voids", location: "Store B", costLabel: "~$690/mo",
+          dataShows: "35 of the 43 voids happened after 6 PM, almost all under two employee IDs, and none had a reason attached. The items voided most: wings, house cocktails, desserts.",
+          dataCannotShow: "Why. The data shows the pattern, but it can't tell theft apart from sloppy register habits until someone checks the receipts.",
+          firstMove: "Review receipts for the two IDs, add a manager PIN for after-hours voids, and monitor daily for two weeks."
+        },
+        {
+          id: "exp-platform", group: "confirmed",
+          item: "UberEats refund gap", location: "Store C", costLabel: "~$430/mo",
+          dataShows: "At Store C, UberEats hands back 2.8% of its sales in refunds, against just 1.1% on DoorDash, mostly on late-night orders. The cut UberEats keeps also crept up 1.1 points across the recent statements.",
+          dataCannotShow: "Whether those refunds come from packaging, drivers, or fraud. The platform statements don't say.",
+          firstMove: "Pull refund reasons by daypart, dispute eligible refunds, and re-test the late-night packaging."
+        },
+        {
+          id: "exp-wage", group: "unknown",
+          item: "Missed breaks and close-to-open shifts", location: "Stores B + C", costLabel: "Unknown",
+          dataShows: "Over four weeks, 7shifts shows 14 times someone closed at night and reopened the next morning with under 10 hours off, plus 31 shifts longer than 6 hours with no break on record. Most of it falls on a small group of employees.",
+          dataCannotShow: "Whether breaks were taken and just not logged, or properly signed off. The schedule shows the pattern, not the paperwork behind it.",
+          firstMove: "Review the pattern with your HR advisor or attorney. Wage-and-hour claims can carry retroactive penalties."
+        },
+        {
+          id: "exp-vendor", group: "unknown",
+          item: "Single-vendor dependence", location: "All stores", costLabel: "Unknown",
+          dataShows: "68% of your food spending goes through a single vendor. That gives you leverage while you benchmark prices (see the vendor flag), but it is also one supplier whose change in terms or service could leave you stuck.",
+          dataCannotShow: "How that vendor will price you down the road. Depending on one supplier is a standing risk.",
+          firstMove: "Keep two alternates quoted on your top ten SKUs twice a year."
+        },
+        {
+          id: "exp-reg", group: "uncovered",
+          item: "OSHA, health department, and licensing", location: "All stores", costLabel: "Needs documents",
+          dataShows: "Nothing. The five reports we work from can't see citations, inspection scores, or incident logs.",
+          dataCannotShow: "This whole category. We only learn about inspections or open issues if you tell us during onboarding. Anything you share there shows up here, labeled as coming from you, not from the reports.",
+          firstMove: "Bring your last inspection report and any open items to the next review."
+        }
+      ],
+
+      traces: [
+        {
+          id: "vendor",
+          title: "Vendor pricing gap",
+          amountLabel: "~$4,800/mo",
+          intro: "Store A has the lowest prices on the shared Sysco account, so it sets the benchmark. Each gap below is the per-unit price difference, times how much each store buys per month.",
+          period: "Invoices, Apr 1 – May 11, 2026. Confidence: medium.",
+          tables: [{
+            caption: "Price variance vs. Store A benchmark (Sysco)",
+            columns: ["Item", "Store A price", "B gap", "C gap", "D gap", "Qty / store / mo", "Leakage"],
+            rows: [
+              ["80/20 ground beef (lb)", "$4.12", "+$0.26", "+$0.66", "+$0.08", "1,900 lb", "~$1,900/mo"],
+              ["Chicken thighs (lb)", "$2.89", "+$0.23", "+$0.58", "+$0.12", "1,700 lb", "~$1,581/mo"],
+              ["Roma tomatoes (case)", "$22.00", "$0.00", "+$4.50", "$0.00", "160 cases", "~$720/mo"],
+              ["Salmon fillet (lb)", "$8.40", "$0.00", "+$0.75", "+$0.15", "667 lb", "~$600/mo"]
+            ],
+            totalRow: ["Total", "", "", "", "", "", "~$4,800/mo"]
+          }]
+        },
+        {
+          id: "discounts",
+          title: "Store C discount rate",
+          amountLabel: "~$2,125/mo",
+          intro: "Store C runs 1.7 points over the 4.1% target, about $2,125 a month. The breakdown shows where the discounting piles up.",
+          period: "Toast POS exports, Apr 14 – May 11, 2026. Confidence: high.",
+          tables: [
+            {
+              caption: "Discount rate by store",
+              columns: ["Store", "Rate", "Gross sales / mo", "Discounts given"],
+              rows: [
+                ["Store A (Downtown)", "4.0%", "$128,000", "$5,120"],
+                ["Store B (Midtown)", "4.0%", "$123,000", "$4,920"],
+                ["Store D (Northside)", "4.1%", "$122,000", "$5,002"],
+                ["Store C (Eastside)", "5.8%", "$125,000", "$7,250"]
+              ],
+              totalRow: ["Your target", "4.1%", "", "$5,125"]
+            },
+            {
+              caption: "Store C breakdown by discount type",
+              columns: ["Type", "Transactions", "Value", "% of gross"],
+              rows: [
+                ["Manager override / comp", "47", "$2,500", "2.0%"],
+                ["Employee meal discount", "18", "$875", "0.7%"],
+                ["Promotional (app promo)", "80", "$3,875", "3.1%"]
+              ],
+              totalRow: ["Total", "145", "$7,250", "5.8%"]
+            }
+          ]
+        },
+        {
+          id: "labor",
+          title: "Weekday labor overage",
+          amountLabel: "~$3,100/mo",
+          intro: "Weekends bring the volume; the weekday question is whether managers cut staff when traffic drops. The first table shows an average week; the second shows which parts of the day drive it.",
+          period: "7shifts + Toast, Apr 14 – May 11, 2026. Confidence: high.",
+          tables: [
+            {
+              caption: "Average weekly weekday bridge, Stores A + B",
+              columns: ["Metric", "Weekly average"],
+              rows: [
+                ["Weekday sales", "~$11,070"],
+                ["Actual weekday labor", "~$3,875"],
+                ["Target weekday labor (28%)", "~$3,100"],
+                ["Overage", "~$775 / week"]
+              ],
+              totalRow: ["Four-week leakage", "~$3,100/mo"]
+            },
+            {
+              caption: "Monthly overage by daypart",
+              columns: ["Daypart (Mon–Fri)", "Store B", "Store A"],
+              rows: [
+                ["Lunch", "~$920/mo", "~$600/mo"],
+                ["Late night", "~$820/mo", "~$600/mo"],
+                ["Dinner", "~$160/mo", "at target"]
+              ],
+              totalRow: ["Total", "~$1,900/mo", "~$1,200/mo"]
+            }
+          ]
+        },
+        {
+          id: "shrink",
+          title: "Store D shrinkage reconciliation",
+          amountLabel: "~$1,735/mo",
+          intro: "Expected stock vs. what was actually counted, priced at current unit cost. The prior count (Apr 28) showed ~$680, so the gap roughly doubled in two weeks.",
+          period: "MarketMan counts, Apr 28 &amp; May 11, 2026. Confidence: medium.",
+          tables: [{
+            caption: "Reconciliation: Store D, week of May 5–11",
+            columns: ["Category", "Theoretical", "Physical", "Variance", "Unit price", "Gap"],
+            rows: [
+              ["Chicken thighs (lb)", "847", "781", "−66", "$3.01", "$199"],
+              ["80/20 ground beef (lb)", "623", "578", "−45", "$4.20", "$189"],
+              ["Salmon fillet (lb)", "214", "196", "−18", "$8.55", "$154"],
+              ["Domestic draft (12-pour)", "94", "87", "−7", "$28.00", "$196"],
+              ["House wine (750ml)", "72", "63", "−9", "$18.00", "$162"],
+              ["Dry goods / produce", "reconciled", "reconciled", "n/a", "mixed", "~$835"]
+            ],
+            totalRow: ["Total gap", "", "", "", "", "~$1,735"]
+          }]
+        },
+        {
+          id: "voids",
+          title: "Store B void log",
+          amountLabel: "~$690/mo floor",
+          intro: "Total voids of $1,415 on $123,000 in sales is 1.15%, over the under-1% target. The real story is the timing: 35 of 43 voids after 6 PM, tied to two employee IDs, none with a reason attached.",
+          period: "Toast void log, Apr 14 – May 11, 2026. Confidence: medium.",
+          tables: [{
+            caption: "Void log by employee, Store B",
+            columns: ["Employee ID", "Voids", "Avg ticket", "Total voided", "Reason codes"],
+            rows: [
+              ["Emp #4821", "21", "$31.90", "$670", "None on file"],
+              ["Emp #6093", "14", "$36.15", "$506", "None on file"],
+              ["All other staff", "8", "$29.90", "$239", "5 of 8 coded"]
+            ],
+            totalRow: ["Store B total", "43", "", "$1,415", ""]
+          }]
+        }
+      ]
+    };
+
+    /* ================= helpers ================= */
+    const $ = (sel) => document.querySelector(sel);
+    const fmt = (n) => "$" + n.toLocaleString("en-US");
+    const amt = (a) => (a.approx ? "~" : "") + fmt(a.value) + a.basis + (a.status === "floor" ? "+" : "");
+
+    /* ================= overview ================= */
+    function renderStats() {
+      const p = ENGAGEMENT.portfolio;
+      const openCount = ENGAGEMENT.exposure.length;
+      $("#ov-stats").innerHTML = `
+        <div class="stat gap">
+          <span>Gap to 7% target</span>
+          <strong>~${fmt(p.gap)} / mo</strong>
+          <em>Recent monthly profit of ${fmt(p.currentNet)} against ${fmt(p.targetNet)} at the 7% target.</em>
+        </div>
+        <div class="stat">
+          <span>Identified leakage</span>
+          <strong>~${fmt(p.leakIdentified)} / mo</strong>
+          <em>About $149K a year, across five patterns and all four stores.</em>
+        </div>
+        <div class="stat">
+          <span>Open exposure</span>
+          <strong>${openCount} items</strong>
+          <em>Risks we can see but cannot fully price yet. Where the data shows a minimum, we name it; the real number could be higher. Full list in the Exposure tab.</em>
+        </div>
+        <div class="stat">
+          <span>Largest store gap</span>
+          <strong>Store C: ~$6,250 / mo</strong>
+          <em>About $75K a year. Store A holds the 7% net profit benchmark pace.</em>
+        </div>`;
+    }
+
+    function renderBars() {
+      $("#ov-bars").innerHTML = ENGAGEMENT.stores.map((s) => {
+        const pct = Math.round((s.netDollars / s.targetDollars) * 100);
+        const gapTxt = s.gapToTarget > 0 ? `gap ~${fmt(s.gapToTarget)}/mo` : "at target";
+        return `
+        <div class="store-bar">
+          <div class="sb-name">${s.name} <small>${s.area}, ${fmt(s.revenue)} rev</small></div>
+          <div class="sb-track" role="img" aria-label="${s.name}: net ${fmt(s.netDollars)} per month, ${pct}% of its 7% target. ${gapTxt}.">
+            <div class="sb-fill" style="width:${pct}%"></div>
+            <div class="sb-label"><span>${fmt(s.netDollars)}/mo (${s.netPct}% net)</span><span class="${s.gapToTarget > 0 ? "lose" : ""}">${gapTxt}</span></div>
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    function confDrawer(f) {
+      const m = f.methodology;
+      const tierWord = f.confidence === "high" ? "High confidence" : "Medium confidence";
+      const lines = [
+        ["What fed it", m.data],
+        ["How it was computed", m.method],
+        ["Why this tier", m.whyTier]
+      ];
+      if (m.toHigh) lines.push(["What would raise it to high", m.toHigh]);
+      return `
+        <div class="conf-row">
+          <button class="conf-chip ${f.confidence}" aria-expanded="false" aria-controls="drawer-${f.id}">
+            <span class="dot" aria-hidden="true"></span>${tierWord}<span class="why">(why?)</span>
+          </button>
+          <div class="conf-drawer ${f.confidence}" id="drawer-${f.id}" role="region" aria-label="${f.title} methodology">
+            <dl style="margin:0;">${lines.map(([t, d]) => `<dt>${t}</dt><dd>${d}</dd>`).join("")}</dl>
+            <a class="trail-link" href="#method/${f.id}">See the full trail →</a>
+          </div>
+        </div>`;
+    }
+
+    /* Trend months run Jun 2025 through May 2026, matching the lookback. */
+    const MONTH_LABELS = ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"];
+
+    function historyBlock(f) {
+      const h = f.history;
+      if (!h) return "";
+      if (h.type === "limited") {
+        return `<div class="flag-history"><p class="trend-note"><b>Pattern history:</b> ${h.summary}</p></div>`;
+      }
+      const max = Math.max(...h.values, h.target * 1.15);
+      const cols = h.values.map((v, idx) => `
+        <span class="t-col" data-tip="${MONTH_LABELS[idx]}: ${v}${h.unit}">
+          <span class="t-bar"><i class="${v >= h.target ? "hot" : ""}" style="height:${Math.max(10, Math.round((v / max) * 100))}%"></i></span>
+          <small>${MONTH_LABELS[idx]}</small>
+        </span>`).join("");
+      return `
+        <div class="flag-history">
+          <div class="trend" role="img" aria-label="${h.label}. ${h.summary.replace(/<[^>]+>/g, "")}">${cols}</div>
+          <p class="trend-note"><b>Pattern history:</b> ${h.summary}</p>
+        </div>`;
+    }
+
+    function renderFlags() {
+      $("#ov-flags").innerHTML = ENGAGEMENT.flags.map((f) => `
+        <article class="flag-card ${f.severity === "red" ? "red" : ""}">
+          <div class="flag-amt">${amt(f.amount)}<small>${f.amount.status === "floor" ? "confirmed minimum" : "leakage"}</small></div>
+          <div class="flag-body">
+            <h3>${f.title}<span class="tag ${f.severity === "red" ? "red" : "amber"}">${f.severity === "red" ? "Red flag" : "Watch"}</span></h3>
+            <p class="flag-stores">${f.stores}</p>
+            <p class="flag-finding">${f.finding}</p>
+            <p class="flag-move"><span class="move-label">Where to start</span>${f.firstMove}</p>
+            ${historyBlock(f)}
+            ${confDrawer(f)}
+          </div>
+        </article>`).join("");
+    }
+
+    /* ================= scenarios ================= */
+    const leverState = {};
+
+    function renderLevers() {
+      $("#sc-levers").innerHTML = ENGAGEMENT.levers.map((lv) => `
+        <article class="lever" id="${lv.id}">
+          <button class="lever-switch" role="switch" aria-checked="false" aria-label="${lv.label}: add ~${fmt(lv.recovers)} per month to the plan"></button>
+          <div class="lever-body">
+            <h3>${lv.label}</h3>
+            <p class="lever-action">${lv.action}</p>
+            <p class="lever-recovers">Current cost: ~${fmt(lv.recovers)}/mo${lv.floorOnly ? " (confirmed minimum)" : ""} <span class="where">(${lv.where})</span></p>
+            <p class="lever-prevents"><b>Also helps</b>${lv.prevents}</p>
+            ${lv.floorNote ? `<p class="lever-floor">${lv.floorNote}</p>` : ""}
+          </div>
+        </article>`).join("");
+
+      ENGAGEMENT.levers.forEach((lv) => { leverState[lv.id] = false; });
+
+      document.querySelectorAll(".lever-switch").forEach((sw) => {
+        sw.addEventListener("click", () => {
+          const card = sw.closest(".lever");
+          const on = sw.getAttribute("aria-checked") !== "true";
+          sw.setAttribute("aria-checked", String(on));
+          card.classList.toggle("on", on);
+          leverState[card.id] = on;
+          updatePlan();
+        });
+      });
+    }
+
+    function updatePlan() {
+      const total = ENGAGEMENT.levers.reduce((sum, lv) => sum + (leverState[lv.id] ? lv.recovers : 0), 0);
+      const count = Object.values(leverState).filter(Boolean).length;
+      const cap = ENGAGEMENT.portfolio.leakIdentified;
+      $("#plan-live").textContent = "~" + fmt(total) + " / mo";
+      $("#plan-live-sub").textContent =
+        count + " of " + ENGAGEMENT.levers.length + " actions selected" +
+        (total > 0 ? "; about " + fmt(total * 12) + " a year selected" : "");
+      $("#plan-fill").style.width = Math.min(100, (total / cap) * 100) + "%";
+    }
+
+    /* ================= exposure ================= */
+    function renderExposure() {
+      const groups = [
+        { id: "confirmed", label: "Cost confirmed so far" },
+        { id: "unknown", label: "Risk found - full cost unknown" },
+        { id: "uncovered", label: "Not covered by current data" }
+      ];
+
+      $("#exp-list").innerHTML = groups.map((group) => {
+        const items = ENGAGEMENT.exposure.filter((e) => e.group === group.id);
+        return `
+          <section class="exp-group ${group.id}" aria-labelledby="exp-group-${group.id}">
+            <div class="exp-group-head">
+              <h3 id="exp-group-${group.id}">${group.label}</h3>
+              <span class="exp-count" aria-label="${items.length} ${items.length === 1 ? "item" : "items"}">${items.length}</span>
+            </div>
+            <div class="exp-group-list">
+              ${items.map((e) => {
+                const open = e.id === "exp-shrink";
+                return `
+                  <article class="exp-item${open ? " open" : ""}" id="${e.id}">
+                    <button class="exp-row-head" aria-expanded="${open}" aria-controls="exp-body-${e.id}">
+                      <span class="exp-chevron" aria-hidden="true">&rsaquo;</span>
+                      <span class="exp-row-main">
+                        <span class="exp-row-title">${e.item}</span>
+                        <span class="exp-row-store">${e.location}</span>
+                      </span>
+                      <span class="exp-cost">${e.costLabel}</span>
+                    </button>
+                    <div class="exp-body${open ? " open" : ""}" id="exp-body-${e.id}">
+                      <div class="exp-detail-grid">
+                        <p class="exp-detail"><b>What we know</b>${e.dataShows}</p>
+                        <p class="exp-detail"><b>What we don&rsquo;t know</b>${e.dataCannotShow}</p>
+                        <p class="exp-review"><b>Review next</b>${e.firstMove}</p>
+                      </div>
+                    </div>
+                  </article>`;
+              }).join("")}
+            </div>
+          </section>`;
+      }).join("");
+
+      document.querySelectorAll(".exp-row-head").forEach((head) => {
+        head.addEventListener("click", () => toggleExposure(head));
+      });
+    }
+
+    function toggleExposure(head) {
+      const body = document.getElementById(head.getAttribute("aria-controls"));
+      const open = head.getAttribute("aria-expanded") !== "true";
+      head.setAttribute("aria-expanded", String(open));
+      body.classList.toggle("open", open);
+      head.closest(".exp-item").classList.toggle("open", open);
+    }
+
+    /* ================= method ================= */
+    function renderMethod() {
+      $("#m-sources").innerHTML = ENGAGEMENT.sources.map((s) => `
+        <li><strong>${s.name}</strong><small>${s.covers}</small><span class="period">${s.period}</span></li>`).join("");
+
+      $("#m-traces").innerHTML = ENGAGEMENT.traces.map((t) => `
+        <div class="trace" id="method-${t.id}">
+          <button class="trace-head" aria-expanded="false" aria-controls="trace-body-${t.id}">
+            <span class="t-amt">${t.amountLabel}</span>
+            <span class="t-title">${t.title}</span>
+            <span class="chev" aria-hidden="true">▾</span>
+          </button>
+          <div class="trace-body" id="trace-body-${t.id}">
+            <p class="trace-intro">${t.intro}</p>
+            ${t.tables.map((tb) => `
+              <div class="table-scroll">
+                <table>
+                  <caption>${tb.caption}</caption>
+                  <thead><tr>${tb.columns.map((c) => `<th scope="col">${c}</th>`).join("")}</tr></thead>
+                  <tbody>
+                    ${tb.rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}
+                    ${tb.totalRow ? `<tr class="total">${tb.totalRow.map((c) => `<td>${c}</td>`).join("")}</tr>` : ""}
+                  </tbody>
+                </table>
+              </div>
+              <p class="scroll-hint">Swipe sideways to see the full table.</p>`).join("")}
+            <p class="trace-meta">${t.period}</p>
+          </div>
+        </div>`).join("");
+
+      document.querySelectorAll(".trace-head").forEach((head) => {
+        head.addEventListener("click", () => toggleTrace(head, null));
+      });
+    }
+
+    function toggleTrace(head, force) {
+      const body = document.getElementById(head.getAttribute("aria-controls"));
+      const open = force !== null ? force : head.getAttribute("aria-expanded") !== "true";
+      head.setAttribute("aria-expanded", String(open));
+      body.classList.toggle("open", open);
+    }
+
+    /* ================= drawers (event delegation) ================= */
+    document.addEventListener("click", (ev) => {
+      const chip = ev.target.closest(".conf-chip");
+      if (!chip) return;
+      const drawer = document.getElementById(chip.getAttribute("aria-controls"));
+      const open = chip.getAttribute("aria-expanded") !== "true";
+      chip.setAttribute("aria-expanded", String(open));
+      drawer.classList.toggle("open", open);
+    });
+
+    /* ================= lens routing =================
+       Canonical hash form: #lens or #lens/detail
+       e.g. #method/vendor opens the method lens and expands that trace. */
+    const LENSES = ["overview", "scenarios", "exposure", "method"];
+    const tabs = Array.from(document.querySelectorAll(".lens-tab"));
+
+    function setLens(lens, detail, fromHash) {
+      if (!LENSES.includes(lens)) lens = "overview";
+      tabs.forEach((t) => {
+        const active = t.id === "tab-" + lens;
+        t.setAttribute("aria-selected", String(active));
+        t.tabIndex = active ? 0 : -1;
+      });
+      LENSES.forEach((l) => {
+        document.getElementById("panel-" + l).classList.toggle("active", l === lens);
+      });
+      if (!fromHash) {
+        const target = "#" + lens + (detail ? "/" + detail : "");
+        if (location.hash !== target) location.hash = target;
+        return; // hashchange listener re-enters with fromHash=true
+      }
+      if (detail && lens === "method") {
+        const trace = document.getElementById("method-" + detail);
+        if (trace) {
+          toggleTrace(trace.querySelector(".trace-head"), true);
+          requestAnimationFrame(() => {
+            trace.scrollIntoView({ behavior: "smooth", block: "center" });
+            trace.classList.add("flash");
+            setTimeout(() => trace.classList.remove("flash"), 1800);
+          });
+        }
+      } else if (!detail) {
+        // returning to a lens root: keep scroll position sane on tab switches
+        const bar = document.querySelector(".lens-bar");
+        if (bar && bar.getBoundingClientRect().top < 0) bar.scrollIntoView();
+      }
+      const activeTab = document.getElementById("tab-" + lens);
+      if (activeTab) activeTab.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+
+    function parseHash() {
+      const raw = location.hash.replace(/^#/, "");
+      if (!raw) return { lens: "overview", detail: null };
+      const [lens, detail] = raw.split("/");
+      return { lens, detail: detail || null };
+    }
+
+    function onHashChange() {
+      const { lens, detail } = parseHash();
+      setLens(lens, detail, true);
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => setLens(tab.id.replace("tab-", ""), null, false));
+      tab.addEventListener("keydown", (ev) => {
+        let next = null;
+        if (ev.key === "ArrowRight") next = (i + 1) % tabs.length;
+        if (ev.key === "ArrowLeft") next = (i - 1 + tabs.length) % tabs.length;
+        if (ev.key === "Home") next = 0;
+        if (ev.key === "End") next = tabs.length - 1;
+        if (next !== null) {
+          ev.preventDefault();
+          tabs[next].focus();
+          setLens(tabs[next].id.replace("tab-", ""), null, false);
+        }
+      });
+    });
+
+    window.addEventListener("hashchange", onHashChange);
+
+    /* ================= init ================= */
+    renderStats();
+    renderBars();
+    renderFlags();
+    renderLevers();
+    renderExposure();
+    renderMethod();
+    updatePlan();
+    onHashChange();
+  })();
+  </script>
+</body>
+</html>
