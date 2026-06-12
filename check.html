@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <title>ADC Health Check</title>
   <meta name="robots" content="noindex" />
-  <meta http-equiv="refresh" content="0;url=health-check.html?utm_source=instantly&utm_campaign=sgl-seq&utm_content=email" />
+  <meta http-equiv="refresh" content="0;url=/health-check?utm_source=instantly&utm_campaign=sgl-seq&utm_content=email" />
   <script>
     // Forward any params appended to /check (e.g. ?seg=&state=) on top of the baked campaign tags.
     (function () {
-      var base = 'health-check.html';
+      var base = '/health-check';
       var baked = new URLSearchParams('utm_source=instantly&utm_campaign=sgl-seq&utm_content=email');
       var incoming = new URLSearchParams(window.location.search);
       incoming.forEach(function (value, key) { baked.set(key, value); });
@@ -17,6 +17,6 @@
   </script>
 </head>
 <body>
-  <p>Taking you to the Health Check… <a href="health-check.html?utm_source=instantly&utm_campaign=sgl-seq&utm_content=email">Continue</a></p>
+  <p>Taking you to the Health Check… <a href="/health-check?utm_source=instantly&utm_campaign=sgl-seq&utm_content=email">Continue</a></p>
 </body>
 </html>
