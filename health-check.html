@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Restaurant Health Check | ADC Operations</title>
+  <meta name="description" content="Benchmark your restaurant's food, labor, and prime costs against your segment and your state's labor market in about 90 seconds. Free, instant, nothing to send." />
+  <link rel="canonical" href="https://adc-ops.com/health-check.html" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/adc-favicon-32.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
+
+  <style>
+    :root {
+      --bg: #F7F3EE;
+      --bg-alt: #F0EAE0;
+      --bg-card: #FDFAF6;
+      --espresso: #081c05;
+      --espresso-hi: #12330d;
+      --clay: #A8523D;
+      --red-flag: #9E342D;
+      --sage: #7A957A;
+      --taupe: #342A23;
+      --taupe-mid: #66574D;
+      --taupe-light: #A89E96;
+      --sand: #CDBFAF;
+      --sand-light: #DED4C9;
+
+      --font-display: 'DM Sans', system-ui, sans-serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+
+      --shadow-sm: 0 2px 8px rgba(52,42,35,.08);
+      --shadow-md: 0 8px 24px rgba(52,42,35,.12);
+      --shadow-lg: 0 18px 48px rgba(52,42,35,.16);
+
+      --max-w: 1100px;
+      --green: #1f7a4d;
+      --green-bg: #ECF4EE;
+      --amber: #B7791F;
+      --amber-bg: #FDF3E3;
+      --red-bg: #FDF0EE;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--taupe);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--sand-light);
+      background: rgba(253,250,246,.96);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+      width: min(calc(100% - 40px), var(--max-w));
+      min-height: 68px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      color: var(--espresso);
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    .nav-link {
+      color: var(--taupe-mid);
+      font-size: .84rem;
+      font-weight: 600;
+    }
+
+    .nav-link:hover {
+      color: var(--red-flag);
+    }
+
+    main {
+      width: min(calc(100% - 40px), var(--max-w));
+      margin: 0 auto;
+      padding: clamp(48px, 7vw, 86px) 0 64px;
+    }
+
+    .hero {
+      max-width: 790px;
+      margin-bottom: 38px;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--red-flag);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      color: var(--espresso);
+      line-height: 1.16;
+    }
+
+    h1 {
+      max-width: 720px;
+      font-size: clamp(1.9rem, 4.4vw, 3rem);
+      letter-spacing: -.035em;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 3.5vw, 2.35rem);
+      letter-spacing: -.025em;
+    }
+
+    h3 {
+      font-size: 1.08rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--taupe-mid);
+    }
+
+    .hero-sub {
+      max-width: 720px;
+      margin-top: 20px;
+      font-size: clamp(1rem, 2vw, 1.14rem);
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .form-card,
+    .results-shell,
+    .notice {
+      border: 1px solid var(--sand-light);
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .form-card {
+      padding: clamp(22px, 4vw, 34px);
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    fieldset + fieldset {
+      margin-top: 30px;
+      padding-top: 28px;
+      border-top: 1px solid var(--sand-light);
+    }
+
+    legend {
+      width: 100%;
+      margin-bottom: 17px;
+      padding: 0;
+      color: var(--espresso);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--taupe);
+      font-size: .88rem;
+      font-weight: 600;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 48px;
+      padding: 11px 13px;
+      border: 1px solid var(--sand);
+      border-radius: var(--radius-sm);
+      outline: 0;
+      background: #fff;
+      color: var(--taupe);
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    input::placeholder {
+      color: var(--taupe-light);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--clay);
+      box-shadow: 0 0 0 3px rgba(168,82,61,.12);
+    }
+
+    .help {
+      display: block;
+      margin-top: 6px;
+      color: var(--taupe-mid);
+      font-size: .76rem;
+      line-height: 1.45;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      cursor: pointer;
+      transition: all .22s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--espresso);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--espresso-hi);
+      transform: translateY(-1px);
+    }
+
+    .submit-row {
+      margin-top: 30px;
+    }
+
+    .submit-row .btn {
+      width: 100%;
+    }
+
+    .notice {
+      padding: 22px 24px;
+      border-left: 4px solid var(--red-flag);
+      border-radius: var(--radius-md);
+      background: var(--red-bg);
+      color: var(--taupe);
+    }
+
+    .results-shell {
+      overflow: hidden;
+    }
+
+    .results-head {
+      padding: clamp(22px, 4vw, 34px);
+      border-bottom: 1px solid var(--sand-light);
+      background: var(--bg-alt);
+    }
+
+    .result-context {
+      margin-top: 9px;
+      font-size: .84rem;
+      font-weight: 600;
+    }
+
+    .prime-summary {
+      margin-top: 21px;
+      color: var(--taupe);
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .results-body {
+      padding: clamp(20px, 4vw, 32px);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+
+    th,
+    td {
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--sand-light);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--taupe-mid);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    th:first-child,
+    td:first-child {
+      padding-left: 0;
+    }
+
+    th:last-child,
+    td:last-child {
+      padding-right: 0;
+    }
+
+    .metric-label {
+      color: var(--espresso);
+      font-weight: 700;
+    }
+
+    .metric-value {
+      color: var(--taupe);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .metric-dollar {
+      display: block;
+      margin-top: 2px;
+      color: var(--taupe-mid);
+      font-size: .74rem;
+      font-weight: 500;
+    }
+
+    .range {
+      white-space: nowrap;
+    }
+
+    .metric-note-row td {
+      padding-top: 2px;
+      color: var(--espresso);
+      font-size: clamp(.95rem, 1.7vw, 1.05rem);
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .7rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-on {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .status-watch {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .status-action {
+      background: var(--red-bg);
+      color: var(--red-flag);
+    }
+
+    .optional-cards {
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .insight-card {
+      padding: 18px 20px;
+      border: 1px solid var(--sand-light);
+      border-left: 4px solid var(--sage);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .insight-card.watch {
+      border-left-color: var(--amber);
+    }
+
+    .insight-card.action {
+      border-left-color: var(--red-flag);
+    }
+
+    .insight-card p {
+      margin-top: 8px;
+      font-size: .88rem;
+    }
+
+    .notes {
+      margin-top: 28px;
+      padding-top: 27px;
+      border-top: 1px solid var(--sand-light);
+    }
+
+    .notes h2 {
+      margin-bottom: 18px;
+      font-size: 1.35rem;
+    }
+
+    .note-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .note {
+      padding-left: 15px;
+      border-left: 3px solid var(--sand);
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--espresso);
+    }
+
+    .note p {
+      font-size: .84rem;
+    }
+
+    .cta-block {
+      margin-top: 28px;
+      padding: 25px;
+      border-radius: var(--radius-md);
+      background: var(--espresso);
+      color: #fff;
+    }
+
+    .cta-block h2,
+    .cta-block p {
+      color: #fff;
+    }
+
+    .cta-block p {
+      margin-top: 10px;
+      color: rgba(255,255,255,.76);
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 13px;
+      margin-top: 20px;
+    }
+
+    .cta-block .btn-primary {
+      background: #fff;
+      color: var(--espresso);
+    }
+
+    .cta-block .btn-primary:hover {
+      background: var(--bg);
+    }
+
+    .reply-copy {
+      font-size: .84rem;
+    }
+
+    .print-action {
+      margin-top: 15px;
+    }
+
+    .print-link {
+      color: #fff;
+      font-size: .84rem;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    footer {
+      border-top: 1px solid var(--sand-light);
+      background: var(--bg-alt);
+    }
+
+    .footer-inner {
+      width: min(calc(100% - 40px), var(--max-w));
+      margin: 0 auto;
+      padding: 28px 0 34px;
+    }
+
+    .sources,
+    .disclaimer {
+      font-size: .72rem;
+      line-height: 1.55;
+    }
+
+    .disclaimer {
+      margin-top: 9px;
+    }
+
+    @media (max-width: 860px) {
+      .tool-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav-inner,
+      main,
+      .footer-inner {
+        width: min(calc(100% - 28px), var(--max-w));
+      }
+
+      main {
+        padding-top: 38px;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .form-card,
+      .results-shell {
+        border-radius: var(--radius-md);
+      }
+
+      .results-body {
+        padding-inline: 16px;
+      }
+
+      th,
+      td {
+        padding-inline: 7px;
+      }
+
+      .status-pill {
+        white-space: normal;
+        text-align: center;
+      }
+
+      .cta-actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media print {
+      @page {
+        size: letter;
+        margin: .38in;
+      }
+
+      body {
+        background: #fff;
+        color: #111;
+        font-size: 10px;
+        line-height: 1.35;
+      }
+
+      .site-nav,
+      .hero,
+      .form-card,
+      .notice,
+      .cta-block,
+      .btn,
+      .print-action {
+        display: none !important;
+      }
+
+      main {
+        width: 100%;
+        padding: 0;
+      }
+
+      .tool-grid {
+        display: block;
+      }
+
+      .results-shell {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .results-head {
+        padding: 0 0 12px;
+        border-bottom: 1px solid #bbb;
+        background: #fff;
+      }
+
+      .results-head h2 {
+        font-size: 18px;
+      }
+
+      .prime-summary {
+        margin-top: 8px;
+        font-size: 12px;
+      }
+
+      .results-body {
+        padding: 10px 0 0;
+      }
+
+      th,
+      td {
+        padding: 5px 6px;
+      }
+
+      .metric-note-row td {
+        padding-top: 2px;
+        font-size: 13px;
+      }
+
+      .optional-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .insight-card {
+        padding: 9px 10px;
+        box-shadow: none;
+      }
+
+      .insight-card p {
+        margin-top: 4px;
+        font-size: 9px;
+      }
+
+      .notes {
+        margin-top: 12px;
+        padding-top: 10px;
+      }
+
+      .notes h2 {
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .note-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px 12px;
+      }
+
+      .note {
+        padding-left: 8px;
+      }
+
+      .note p {
+        font-size: 8.5px;
+      }
+
+      footer {
+        border-top: 1px solid #bbb;
+        background: #fff;
+      }
+
+      .footer-inner {
+        width: 100%;
+        padding: 10px 0 0;
+      }
+
+      .sources,
+      .disclaimer {
+        color: #333;
+        font-size: 7.5px;
+        line-height: 1.35;
+      }
+
+      .status-pill {
+        border: 1px solid currentColor;
+        background: transparent;
+      }
+
+      .results-head,
+      table,
+      .optional-cards,
+      .notes,
+      footer {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">ADC Operations</a>
+      <a class="nav-link" href="index.html">Back to adc-ops.com</a>
+    </div>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <span class="eyebrow">Free 90-second Health Check</span>
+      <h1>See where your numbers stand in 90 seconds.</h1>
+      <p class="hero-sub">Enter three figures from last month. We compare them against US benchmarks for your segment and your state's labor market, then show you what is in healthy range and what is leaking.</p>
+    </header>
+
+    <div class="tool-grid">
+      <form class="form-card" id="health-form">
+        <fieldset>
+          <legend>Your restaurant</legend>
+          <div class="field-grid">
+            <div class="field">
+              <label for="segment">Segment</label>
+              <select id="segment" name="segment" required>
+                <option value="">Select a segment</option>
+                <option value="qsr">Quick Service (QSR)</option>
+                <option value="fast-casual">Fast Casual</option>
+                <option value="cafe-bakery">Café &amp; Bakery</option>
+                <option value="full-service">Full Service</option>
+                <option value="fine-dining">Fine Dining</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="state">State</label>
+              <select id="state" name="state" required>
+                <option value="">Select a state</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <option value="CT">Connecticut</option>
+                <option value="DE">Delaware</option>
+                <option value="DC">District of Columbia</option>
+                <option value="FL">Florida</option>
+                <option value="GA">Georgia</option>
+                <option value="HI">Hawaii</option>
+                <option value="ID">Idaho</option>
+                <option value="IL">Illinois</option>
+                <option value="IN">Indiana</option>
+                <option value="IA">Iowa</option>
+                <option value="KS">Kansas</option>
+                <option value="KY">Kentucky</option>
+                <option value="LA">Louisiana</option>
+                <option value="ME">Maine</option>
+                <option value="MD">Maryland</option>
+                <option value="MA">Massachusetts</option>
+                <option value="MI">Michigan</option>
+                <option value="MN">Minnesota</option>
+                <option value="MS">Mississippi</option>
+                <option value="MO">Missouri</option>
+                <option value="MT">Montana</option>
+                <option value="NE">Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option value="VA">Virginia</option>
+                <option value="WA">Washington</option>
+                <option value="WV">West Virginia</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="period">Period (optional)</label>
+              <input id="period" name="period" type="text" placeholder="e.g. April 2026" autocomplete="off" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Last month's numbers</legend>
+          <div class="field-grid">
+            <div class="field full">
+              <label for="revenue">Net sales ($)</label>
+              <input id="revenue" name="revenue" type="number" min="0" step="0.01" inputmode="decimal" required aria-describedby="revenue-help" />
+              <span class="help" id="revenue-help">After discounts and comps. From your POS.</span>
+            </div>
+
+            <div class="field full">
+              <label for="food-cost">Food + beverage purchases ($)</label>
+              <input id="food-cost" name="food_cost" type="number" min="0" step="0.01" inputmode="decimal" required aria-describedby="food-help" />
+              <span class="help" id="food-help">Total vendor invoices for the period.</span>
+            </div>
+
+            <div class="field full">
+              <label for="labor-cost">Labor cost ($)</label>
+              <input id="labor-cost" name="labor_cost" type="number" min="0" step="0.01" inputmode="decimal" required aria-describedby="labor-help" />
+              <span class="help" id="labor-help">From payroll, 7shifts, or your scheduler.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Optional (unlocks two more checks)</legend>
+          <div class="field-grid">
+            <div class="field full">
+              <label for="hours">Hours worked</label>
+              <input id="hours" name="hours" type="number" min="0" step="0.01" inputmode="decimal" aria-describedby="hours-help" />
+              <span class="help" id="hours-help">Total labor hours in the period. Unlocks the sales-per-labor-hour check.</span>
+            </div>
+
+            <div class="field full">
+              <label for="avg-wage">Average hourly wage ($)</label>
+              <input id="avg-wage" name="avg_wage" type="number" min="0" step="0.01" inputmode="decimal" aria-describedby="wage-help" />
+              <span class="help" id="wage-help">Unlocks the comparison to your state's labor market.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="submit-row">
+          <button class="btn btn-primary" type="submit">See my results</button>
+        </div>
+      </form>
+
+      <div>
+        <div class="notice" id="sanity-notice" role="alert" tabindex="-1" hidden>Those numbers look off. Double-check that net sales, food, and labor all cover the same period and the same single location, then try again.</div>
+
+        <div class="notice" id="highprime-notice" role="alert" tabindex="-1" hidden>
+          <p style="margin:0 0 12px;">Your food and labor together come to more than 100% of sales. That can be a genuinely brutal month, but it is usually a typo or a period mismatch. If these figures are right for one month at one location, run it anyway.</p>
+          <button type="button" class="btn" id="highprime-confirm">My numbers are right, show the report</button>
+        </div>
+
+        <section class="results-shell" id="results" tabindex="-1" aria-live="polite" aria-labelledby="results-title" hidden>
+          <div class="results-head">
+            <h2 id="results-title">Your numbers vs. the benchmark</h2>
+            <p class="result-context" id="result-context"></p>
+            <p class="prime-summary" id="prime-summary"></p>
+          </div>
+
+          <div class="results-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col"><span class="sr-only">Metric</span></th>
+                    <th scope="col">Your %</th>
+                    <th scope="col">Healthy range</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="metric-rows"></tbody>
+              </table>
+            </div>
+
+            <div class="optional-cards" id="optional-cards" hidden></div>
+
+            <section class="notes" aria-labelledby="notes-title">
+              <h2 id="notes-title">How to read this</h2>
+              <div class="note-list">
+                <article class="note">
+                  <strong>Prime cost is the headline number.</strong>
+                  <p>It is food, beverage, and labor as a share of sales, the single most controllable lever you have.</p>
+                </article>
+                <article class="note">
+                  <strong>The labor range is tuned to your state.</strong>
+                  <p>Food and net-profit ranges are national by segment. The labor and prime ranges are shifted by your state's restaurant wage level (BLS QCEW 2024), applied at half strength since higher-wage markets also carry higher menu prices that absorb part of the cost.</p>
+                </article>
+                <article class="note">
+                  <strong>Net profit here is an estimate.</strong>
+                  <p>It assumes a standard 35% for everything outside prime cost (rent, utilities, marketing, delivery commissions, card fees, admin, insurance). If your real overhead runs higher, your true margin is thinner than this shows.</p>
+                </article>
+                <article class="note">
+                  <strong>This is a snapshot, not an audit.</strong>
+                  <p>One month, one location. It cannot see shrinkage, drift between locations, vendor price creep, or whether your reports reconcile. The Red-Flags Audit measures all of that against your actual systems.</p>
+                </article>
+                <article class="note">
+                  <strong>On the numbers themselves.</strong>
+                  <p>Benchmarks blend published sources, and labor reporting conventions vary, so treat the ranges as a guide, not a verdict.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="cta-block" aria-labelledby="cta-title">
+              <h2 id="cta-title">Want the full picture?</h2>
+              <p>This snapshot flags what is outside range. The Red-Flags Audit finds why, across all your locations, in 21 days.</p>
+              <div class="cta-actions">
+                <a class="btn btn-primary" id="book-call" href="https://cal.com/an-pham-ktqlcd/adc-intro-call" target="_blank" rel="noopener noreferrer">Book a 15-minute call</a>
+                <span class="reply-copy">or just reply to my email.</span>
+              </div>
+              <div class="print-action">
+                <a class="print-link" id="print-link" href="#">Save this as a PDF</a>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <p class="sources">Benchmarks: NRA 2026 State of the Restaurant Industry, Restaurant365 2026 Industry Survey, 7shifts 2025 Workforce Report, Toast industry data. Wage data: US Bureau of Labor Statistics QCEW 2024 (NAICS 722513 limited-service, 722511 full-service).</p>
+      <p class="disclaimer">Figures are directional and for general benchmarking only. ADC Operations surfaces operating patterns; this is not an audit, and nothing here is legal, HR, or compliance advice.</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const OPEX = 0.35; // opex ex-prime assumption
+
+      // slug is the ?seg= URL value; naics picks the wage column (ls = 722513, fs = 722511)
+      const SEGMENTS = {
+        "qsr":          { label: "Quick Service (QSR)", foodLow:.26, foodHigh:.30, laborLow:.24, laborHigh:.28, primeLow:.55, primeHigh:.60, netLow:.05, netHigh:.08, naics:"ls" },
+        "fast-casual":  { label: "Fast Casual",          foodLow:.28, foodHigh:.32, laborLow:.28, laborHigh:.32, primeLow:.58, primeHigh:.62, netLow:.03, netHigh:.06, naics:"ls" },
+        "cafe-bakery":  { label: "Café & Bakery",        foodLow:.25, foodHigh:.30, laborLow:.30, laborHigh:.35, primeLow:.55, primeHigh:.62, netLow:.03, netHigh:.05, naics:"ls" },
+        "full-service": { label: "Full Service",         foodLow:.30, foodHigh:.34, laborLow:.34, laborHigh:.37, primeLow:.60, primeHigh:.65, netLow:.02, netHigh:.04, naics:"fs" },
+        "fine-dining":  { label: "Fine Dining",          foodLow:.28, foodHigh:.34, laborLow:.30, laborHigh:.35, primeLow:.60, primeHigh:.65, netLow:.04, netHigh:.10, naics:"fs" }
+      };
+
+      // BLS QCEW 2024 avg weekly wage by state. ls = NAICS 722513 (limited-service), fs = 722511 (full-service)
+      const WAGES = {
+        AL:{ls:392,fs:490}, AK:{ls:524,fs:649}, AZ:{ls:488,fs:636}, AR:{ls:372,fs:462}, CA:{ls:565,fs:696},
+        CO:{ls:516,fs:688}, CT:{ls:503,fs:631}, DE:{ls:448,fs:524}, DC:{ls:792,fs:808}, FL:{ls:464,fs:665},
+        GA:{ls:412,fs:531}, HI:{ls:547,fs:740}, ID:{ls:386,fs:491}, IL:{ls:497,fs:605}, IN:{ls:385,fs:468},
+        IA:{ls:370,fs:428}, KS:{ls:390,fs:447}, KY:{ls:410,fs:476}, LA:{ls:367,fs:492}, ME:{ls:498,fs:653},
+        MD:{ls:491,fs:567}, MA:{ls:554,fs:679}, MI:{ls:415,fs:497}, MN:{ls:430,fs:537}, MS:{ls:334,fs:439},
+        MO:{ls:411,fs:521}, MT:{ls:445,fs:503}, NE:{ls:389,fs:460}, NV:{ls:474,fs:690}, NH:{ls:516,fs:621},
+        NJ:{ls:498,fs:624}, NM:{ls:435,fs:531}, NY:{ls:542,fs:755}, NC:{ls:407,fs:500}, ND:{ls:423,fs:493},
+        OH:{ls:390,fs:483}, OK:{ls:383,fs:441}, OR:{ls:486,fs:617}, PA:{ls:404,fs:486}, RI:{ls:490,fs:592},
+        SC:{ls:398,fs:502}, SD:{ls:392,fs:472}, TN:{ls:422,fs:555}, TX:{ls:433,fs:551}, UT:{ls:404,fs:525},
+        VT:{ls:497,fs:562}, VA:{ls:445,fs:555}, WA:{ls:530,fs:698}, WV:{ls:380,fs:437}, WI:{ls:381,fs:428},
+        WY:{ls:400,fs:504}
+      };
+
+      const CAL_BASE = 'https://cal.com/an-pham-ktqlcd/adc-intro-call';
+      const query = new URLSearchParams(window.location.search);
+      const stashedParams = {
+        lead: query.get('lead') || '',
+        email: query.get('email') || '',
+        name: query.get('name') || '',
+        utm_source: query.get('utm_source') || '',
+        utm_campaign: query.get('utm_campaign') || '',
+        utm_content: query.get('utm_content') || '',
+        utm_medium: query.get('utm_medium') || '',
+        utm_term: query.get('utm_term') || ''
+      };
+
+      const form = document.getElementById('health-form');
+      const segmentInput = document.getElementById('segment');
+      const stateInput = document.getElementById('state');
+      const periodInput = document.getElementById('period');
+      const revenueInput = document.getElementById('revenue');
+      const foodInput = document.getElementById('food-cost');
+      const laborInput = document.getElementById('labor-cost');
+      const hoursInput = document.getElementById('hours');
+      const avgWageInput = document.getElementById('avg-wage');
+      const sanityNotice = document.getElementById('sanity-notice');
+      const highPrimeNotice = document.getElementById('highprime-notice');
+      const highPrimeConfirm = document.getElementById('highprime-confirm');
+      let pendingValues = null;
+      const results = document.getElementById('results');
+      const resultContext = document.getElementById('result-context');
+      const primeSummary = document.getElementById('prime-summary');
+      const metricRows = document.getElementById('metric-rows');
+      const optionalCards = document.getElementById('optional-cards');
+      const bookCall = document.getElementById('book-call');
+      const printLink = document.getElementById('print-link');
+
+      const percent = (value) => `${(value * 100).toFixed(1)}%`;
+      const range = (low, high) => `${Math.round(low * 100)}% – ${Math.round(high * 100)}%`;
+      const whole = (value) => Math.round(value).toLocaleString('en-US');
+      const approximateMoney = (value) => value < 0 ? `~-$${whole(Math.abs(value))}` : `~$${whole(value)}`;
+      const statusClass = (status) => status === 'On benchmark' ? 'status-on' : status === 'Watch' ? 'status-watch' : 'status-action';
+      const pts = (n) => n === 1 ? '1 point' : `${n} points`;
+
+      // National average weekly wage per NAICS key, used to index state wages.
+      const NAT_WAGE = (function () {
+        const rows = Object.values(WAGES);
+        const avg = (key) => rows.reduce((sum, r) => sum + r[key], 0) / rows.length;
+        return { ls: avg('ls'), fs: avg('fs') };
+      })();
+
+      // Dampened (50%) state adjustment: labor markets vary by state, but higher-wage
+      // markets also carry higher menu prices that absorb part of the wage, so we apply
+      // the state wage index at half strength. Returns 1 when the state is unknown.
+      const WAGE_PASSTHROUGH = 0.5;
+      function wageFactor(stateKey, naics) {
+        const sw = WAGES[stateKey] && WAGES[stateKey][naics];
+        if (!sw) return 1;
+        return 1 + WAGE_PASSTHROUGH * (sw / NAT_WAGE[naics] - 1);
+      }
+
+      function costStatus(actual, high) {
+        if (actual <= high) return 'On benchmark';
+        if (actual <= high + 0.03) return 'Watch';
+        return 'Action';
+      }
+
+      function netStatus(actual, low) {
+        if (actual >= low) return 'On benchmark';
+        if (actual >= low - 0.02) return 'Watch';
+        return 'Action';
+      }
+
+      function leakDetails(actual, high, revenue) {
+        if (actual <= high) return null;
+        return {
+          dollars: (actual - high) * revenue,
+          points: Math.round((actual - high) * 100)
+        };
+      }
+
+      function shortfallDetails(actual, low, revenue) {
+        if (actual >= low) return null;
+        return {
+          dollars: (low - actual) * revenue,
+          points: Math.round((low - actual) * 100)
+        };
+      }
+
+      function statusPill(status) {
+        return `<span class="status-pill ${statusClass(status)}">${status}</span>`;
+      }
+
+      function metricRow({ label, actual, low, high, status, detail, estimate }) {
+        const estimateLine = estimate === undefined ? '' : `<span class="metric-dollar">${approximateMoney(estimate)}</span>`;
+        const detailRow = detail ? `<tr class="metric-note-row"><td colspan="4">${detail}</td></tr>` : '';
+        return `
+          <tr>
+            <td class="metric-label">${label}</td>
+            <td class="metric-value">${percent(actual)}${estimateLine}</td>
+            <td class="range">${range(low, high)}</td>
+            <td>${statusPill(status)}</td>
+          </tr>
+          ${detailRow}`;
+      }
+
+      function buildCalUrl() {
+        const params = new URLSearchParams();
+        const add = (key, value) => {
+          if (value) params.set(key, value);
+        };
+
+        add('email', stashedParams.email);
+        add('name', stashedParams.name);
+        add('utm_source', stashedParams.utm_source || 'health-check');
+        add('utm_campaign', stashedParams.utm_campaign);
+        add('utm_content', stashedParams.utm_content || stashedParams.lead);
+        add('utm_medium', stashedParams.utm_medium);
+        add('utm_term', stashedParams.utm_term);
+
+        const encoded = params.toString();
+        return encoded ? `${CAL_BASE}?${encoded}` : CAL_BASE;
+      }
+
+      function prefillFromUrl() {
+        const segment = query.get('seg') || '';
+        const state = (query.get('state') || '').toUpperCase();
+        const prefills = [
+          ['rev', revenueInput],
+          ['food', foodInput],
+          ['labor', laborInput]
+        ];
+
+        if (SEGMENTS[segment]) segmentInput.value = segment;
+        if (WAGES[state]) stateInput.value = state;
+
+        prefills.forEach(([key, input]) => {
+          const value = query.get(key);
+          if (value !== null && value !== '') input.value = value;
+        });
+      }
+
+      function showSanityNotice() {
+        results.hidden = true;
+        highPrimeNotice.hidden = true;
+        sanityNotice.hidden = false;
+        sanityNotice.focus({ preventScroll: true });
+        sanityNotice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      function showHighPrimeConfirm(values) {
+        pendingValues = values;
+        results.hidden = true;
+        sanityNotice.hidden = true;
+        highPrimeNotice.hidden = false;
+        highPrimeNotice.focus({ preventScroll: true });
+        highPrimeNotice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      function renderResults(values, allowHighPrime) {
+        const { segmentKey, stateKey, period, revenue, food, labor, hours, avgWage } = values;
+        const segment = SEGMENTS[segmentKey];
+        const stateName = stateInput.options[stateInput.selectedIndex].text;
+
+        // State-adjust the labor band by the dampened wage index, then shift prime by the
+        // same labor delta so the published prime range stays the national anchor (delta 0).
+        const factor = wageFactor(stateKey, segment.naics);
+        const dLow = segment.laborLow * (factor - 1);
+        const dHigh = segment.laborHigh * (factor - 1);
+        const laborLow = segment.laborLow + dLow;
+        const laborHigh = segment.laborHigh + dHigh;
+        const primeLow = segment.primeLow + dLow;
+        const primeHigh = segment.primeHigh + dHigh;
+
+        const foodPct = food / revenue;
+        const laborPct = labor / revenue;
+        const primePct = (food + labor) / revenue;
+        const estNet = revenue - food - labor - revenue * OPEX;
+        const estNetPct = estNet / revenue;
+
+        if (
+          !Number.isFinite(revenue) ||
+          !Number.isFinite(food) ||
+          !Number.isFinite(labor) ||
+          revenue <= 0 ||
+          food <= 0 ||
+          labor <= 0 ||
+          foodPct < 0.05 ||
+          foodPct > 0.80 ||
+          laborPct < 0.05 ||
+          laborPct > 0.80
+        ) {
+          showSanityNotice();
+          return;
+        }
+
+        // Prime over 100% is plausible in a genuinely bad month, so let the
+        // operator confirm and run it anyway rather than hard-blocking.
+        if (primePct > 1.0 && !allowHighPrime) {
+          showHighPrimeConfirm(values);
+          return;
+        }
+
+        const foodStatus = costStatus(foodPct, segment.foodHigh);
+        const laborStatus = costStatus(laborPct, laborHigh);
+        const primeStatus = costStatus(primePct, primeHigh);
+        const estimatedNetStatus = netStatus(estNetPct, segment.netLow);
+        const foodLeak = leakDetails(foodPct, segment.foodHigh, revenue);
+        const laborLeak = leakDetails(laborPct, laborHigh, revenue);
+        const primeLeak = leakDetails(primePct, primeHigh, revenue);
+        const netShortfall = shortfallDetails(estNetPct, segment.netLow, revenue);
+
+        resultContext.textContent = period
+          ? `${segment.label} | ${stateName} | ${period}`
+          : `${segment.label} | ${stateName}`;
+
+        primeSummary.textContent = primeLeak
+          ? `Your prime cost is ${percent(primePct)} of sales, ${primeLeak.points === 0 ? 'just over' : `${pts(primeLeak.points)} above`} the healthy range for ${segment.label}, meaning ~${'$'}${whole(primeLeak.dollars)}/mo in potential leaks.`
+          : `Your prime cost is ${percent(primePct)} of sales, inside the healthy range for ${segment.label}. That is the hardest part to get right.`;
+
+        const costDetail = (leak) => leak
+          ? `${leak.points === 0 ? 'Just over the range' : `${pts(leak.points)} above the range`}, meaning ~${'$'}${whole(leak.dollars)}/mo in potential leaks.`
+          : '';
+        const netDetail = netShortfall
+          ? `${netShortfall.points === 0 ? 'Just under the healthy range' : `${pts(netShortfall.points)} below the healthy range`}, about ~${'$'}${whole(netShortfall.dollars)}/mo of profit not showing up.`
+          : '';
+
+        metricRows.innerHTML = [
+          metricRow({
+            label: 'Food cost',
+            actual: foodPct,
+            low: segment.foodLow,
+            high: segment.foodHigh,
+            status: foodStatus,
+            detail: costDetail(foodLeak)
+          }),
+          metricRow({
+            label: 'Labor cost',
+            actual: laborPct,
+            low: laborLow,
+            high: laborHigh,
+            status: laborStatus,
+            detail: costDetail(laborLeak)
+          }),
+          metricRow({
+            label: 'Prime cost',
+            actual: primePct,
+            low: primeLow,
+            high: primeHigh,
+            status: primeStatus,
+            detail: costDetail(primeLeak)
+          }),
+          metricRow({
+            label: 'Estimated net profit',
+            actual: estNetPct,
+            low: segment.netLow,
+            high: segment.netHigh,
+            status: estimatedNetStatus,
+            detail: netDetail,
+            estimate: estNet
+          })
+        ].join('');
+
+        const cards = [];
+        if (hours > 0 && avgWage > 0) {
+          const actualSPLH = revenue / hours;
+          const targetSPLH = avgWage / laborHigh;
+          const inRange = actualSPLH >= targetSPLH;
+          const read = inRange
+            ? ' You are above that line.'
+            : ' You are under it, which is where the labor overage shows up.';
+          cards.push(`
+            <article class="insight-card ${inRange ? '' : 'action'}">
+              <h3>Sales per labor hour</h3>
+              <p>You are bringing in $${whole(actualSPLH)} of sales for every labor hour. To keep labor inside your segment's healthy range at a $${whole(avgWage)}/hr average, you would want about $${whole(targetSPLH)} or more.${read}</p>
+            </article>`);
+        }
+
+        const weeklyWage = WAGES[stateKey] && WAGES[stateKey][segment.naics];
+        if (avgWage > 0 && weeklyWage > 0) {
+          const stateHourly = weeklyWage / 35;
+          const variance = avgWage - stateHourly;
+          let read = 'Your wages are in line with the state market.';
+          let cardClass = '';
+
+          if (variance < -1) {
+            read = 'You are paying below the state market by more than $1/hr. Worth watching for turnover risk.';
+            cardClass = 'watch';
+          } else if (variance > 1) {
+            read = 'You are paying above the state market by more than $1/hr. Worth a look at margin pressure.';
+            cardClass = 'action';
+          }
+
+          cards.push(`
+            <article class="insight-card ${cardClass}">
+              <h3>Your wages vs. the ${stateName} market</h3>
+              <p>State market average is about $${whole(stateHourly)}/hr for your segment (BLS QCEW 2024). ${read}</p>
+            </article>`);
+        }
+
+        optionalCards.innerHTML = cards.join('');
+        optionalCards.hidden = cards.length === 0;
+        bookCall.href = buildCalUrl();
+        sanityNotice.hidden = true;
+        highPrimeNotice.hidden = true;
+        results.hidden = false;
+
+        window.requestAnimationFrame(() => {
+          results.focus({ preventScroll: true });
+          results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        renderResults({
+          segmentKey: segmentInput.value,
+          stateKey: stateInput.value,
+          period: periodInput.value.trim(),
+          revenue: Number(revenueInput.value),
+          food: Number(foodInput.value),
+          labor: Number(laborInput.value),
+          hours: Number(hoursInput.value),
+          avgWage: Number(avgWageInput.value)
+        });
+      });
+
+      highPrimeConfirm.addEventListener('click', () => {
+        if (pendingValues) renderResults(pendingValues, true);
+      });
+
+      printLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.print();
+      });
+
+      prefillFromUrl();
+    })();
+  </script>
+</body>
+</html>
