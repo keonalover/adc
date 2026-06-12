@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ember: 4-Week Red-Flag Report | ADC Consulting</title>
-  <meta name="description" content="A static ADC Consulting red-flag report mock-up for a four-location casual restaurant operator." />
+  <title>Ember: Red-Flags Audit | ADC Consulting</title>
+  <meta name="description" content="A static ADC Consulting red-flag report mock-up for a four-location casual restaurant operator: a twelve-month review with a four-week receipt-level deep dive." />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/adc-favicon-32.png" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -742,11 +742,11 @@
 
   <main class="page">
     <header>
-      <span class="eyebrow">DEMO REPORT · PREPARED FOR MARCUS CHEN</span>
-      <h1>Ember: 4-Week Red-Flag Report</h1>
-      <p class="subtitle">First-pass review of April 14–May 11, 2025 operating data across 4 locations. Surfacing the patterns that warrant owner-level attention before they compound.</p>
+      <span class="eyebrow">DEMO REPORT: PREPARED FOR MARCUS CHEN</span>
+      <h1>Ember: Red-Flags Audit</h1>
+      <p class="subtitle">Twelve-month review of operating data across 4 locations, with a receipt-level deep dive on April 14–May 11, 2026. Surfacing the patterns that warrant owner-level attention before they compound.</p>
       <div class="meta-strip" aria-label="Report metadata">
-        <div class="meta-item"><span>Period</span><strong>April 14–May 11, 2025</strong></div>
+        <div class="meta-item"><span>Period</span><strong>12-mo lookback, Apr 14–May 11 deep-dive</strong></div>
         <div class="meta-item"><span>Scope</span><strong>4 locations</strong></div>
         <div class="meta-item"><span>Inputs</span><strong>5 data sources</strong></div>
         <div class="meta-item"><span>Prepared by</span><strong>ADC Consulting</strong></div>
@@ -755,7 +755,7 @@
 
     <section class="summary" aria-labelledby="owner-summary">
       <h2 id="owner-summary">Owner Summary</h2>
-      <p>Across the last four weeks, the clearest signal isn't any single incident. It's the distance between what Ember should be making and what the last four weeks show.</p>
+      <p>Across a twelve-month review of Ember's operating data, the clearest signal isn't any single incident. It's the distance between what Ember should be making and what the recent pace shows, and the fact that most of the patterns behind it repeat month after month.</p>
       <ol class="summary-list">
         <li><strong>Vendor pricing gap (~$4,800/mo): systemic across Stores B, C, and D.</strong> Store A is the benchmark. Stores B, C, and D are paying above that benchmark on key Sysco items, with Store C carrying the highest price-variance leakage.</li>
         <li><strong>Store C discount rate 5.8% (~$2,125/mo): behavioral pattern risk.</strong> Store C carries the portfolio's highest discount rate at 5.8%, above your 4.1% target, with 47 manager-override comps and no POS-enforced approval rule.</li>
@@ -769,7 +769,7 @@
     <section aria-labelledby="methodology">
       <h2 id="methodology">How This Analysis Was Built</h2>
       <p class="section-intro">A short note on where the numbers come from and how confident each finding is, so you can weigh the report the way you would weigh a trusted manager's read.</p>
-      <p>This audit draws on five operating systems: Toast POS (sales, voids, discounts, and comps by employee), 7shifts labor and scheduling (scheduled vs. actual hours and cover counts), supplier invoices (five vendors, 42 invoices, priced SKU-by-SKU), MarketMan inventory (theoretical vs. physical counts), and third-party delivery statements (DoorDash, UberEats). ADC's standard benchmarking pulls a trailing twelve months per location. This first-pass review centers on the four-week window of April 14–May 11, 2025, set against each location's trailing-twelve-month and same-period-prior-year baselines.</p>
+      <p>This audit draws on five operating systems: Toast POS (sales, voids, discounts, and comps by employee), 7shifts labor and scheduling (scheduled vs. actual hours and cover counts), supplier invoices (five vendors, 42 invoices, priced SKU-by-SKU), MarketMan inventory (theoretical vs. physical counts), and third-party delivery statements (DoorDash, UberEats). The review ingests a trailing twelve months of POS and labor data per location, plus recent supplier invoices, inventory counts, and delivery-platform statements. The twelve-month scan identifies which patterns are chronic and which are new; the four-week window of April 14–May 11, 2026 then receives receipt-level attention, set against each location's trailing-twelve-month and same-period-prior-year baselines.</p>
       <p>Findings are graded by cross-location internal benchmarking: for each metric, the strongest-performing location sets the target the others are measured against (Store A is the price and labor benchmark here). Where a location is structurally non-comparable, the fallback is its own history. To separate seasonal swings from operating drift, each location is also compared against the same period one year earlier, so a slow April reads as a slow April rather than a new problem.</p>
       <p>Every finding below carries a confidence tier so you know how hard to lean on it.</p>
       <div class="callout">
@@ -918,7 +918,7 @@
           <div class="rank">01</div>
           <span class="badge red">RED FLAG</span>
           <h3>Vendor pricing gap (~$4,800/mo): systemic across Stores B, C, and D</h3>
-          <p class="finding">Store A has the lowest prices, and will be the benchmark. Stores B, C, and D are paying above that benchmark on key Sysco items. The figures below are <strong>price-variance leakage</strong> dollars, not total item cost or total food cost.</p>
+          <p class="finding">Store A has the lowest prices, and will be the benchmark. Stores B, C, and D are paying above that benchmark on key Sysco items. The figures below are <strong>price-variance leakage</strong> dollars, not total item cost or total food cost. Current prices are confirmed in the recent invoice window; the creep timeline requires last year's invoices from the vendor portal.</p>
           <p><strong>Price variance vs. Store A benchmark: Sysco, Apr 1–May 11</strong></p>
           <div class="stacked-table">
             <table>
@@ -943,7 +943,7 @@
           <div class="rank">02</div>
           <span class="badge red">RED FLAG</span>
           <h3>Store C discount rate 5.8% (~$2,125/mo): behavioral pattern risk</h3>
-          <p class="finding">Store C excess over target by <strong>1.7%</strong>. Store C is the clear portfolio outlier. No POS-enforced approval rule or written comp policy was found.</p>
+          <p class="finding">Store C excess over target by <strong>1.7%</strong>. Store C is the clear portfolio outlier. No POS-enforced approval rule or written comp policy was found. The trailing twelve months show Store C at or above the 4.1% target in <strong>ten of the last twelve months</strong>, and rising: drift, not a one-off.</p>
           <p><strong>Store-Level Discount Breakdown</strong></p>
           <div class="table-scroll">
             <table>
@@ -959,7 +959,7 @@
               </tbody>
             </table>
           </div>
-          <p><strong>POS export: Store C, Apr 14–May 11, 2025</strong></p>
+          <p><strong>POS export: Store C, Apr 14–May 11, 2026</strong></p>
           <div class="table-scroll">
             <table>
               <thead>
@@ -982,7 +982,7 @@
           <div class="rank">03</div>
           <span class="badge watch">WATCH</span>
           <h3>Weekday labor overage, Stores A+B (~$3,100/mo full-month exposure)</h3>
-          <p class="finding">Weekends carry the sales volume; the weekday test is whether managers flex labor when covers soften. Avg weekday was <strong>35% labor cost vs. a 28% target</strong> for stores A + B.</p>
+          <p class="finding">Weekends carry the sales volume; the weekday test is whether managers flex labor when covers soften. Avg weekday was <strong>35% labor cost vs. a 28% target</strong> for stores A + B. The overage appears in <strong>every month of the trailing twelve</strong>: a standing pattern, not a soft April.</p>
           <p><strong>Average weekly labor bridge</strong></p>
           <div class="stacked-table">
             <table>
@@ -1004,7 +1004,7 @@
         </article>
 
         <article class="flag-card watch">
-          <span class="badge watch">WATCH · STORE B</span>
+          <span class="badge watch">WATCH: STORE B</span>
           <h3>Store B: Tuesday lunch and early-week late night run hottest</h3>
           <p class="finding">Store B's weekday labor averages <strong>36.9% vs. the 28% target</strong>. The dinner rush holds near target; the drift is in thin lunches and late-night closes that stay staffed for weekend-size covers.</p>
           <p><strong>Weekday labor cost % by daypart: Store B</strong></p>
@@ -1043,7 +1043,7 @@
         </article>
 
         <article class="flag-card watch">
-          <span class="badge watch">WATCH · STORE A</span>
+          <span class="badge watch">WATCH: STORE A</span>
           <h3>Store A: same lunch and late-night drift, milder than Store B</h3>
           <p class="finding">Store A's weekday labor averages <strong>33.2% vs. the 28% target</strong>. The shape matches Store B but is less severe, and dinner runs at or under target every weekday.</p>
           <p><strong>Weekday labor cost % by daypart: Store A</strong></p>
@@ -1085,8 +1085,8 @@
           <div class="rank">04</div>
           <span class="badge watch">WATCH</span>
           <h3>Store D inventory shrinkage gap (~$1,735/mo, growing)</h3>
-          <p class="finding">Waste logs incomplete (3 of 7 days). No 86 records matched the variance. Prior reconciliation (Apr 28) showed ~$680, so the gap roughly doubled in two weeks.</p>
-          <p><strong>Reconciliation: Store D, week of May 5–11, 2025</strong></p>
+          <p class="finding">Waste logs incomplete (3 of 7 days). No 86 records matched the variance. Prior reconciliation (Apr 28) showed ~$680, so the gap roughly doubled in two weeks. Counts exist for two dates only, so no longer trend is available; that gap is part of the finding, and standing weekly counts are the fix.</p>
+          <p><strong>Reconciliation: Store D, week of May 5–11, 2026</strong></p>
           <div class="stacked-table">
             <table>
               <thead>
@@ -1112,7 +1112,7 @@
           <div class="rank">05</div>
           <span class="badge watch">WATCH</span>
           <h3>Store B after-hours voids: control/theft risk (~$690 quantified, exposure unknown)</h3>
-          <p class="finding">Total void value $1,415 ÷ $123,000 sales = <strong>1.15% of sales</strong> (over the &lt; 1% target). The headline issue is the <strong>after-hours count concentration</strong>: this is a possible theft/control issue until receipt detail proves otherwise.</p>
+          <p class="finding">Total void value $1,415 ÷ $123,000 sales = <strong>1.15% of sales</strong> (over the &lt; 1% target). The headline issue is the <strong>after-hours count concentration</strong>: this is a possible theft/control issue until receipt detail proves otherwise. Monthly void value sat under the 1% line for most of the trailing year and crossed it <strong>in the last three months</strong>; the pattern is recent, which argues for moving quickly.</p>
           <p><strong>Void log: Store B, Apr 14–May 11</strong></p>
           <div class="stacked-table">
             <table>
@@ -1154,11 +1154,11 @@
             <tr><th>Source</th><th>Data Covered</th><th>Period</th></tr>
           </thead>
           <tbody>
-            <tr><td>POS (Toast)</td><td>Sales, voids, discounts, comps by employee</td><td>Apr 14–May 11, 2025</td></tr>
-            <tr><td>Labor/Scheduling (7shifts)</td><td>Scheduled vs. actual hours, cover count</td><td>Apr 14–May 11, 2025</td></tr>
-            <tr><td>Supplier invoices (5 vendors, 42 invoices)</td><td>Unit pricing by SKU, cross-store comparison</td><td>Apr 1–May 11, 2025</td></tr>
-            <tr><td>Inventory (MarketMan)</td><td>Theoretical vs. physical by category</td><td>Apr 28 &amp; May 11, 2025</td></tr>
-            <tr><td>3PO (DoorDash, UberEats)</td><td>Order volume, platform fees, refund rate</td><td>Apr 14–May 11, 2025</td></tr>
+            <tr><td>POS (Toast)</td><td>Sales, voids, discounts, comps by employee</td><td>Jun 2025–May 11, 2026 (trailing 12 months)</td></tr>
+            <tr><td>Labor/Scheduling (7shifts)</td><td>Scheduled vs. actual hours, cover count</td><td>Jun 2025–May 11, 2026 (trailing 12 months)</td></tr>
+            <tr><td>Supplier invoices (5 vendors, 42 invoices)</td><td>Unit pricing by SKU, cross-store comparison</td><td>Apr 1–May 11, 2026 (recent window)</td></tr>
+            <tr><td>Inventory (MarketMan)</td><td>Theoretical vs. physical by category</td><td>Apr 28 &amp; May 11, 2026 (two counts)</td></tr>
+            <tr><td>3PO (DoorDash, UberEats)</td><td>Order volume, platform fees, refund rate</td><td>Feb–May 11, 2026 (recent statements)</td></tr>
           </tbody>
         </table>
       </div>
